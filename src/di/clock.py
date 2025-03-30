@@ -7,5 +7,5 @@ class Clock:
 	def tick(self, fps):
 		self._clock.tick(fps)
 
-	def get_ticks(self):
-		return pygame.time.get_ticks()
+	def get_dt(self):
+		return self._clock.get_time() / 1000.0

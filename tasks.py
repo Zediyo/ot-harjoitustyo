@@ -27,3 +27,17 @@ def coverage_report(ctx):
 @task
 def startw(ctx):
 	ctx.run("python src/index.py")
+
+@task()
+def testw(ctx):
+	ctx.run("pytest src")
+
+@task
+def coveragew(ctx):
+	ctx.run("coverage run --branch -m pytest src")
+
+@task(coveragew)
+def coverage_reportw(ctx):
+	ctx.run("coverage html")
+	if platform != "win32":
+		call(("xdg-open", "htmlcov/index.html"))

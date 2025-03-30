@@ -15,11 +15,11 @@ class GameLoop:
 
 			self._handle_input()
 
-			self._level.update(self._clock.get_ticks(), self._input.get_mouse_pos())
+			self._level.update(self._clock.get_dt(), self._input.get_mouse_pos())
 
 			self._render()
 
-			self._clock.tick(60)
+			self._clock.tick(240)
 
 	def _handle_events(self):
 		for event in self._event_queue.get():

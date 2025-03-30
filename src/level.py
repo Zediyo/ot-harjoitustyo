@@ -20,11 +20,9 @@ class Level:
 		self._player = None
 		self._tile_cursor = None
 
+		self._map_objects = {}
 		self._blocks = pygame.sprite.Group()
 		self._enemies = pygame.sprite.Group()
-
-		self._map_objects = {}
-		self._placeables = pygame.sprite.Group()
 
 		self.all_sprites = pygame.sprite.Group()
 
@@ -41,7 +39,7 @@ class Level:
 					self._blocks.add(Block(grid_x, grid_y))
 				elif tile == constants.TILE_PLACEABLE:
 					placeable = Placeable(grid_x, grid_y)
-					self._placeables.add(placeable)
+					self._blocks.add(placeable)
 					self._map_objects[(x, y)] = placeable
 				elif tile == constants.TILE_ENEMY:
 					self._enemies.add(Enemy(grid_x, grid_y))
@@ -52,57 +50,37 @@ class Level:
 
 		self._tile_cursor = TileCursor()
 		self.all_sprites.add(
-            self._blocks,
-            self._enemies,
             self._player,
-			self._placeables,
+			self._blocks,
+            self._enemies,
 			self._tile_cursor,
         )
 
 	def input_key(self, key):
-		dx, dy = 0, 0
 		if key == "left":
-			dx = -1
+			self._player.add_input(-1, 0)
 		elif key == "right":
-			dx = 1
+			self._player.add_input(1, 0)
 		elif key == "jump":
-			dy = -1
+			self._player.add_input(0, -1)
 		elif key == "down":
-			dy = 1
-
-		self._player.move(dx, dy)
+			self._player.add_input(0, 1)
+		
 	
 	def input_mouse(self, click, pos):
 		grid_x, grid_y = self._screen_pos_to_grid(pos)
 		cell_x, cell_y = self._grid_pos_to_cell((grid_x, grid_y))
 
 		if click == "left":
-			if self._map[cell_y][cell_x] != constants.TILE_EMPTY:
-				return
-			
-			self._map[cell_y][cell_x] = constants.TILE_PLACEABLE
-
-			placeable = Placeable(grid_x, grid_y)
-			self._map_objects[(cell_x, cell_y)] = placeable
-
-			self._placeables.add(placeable)
-			self.all_sprites.add(placeable)
+			self._add_placeable_to_world(grid_x, grid_y, cell_x, cell_y)
 		elif click == "right":
-			if self._map[cell_y][cell_x] != constants.TILE_PLACEABLE:
-				return
-			
-			self._map[cell_y][cell_x] = constants.TILE_EMPTY
-			placeable = self._map_objects.get((cell_x, cell_y))
-			
-			if placeable:
-				placeable.kill()
+			self._remove_placeable_from_world(cell_x, cell_y)
 
-				del self._map_objects[(cell_x, cell_y)]
-				self._placeables.remove(placeable)
-				self.all_sprites.remove(placeable)
 
-	def update(self, delta_time, mouse_pos):
+	def update(self, dt, mouse_pos):
 		self._tile_cursor.update(self._screen_pos_to_grid(mouse_pos))
+
+		self._player.move(dt, self._blocks)
 
 	def _screen_pos_to_grid(self, pos):
 		x, y = pos
@@ -124,5 +102,51 @@ class Level:
 		ret_y = y * self._tile_size
 
 		return ret_x, ret_y
+	
+	def _add_placeable_to_world(self, grid_x, grid_y, cell_x, cell_y):
+		#check if player has placeable blocks in inventory
+
+		#check if player is in range
+
+		#check if cell is in bounds
+		if cell_x < 0 or cell_x >= self._width or cell_y < 0 or cell_y >= self._height:
+			return
+
+		#check if cell is empty
+		if self._map[cell_y][cell_x] != constants.TILE_EMPTY:
+			return
+			
+		#create + add
+		self._map[cell_y][cell_x] = constants.TILE_PLACEABLE
+
+		placeable = Placeable(grid_x, grid_y)
+		self._map_objects[(cell_x, cell_y)] = placeable
+
+		self._blocks.add(placeable)
+		self.all_sprites.add(placeable)
+
+	def _remove_placeable_from_world(self, cell_x, cell_y):
+		#check if player is in range
+
+		#check if cell is in bounds
+		if cell_x < 0 or cell_x >= self._width or cell_y < 0 or cell_y >= self._height:
+			return
+
+		#check if cell has a removable object
+		if self._map[cell_y][cell_x] != constants.TILE_PLACEABLE:
+			return
 		
+		#kill + remove
+		self._map[cell_y][cell_x] = constants.TILE_EMPTY
+		placeable = self._map_objects.get((cell_x, cell_y))
+		
+		if placeable:
+			placeable.kill()
+
+			del self._map_objects[(cell_x, cell_y)]
+			self._blocks.remove(placeable)
+			self.all_sprites.remove(placeable)
+
+		#add +1 to inventory
+	
 			
