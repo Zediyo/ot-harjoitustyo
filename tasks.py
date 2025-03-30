@@ -2,42 +2,25 @@ from invoke import task
 from subprocess import call
 from sys import platform
 
-@task
-def foo(ctx):
-	print("bar")
+def is_windows():
+	return platform == "win32"
 	
 @task
 def start(ctx):
-	ctx.run("python3 src/index.py", pty=True)
+	ctx.run("python3 src/index.py", pty=(platform != "win32"))
 
 @task()
 def test(ctx):
-	ctx.run("pytest src", pty=True)
+	ctx.run("pytest src", pty=(platform != "win32"))
 
 @task
 def coverage(ctx):
-	ctx.run("coverage run --branch -m pytest src", pty=True)
+	ctx.run("coverage run --branch -m pytest src", pty=(platform != "win32"))
 
 @task(coverage)
 def coverage_report(ctx):
-	ctx.run("coverage html", pty=True)
+	ctx.run("coverage html", pty=(platform != "win32"))
 	if platform != "win32":
 		call(("xdg-open", "htmlcov/index.html"))
-		
-@task
-def startw(ctx):
-	ctx.run("python src/index.py")
-
-@task()
-def testw(ctx):
-	ctx.run("pytest src")
-
-@task
-def coveragew(ctx):
-	ctx.run("coverage run --branch -m pytest src")
-
-@task(coveragew)
-def coverage_reportw(ctx):
-	ctx.run("coverage html")
-	if platform != "win32":
-		call(("xdg-open", "htmlcov/index.html"))
+	else:
+		call(("start", "htmlcov/index.html"), shell=True)
