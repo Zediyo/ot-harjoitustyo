@@ -1,12 +1,12 @@
 import pygame
-import os
 
-dirname = os.path.dirname(__file__)
+from tools.asset_path import get_asset_path
 
 class End(pygame.sprite.Sprite):
 	def __init__(self, x=0, y=0):
 		super().__init__()
-		self.image = pygame.image.load(os.path.join(dirname, "../assets", "pl_end.png"))
+
+		self.image = pygame.image.load(get_asset_path("pl_end.png"))
 		self.rect = self.image.get_rect()
 
 		self.rect.x = x

@@ -2,12 +2,13 @@ import pygame
 
 from tools.asset_path import get_asset_path
 
-class Placeable(pygame.sprite.Sprite):
-	def __init__(self, x=0, y=0):
+class TileCursor(pygame.sprite.Sprite):
+	def __init__(self):
 		super().__init__()
-
 		self.image = pygame.image.load(get_asset_path("pl_block_placeable.png"))
+		self.image.set_alpha(128)
 		self.rect = self.image.get_rect()
 
-		self.rect.x = x
-		self.rect.y = y
+	def update(self, pos):
+		self.rect.x = pos[0]
+		self.rect.y = pos[1]
