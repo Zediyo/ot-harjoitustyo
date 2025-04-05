@@ -2,13 +2,16 @@ import pygame
 
 
 class Renderer:
-	def __init__(self, display, level):
+	def __init__(self, display, scene):
 		self._display = display
-		self._level = level
+		self._scene = scene
 
 	def render(self):
 		self._display.fill((0, 0, 0))
 		
-		self._level.all_sprites.draw(self._display)
+		self._scene.draw(self._display)
 
 		pygame.display.flip()
+
+	def set_scene(self, scene):
+		self._scene = scene

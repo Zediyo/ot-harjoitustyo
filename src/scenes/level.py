@@ -7,10 +7,13 @@ from sprites.placeable import Placeable
 from sprites.enemy import Enemy
 from sprites.end import End
 from sprites.tile_cursor import TileCursor
+from scenes.scene import Scene
 
 
-class Level:
+class Level(Scene):
 	def __init__(self, level_data, tile_size=constants.TILE_SIZE):
+		super().__init__()
+
 		self._map = level_data
 		self._width = len(level_data[0])
 		self._height = len(level_data)
@@ -24,9 +27,10 @@ class Level:
 		self._blocks = pygame.sprite.Group()
 		self._enemies = pygame.sprite.Group()
 
-		self.all_sprites = pygame.sprite.Group()
+		self._all_sprites = pygame.sprite.Group()
 
 		self._initialize_sprites()
+
 
 	def _initialize_sprites(self):
 		for y in range(self._height):
@@ -49,12 +53,15 @@ class Level:
 					self._blocks.add(End(grid_x, grid_y))
 
 		self._tile_cursor = TileCursor()
-		self.all_sprites.add(
+		self._all_sprites.add(
             self._player,
 			self._blocks,
             self._enemies,
 			self._tile_cursor,
         )
+
+	def draw(self, display):
+		self._all_sprites.draw(display)
 
 	def input_key(self, key):
 		if key == "left":
@@ -81,6 +88,10 @@ class Level:
 		self._tile_cursor.update(self._screen_pos_to_grid(mouse_pos))
 
 		self._player.move(dt, self._blocks)
+	
+	def cleanup(self):
+		for sprite in self._all_sprites:
+			sprite.kill()
 
 	def _screen_pos_to_grid(self, pos):
 		x, y = pos
@@ -123,7 +134,7 @@ class Level:
 		self._map_objects[(cell_x, cell_y)] = placeable
 
 		self._blocks.add(placeable)
-		self.all_sprites.add(placeable)
+		self._all_sprites.add(placeable)
 
 	def _remove_placeable_from_world(self, cell_x, cell_y):
 		#check if player is in range
@@ -145,7 +156,7 @@ class Level:
 
 			del self._map_objects[(cell_x, cell_y)]
 			self._blocks.remove(placeable)
-			self.all_sprites.remove(placeable)
+			self._all_sprites.remove(placeable)
 
 		#add +1 to inventory
 	

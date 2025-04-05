@@ -7,7 +7,10 @@ def is_windows():
 	
 @task
 def start(ctx):
-	ctx.run("python3 src/index.py", pty=(platform != "win32"))
+	if is_windows():
+		ctx.run("python src/index.py", pty=False)
+	else:
+		ctx.run("python3 src/index.py", pty=(platform != "win32"))
 
 @task()
 def test(ctx):
