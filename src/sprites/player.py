@@ -1,7 +1,7 @@
 import pygame
 from tools.asset_path import get_asset_path
 
-from sprites.parts.body import Body
+from game.body import Body
 
 
 class Player(pygame.sprite.Sprite):

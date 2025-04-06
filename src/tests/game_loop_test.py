@@ -1,4 +1,4 @@
-from map import Map
+from game.map import Map
 import unittest
 
 import pygame
