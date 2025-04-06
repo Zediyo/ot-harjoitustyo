@@ -74,10 +74,10 @@ class Level(Scene):
         grid_x, grid_y = self._screen_pos_to_grid(pos)
         cell_x, cell_y = self._grid_pos_to_cell((grid_x, grid_y))
 
-        ##check if click is in bounds
+        # check if click is in bounds
         if not self._map.point_in_bounds(cell_x, cell_y):
             return
-        
+
         # check if click is in range
         if not self._tile_cursor.in_range:
             return
@@ -89,7 +89,8 @@ class Level(Scene):
 
     def update(self, dt, mouse_pos):
         self._player.move(dt, self._blocks)
-        self._tile_cursor.update(self._screen_pos_to_grid(mouse_pos), self._player.rect)
+        self._tile_cursor.update(
+            self._screen_pos_to_grid(mouse_pos), self._player.rect)
 
     def cleanup(self):
         for sprite in self._all_sprites:
@@ -136,7 +137,7 @@ class Level(Scene):
     def _remove_placeable_from_world(self, grid_x, grid_y):
         # check if cell has a removable object
         placeable = self._map_objects.get((grid_x, grid_y))
-    
+
         if not placeable:
             return
 

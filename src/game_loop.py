@@ -62,14 +62,16 @@ class GameLoop:
         if new_scene is None:
             return False
 
+        self._scene.cleanup()
+
         if new_scene == "mainmenu":
             new_scene = MainMenu()
         elif new_scene == "level":
             new_scene = Level(constants.TEST_LEVEL)
         elif new_scene == "editor":
             new_scene = LevelEditor()
-
-        self._scene.cleanup()
+        else:
+            return False
 
         self._renderer.set_scene(new_scene)
         self._scene = new_scene
