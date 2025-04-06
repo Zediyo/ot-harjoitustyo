@@ -6,5 +6,5 @@ from scenes.scene import Scene
 
 class LevelEditor(Scene):
 
-	def __init__(self):
-		super().__init__()
+    def __init__(self):
+        super().__init__()

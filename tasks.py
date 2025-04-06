@@ -27,3 +27,11 @@ def coverage_report(ctx):
 		call(("xdg-open", "htmlcov/index.html"))
 	else:
 		call(("start", "htmlcov/index.html"), shell=True)
+
+@task
+def lint(ctx):
+	ctx.run("pylint src", pty=(platform != "win32"))
+
+@task
+def format(ctx):
+	ctx.run("autopep8 --in-place --recursive src", pty=(platform != "win32"))

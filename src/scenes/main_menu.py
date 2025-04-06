@@ -6,6 +6,5 @@ from scenes.scene import Scene
 
 class MainMenu(Scene):
 
-	def __init__(self):
-		super().__init__()
-
+    def __init__(self):
+        super().__init__()
