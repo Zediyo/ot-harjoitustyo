@@ -38,7 +38,5 @@ class TileCursor(pygame.sprite.Sprite):
                     player_rect.right + self._max_range < self.rect.left:
                 self.image = self._out_of_range_image
                 self.in_range = False
-                # change to red overlay
             else:
                 self.image = self._original_image
-                # change to normal color

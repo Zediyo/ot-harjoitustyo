@@ -14,12 +14,11 @@ from map import Map
 class Level(Scene):
     def __init__(self, level_data, tile_size=constants.TILE_SIZE):
         super().__init__()
-
-        self._tile_size = tile_size
         self._map = Map(level_data, tile_size)
 
         self._player = None
         self._tile_cursor = None
+        self._end = None
 
         self._map_objects = {}
         self._blocks = pygame.sprite.Group()
@@ -34,7 +33,7 @@ class Level(Scene):
             for x in range(self._map.width):
                 tile = self._map.data[y][x]
 
-                grid_x, grid_y = self._cell_pos_to_grid((x, y))
+                grid_x, grid_y = self._map.cell_pos_to_grid((x, y))
 
                 if tile == constants.TILE_BLOCK:
                     self._blocks.add(Block(grid_x, grid_y))
@@ -47,13 +46,14 @@ class Level(Scene):
                 elif tile == constants.TILE_SPAWN:
                     self._player = Player(grid_x, grid_y)
                 elif tile == constants.TILE_END:
-                    self._blocks.add(End(grid_x, grid_y))
+                    self._end = End(grid_x, grid_y)
 
-        self._tile_cursor = TileCursor(3 * self._tile_size)
+        self._tile_cursor = TileCursor(3 * self._map.tile_size)
         self._all_sprites.add(
             self._player,
             self._blocks,
             self._enemies,
+            self._end,
         )
 
     def draw(self, display):
@@ -71,11 +71,10 @@ class Level(Scene):
             self._player.add_input(0, 1)
 
     def input_mouse(self, click, pos):
-        grid_x, grid_y = self._screen_pos_to_grid(pos)
-        cell_x, cell_y = self._grid_pos_to_cell((grid_x, grid_y))
+        grid_x, grid_y = self._map.screen_pos_to_grid(pos)
 
         # check if click is in bounds
-        if not self._map.point_in_bounds(cell_x, cell_y):
+        if not self._map.tile_in_bounds(grid_x, grid_y):
             return
 
         # check if click is in range
@@ -89,33 +88,17 @@ class Level(Scene):
 
     def update(self, dt, mouse_pos):
         self._player.move(dt, self._blocks)
+        self._enemies.update(dt, self._blocks, self._player.rect)
+
         self._tile_cursor.update(
-            self._screen_pos_to_grid(mouse_pos), self._player.rect)
+            self._map.screen_pos_to_grid(mouse_pos), self._player.rect)
+
+        self._check_enemy_collisions()
+        self._check_end_collisions()
 
     def cleanup(self):
         for sprite in self._all_sprites:
             sprite.kill()
-
-    def _screen_pos_to_grid(self, pos):
-        x, y = pos
-        ret_x = round(x // self._tile_size * self._tile_size)
-        ret_y = round(y // self._tile_size * self._tile_size)
-
-        return ret_x, ret_y
-
-    def _grid_pos_to_cell(self, pos):
-        x, y = pos
-        ret_x = x // self._tile_size
-        ret_y = y // self._tile_size
-
-        return ret_x, ret_y
-
-    def _cell_pos_to_grid(self, pos):
-        x, y = pos
-        ret_x = x * self._tile_size
-        ret_y = y * self._tile_size
-
-        return ret_x, ret_y
 
     def _add_placeable_to_world(self, grid_x, grid_y):
         # check if player has placeable blocks in inventory
@@ -146,3 +129,13 @@ class Level(Scene):
         del self._map_objects[(grid_x, grid_y)]
 
         # add +1 to inventory
+
+    def _check_enemy_collisions(self):
+        if pygame.sprite.spritecollide(self._player, self._enemies, False):
+            self._end_scene = True
+            self._next_scene = "level"
+
+    def _check_end_collisions(self):
+        if pygame.sprite.spritecollide(self._player, [self._end], False):
+            self._end_scene = True
+            self._next_scene = "mainmenu"

@@ -24,16 +24,16 @@ class TestPlayer(unittest.TestCase):
 
     def test_add_input(self):
         self.player.add_input(1, 0)
-        self.assertEqual(self.player._input[0], 1)
-        self.assertEqual(self.player._input[1], 0)
+        self.assertEqual(self.player.body._input[0], 1)
+        self.assertEqual(self.player.body._input[1], 0)
 
         self.player.add_input(0, 1)
-        self.assertEqual(self.player._input[0], 1)
-        self.assertEqual(self.player._input[1], 1)
+        self.assertEqual(self.player.body._input[0], 1)
+        self.assertEqual(self.player.body._input[1], 1)
 
         self.player.add_input(-1, -1)
-        self.assertEqual(self.player._input[0], 0)
-        self.assertEqual(self.player._input[1], 0)
+        self.assertEqual(self.player.body._input[0], 0)
+        self.assertEqual(self.player.body._input[1], 0)
 
     def test_horizontal_movement_right(self):
         self.player.add_input(1, 0)
@@ -50,11 +50,11 @@ class TestPlayer(unittest.TestCase):
         self.assertGreater(self.player.rect.y, 64)
 
     def test_jump(self):
-        self.player._on_floor = True
+        self.player.body.on_floor = True
         self.player.add_input(0, -1)
         self.player.move(self.dt, self.blocks)
         self.assertLess(self.player.rect.y, 64)
-        self.assertFalse(self.player._on_floor)
+        self.assertFalse(self.player.body.on_floor)
 
     def test_vertical_collision(self):
         block_below = Block(256, 129)
@@ -63,18 +63,18 @@ class TestPlayer(unittest.TestCase):
         self.blocks.add(block_above)
 
         self.player.move(self.dt, self.blocks)
-        self.assertTrue(self.player._on_floor)
+        self.assertTrue(self.player.body.on_floor)
         self.assertEqual(self.player.rect.y, 65)
 
         self.player.move(self.dt, self.blocks)
         self.assertEqual(self.player.rect.y, 65)
-        self.assertGreater(self.player._gravity, 100.0)
+        self.assertGreater(self.player.body._gravity, 100.0)
 
         self.player.add_input(0, -1)
         self.player.move(self.dt, self.blocks)
-        self.assertFalse(self.player._on_floor)
+        self.assertFalse(self.player.body.on_floor)
         self.assertEqual(self.player.rect.y, 63)
-        self.assertEqual(self.player._gravity, 0.0)
+        self.assertEqual(self.player.body._gravity, 0.0)
 
     def test_horizontal_collision(self):
         block_left = Block(191, 64)

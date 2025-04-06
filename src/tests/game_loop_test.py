@@ -7,6 +7,7 @@ from game_loop import GameLoop
 
 from collections import defaultdict
 
+
 class StubUserInput:
     def __init__(self, events=[], keys=defaultdict(bool), mouse_pos=(0, 0)):
         self.keys = keys
@@ -21,7 +22,8 @@ class StubUserInput:
 
     def get_mouse_pos(self):
         return self.mouse_pos
-    
+
+
 class StubRenderer:
     def __init__(self, scene=None):
         self.scene = scene
@@ -39,7 +41,8 @@ class StubClock:
 
     def get_dt(self):
         return 0.1
-    
+
+
 class SimpleScene(Scene):
     def __init__(self):
         super().__init__()
@@ -74,7 +77,6 @@ class SimpleScene(Scene):
 
     def cleanup(self):
         self.events.append(("cleanup"))
-    
 
 
 class TestGameLoop(unittest.TestCase):
@@ -86,11 +88,13 @@ class TestGameLoop(unittest.TestCase):
 
     def test_game_loop_and_order(self):
         events = [
-            pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=(100, 200)),
-            pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=3, pos=(300, 100)),
+            pygame.event.Event(pygame.MOUSEBUTTONDOWN,
+                               button=1, pos=(100, 200)),
+            pygame.event.Event(pygame.MOUSEBUTTONDOWN,
+                               button=3, pos=(300, 100)),
             pygame.event.Event(pygame.MOUSEBUTTONUP, button=2, pos=(300, 100)),
         ]
-        
+
         self.user_input.events = events
 
         keys = defaultdict(bool)
@@ -102,7 +106,7 @@ class TestGameLoop(unittest.TestCase):
         self.user_input.keys = keys
 
         self.user_input.mouse_pos = (25, 25)
-        
+
         game_loop = GameLoop(
             self.scene,
             self.renderer,
@@ -166,5 +170,3 @@ class TestGameLoop(unittest.TestCase):
             ("get_next_scene"),
             ("cleanup")
         ])
-
-
