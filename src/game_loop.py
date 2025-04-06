@@ -1,5 +1,11 @@
 import pygame
 
+from scenes.main_menu import MainMenu
+from scenes.level import Level
+from scenes.level_editor import LevelEditor
+
+import constants
+
 
 class GameLoop:
     def __init__(self, scene, renderer, user_input, clock):
@@ -55,6 +61,13 @@ class GameLoop:
     def _change_scene(self, new_scene):
         if new_scene is None:
             return False
+
+        if new_scene == "mainmenu":
+            new_scene = MainMenu()
+        elif new_scene == "level":
+            new_scene = Level(constants.TEST_LEVEL)
+        elif new_scene == "editor":
+            new_scene = LevelEditor()
 
         self._scene.cleanup()
 

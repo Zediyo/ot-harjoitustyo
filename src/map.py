@@ -1,5 +1,6 @@
 import constants
 
+
 class Map:
     def __init__(self, map_data, tile_size=constants.TILE_SIZE):
         self.data = map_data

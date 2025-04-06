@@ -1,9 +1,6 @@
 import pygame
-import pygame.freetype
-import constants
 
 from scenes.scene import Scene
-from scenes.level import Level
 from ui.button import Button
 
 
@@ -23,29 +20,23 @@ class MainMenu(Scene):
 
         self._buttons = {
             "play": (play_button, "level"),
-            "editor": (editor_button, "level"),
+            "editor": (editor_button, "editor"),
             "exit": (exit_button, None)
         }
 
-
     def draw(self, display):
+        display.fill((128, 128, 128))
+
         for (button, _) in self._buttons.values():
             button.draw(display)
 
     def input_mouse(self, click, pos):
         for (button, next_scene) in self._buttons.values():
             if button.is_clicked(pos):
-                if next_scene == "level":
-                    self._next_scene = Level(constants.TEST_LEVEL)
-                else:
-                    self._next_scene = None
-
+                self._next_scene = next_scene
                 self._end_scene = True
                 break
 
     def update(self, dt, mouse_pos):
         for (button, _) in self._buttons.values():
             button.update(mouse_pos)
-
-
-

@@ -4,7 +4,7 @@ from tools.asset_path import get_asset_path
 
 
 class Player(pygame.sprite.Sprite):
-    ## physics constants
+    # physics constants
     _GRAVITY_CONSTANT = 800
     _TERMINAL_VELOCITY = 1000
     _BASE_MOVEMENT_SPEED = 150.0
@@ -61,7 +61,7 @@ class Player(pygame.sprite.Sprite):
     def _move_and_collide(self, colliders, move):
         self._on_floor = False
 
-        ## move in steps to avoid going through walls
+        # move in steps to avoid going through walls
 
         # horizontal movement steps
         while abs(move.x) > 0.01:
@@ -86,7 +86,6 @@ class Player(pygame.sprite.Sprite):
 
             if self._vertical_move(colliders):
                 break
-
 
     def _horizontal_move(self, colliders):
         self.rect.x = self._position.x
