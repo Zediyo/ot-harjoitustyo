@@ -1,3 +1,4 @@
+import math
 import pygame
 from tools.asset_path import get_asset_path
 
@@ -9,6 +10,7 @@ class Player(pygame.sprite.Sprite):
     _BASE_MOVEMENT_SPEED = 150.0
     _BASE_JUMP_FORCE = -285.0
     _FLOOR_GRAVITY = 100.0
+    _STEP_SIZE = 10.0
 
     def __init__(self, x=0, y=0):
         super().__init__()
@@ -44,23 +46,46 @@ class Player(pygame.sprite.Sprite):
         self._gravity = min(self._gravity, self._TERMINAL_VELOCITY)
 
         # update position
-        self._position += self._velocity * dt
+        move = self._velocity * dt
 
         # reset input
         self._input[0] = 0
         self._input[1] = 0
 
-        self._move_and_collide(colliders)
+        self._move_and_collide(colliders, move)
 
     def add_input(self, dx, dy):
         self._input[0] += dx
         self._input[1] += dy
 
-    def _move_and_collide(self, colliders):
+    def _move_and_collide(self, colliders, move):
         self._on_floor = False
 
-        self._horizontal_move(colliders)
-        self._vertical_move(colliders)
+        ## move in steps to avoid going through walls
+
+        # horizontal movement steps
+        while abs(move.x) > 0.01:
+            if abs(move.x) > self._STEP_SIZE:
+                self._position.x += self._STEP_SIZE * math.copysign(1, move.x)
+                move.x -= self._STEP_SIZE * math.copysign(1, move.x)
+            else:
+                self._position.x += move.x
+                move.x = 0.0
+
+            if self._horizontal_move(colliders):
+                break
+
+        # vertical movement steps
+        while abs(move.y) > 0.01:
+            if abs(move.y) > self._STEP_SIZE:
+                self._position.y += self._STEP_SIZE * math.copysign(1, move.y)
+                move.y -= self._STEP_SIZE * math.copysign(1, move.y)
+            else:
+                self._position.y += move.y
+                move.y = 0.0
+
+            if self._vertical_move(colliders):
+                break
 
 
     def _horizontal_move(self, colliders):
@@ -77,6 +102,10 @@ class Player(pygame.sprite.Sprite):
             self._velocity[0] = 0
             self._position.x = self.rect.x
 
+            return True
+
+        return False
+
     def _vertical_move(self, colliders):
         self.rect.y = self._position.y
         colliding = pygame.sprite.spritecollide(self, colliders, False)
@@ -92,3 +121,7 @@ class Player(pygame.sprite.Sprite):
 
             self._velocity[1] = 0
             self._position.y = self.rect.y
+
+            return True
+
+        return False

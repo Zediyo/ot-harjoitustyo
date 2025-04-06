@@ -9,6 +9,7 @@ from game_loop import GameLoop
 
 
 def main():
+    pygame.init()
 
     display = pygame.display.set_mode(
         (constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
@@ -21,7 +22,6 @@ def main():
 
     game_loop = GameLoop(scene, renderer, user_input, clock)
 
-    pygame.init()
     game_loop.start()
 
 
