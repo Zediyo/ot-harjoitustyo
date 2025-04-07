@@ -6,9 +6,12 @@ from di.user_input import UserInput
 from di.renderer import Renderer
 from di.clock import Clock
 from game_loop import GameLoop
+from tools.db import init_db
 
 
 def main():
+    init_db()
+
     pygame.init()
 
     display = pygame.display.set_mode(

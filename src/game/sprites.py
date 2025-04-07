@@ -4,9 +4,9 @@ import pygame
 class Sprites:
 
     def __init__(self):
-        self.player = pygame.sprite.GroupSingle()
-        self.cursor = pygame.sprite.GroupSingle()
-        self.end = pygame.sprite.GroupSingle()
+        self.player = None
+        self.cursor = None
+        self.end = None
 
         self.blocks = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()

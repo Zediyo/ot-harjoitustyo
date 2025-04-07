@@ -12,14 +12,20 @@ from game.map import Map
 
 from game.sprites import Sprites
 
+from ui.level_ui import LevelUI
+
 
 class Level(Scene):
-    def __init__(self, level_data, tile_size=constants.TILE_SIZE):
+    def __init__(self, level, tile_size=constants.TILE_SIZE):
         super().__init__()
-        self._map = Map(level_data, tile_size)
+
+        self.level = level
+        self._map = Map(level["data"], tile_size)
 
         self._map_objects = {}
         self._sprites = Sprites()
+
+        self._level_ui = LevelUI(level["name"])
 
         self._initialize_sprites()
 
@@ -54,6 +60,7 @@ class Level(Scene):
     def draw(self, display):
         self._sprites.all.draw(display)
         display.blit(self._sprites.cursor.image, self._sprites.cursor.rect)
+        self._level_ui.draw(display, self._sprites.player.charges)
 
     def input_key(self, key):
         if key == "left":
@@ -66,6 +73,10 @@ class Level(Scene):
             self._sprites.player.add_input(0, 1)
 
     def input_mouse(self, click, pos):
+        if click == "left" and self._level_ui.is_back_clicked(pos):
+            self._end_scene = True
+            self._next_scene = "mainmenu"
+
         grid_x, grid_y = self._map.screen_pos_to_grid(pos)
 
         # check if click is in bounds
@@ -82,6 +93,8 @@ class Level(Scene):
             self._remove_placeable_from_world(grid_x, grid_y)
 
     def update(self, dt, mouse_pos):
+        self._level_ui.update(dt, mouse_pos)
+
         self._sprites.player.move(dt, self._sprites.blocks)
         self._sprites.enemies.update(
             dt, self._sprites.blocks, self._sprites.player.rect)
@@ -98,6 +111,8 @@ class Level(Scene):
 
     def _add_placeable_to_world(self, grid_x, grid_y):
         # check if player has placeable blocks in inventory
+        if self._sprites.player.charges <= 0:
+            return
 
         # check if area is empty
         if pygame.sprite.spritecollide(self._sprites.cursor, self._sprites.all, False):
@@ -113,6 +128,9 @@ class Level(Scene):
         self._sprites.blocks.add(placeable)
         self._sprites.all.add(placeable)
 
+        # remove -1 from inventory
+        self._sprites.player.charges -= 1
+
     def _remove_placeable_from_world(self, grid_x, grid_y):
         # check if cell has a removable object
         placeable = self._map_objects.get((grid_x, grid_y))
@@ -125,11 +143,13 @@ class Level(Scene):
         del self._map_objects[(grid_x, grid_y)]
 
         # add +1 to inventory
+        self._sprites.player.charges += 1
 
     def _check_enemy_collisions(self):
         if pygame.sprite.spritecollide(self._sprites.player, self._sprites.enemies, False):
             self._end_scene = True
             self._next_scene = "level"
+            self._next_scene_data = self.level
 
     def _check_end_collisions(self):
         if pygame.sprite.spritecollide(self._sprites.player, [self._sprites.end], False):

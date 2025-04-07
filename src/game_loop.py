@@ -3,9 +3,7 @@ import pygame
 from scenes.main_menu import MainMenu
 from scenes.level import Level
 from scenes.level_editor import LevelEditor
-
-import constants
-
+from scenes.level_list import LevelList
 
 class GameLoop:
     def __init__(self, scene, renderer, user_input, clock):
@@ -29,7 +27,10 @@ class GameLoop:
             self._clock.tick(240)
 
             if self._scene.is_done():
-                if not self._change_scene(self._scene.get_next_scene()):
+                if not self._change_scene(
+                    self._scene.get_next_scene(),
+                    self._scene.get_next_scene_data()
+                ):
                     break
 
     def _handle_events(self):
@@ -39,6 +40,10 @@ class GameLoop:
                     self._scene.input_mouse("left", event.pos)
                 if event.button == 3:
                     self._scene.input_mouse("right", event.pos)
+                if event.button == 4:
+                    self._scene.input_mouse("scroll_up", event.pos)
+                if event.button == 5:
+                    self._scene.input_mouse("scroll_down", event.pos)
             elif event.type == pygame.QUIT:
                 return False
 
@@ -58,7 +63,7 @@ class GameLoop:
     def _render(self):
         self._renderer.render()
 
-    def _change_scene(self, new_scene):
+    def _change_scene(self, new_scene, new_scene_data):
         if new_scene is None:
             return False
 
@@ -66,8 +71,14 @@ class GameLoop:
 
         if new_scene == "mainmenu":
             new_scene = MainMenu()
+        elif new_scene == "level_list":
+            new_scene = LevelList(new_scene_data)
         elif new_scene == "level":
-            new_scene = Level(constants.TEST_LEVEL)
+            if ("data" not in new_scene_data or
+                    "id" not in new_scene_data or
+                    "name" not in new_scene_data):
+                return False
+            new_scene = Level(new_scene_data)
         elif new_scene == "editor":
             new_scene = LevelEditor()
         else:

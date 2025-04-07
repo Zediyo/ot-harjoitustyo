@@ -14,6 +14,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = y
 
         self.body = Body(self.rect, x, y)
+        self.charges = 3
 
     def move(self, dt, colliders):
         self.body.move(dt, colliders)
