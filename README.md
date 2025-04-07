@@ -8,6 +8,8 @@
 
 [changelog](dokumentaatio/changelog.md)
 
+[arkkitehtuurikuvaus](dokumentaatio/arkkitehtuuri.md)
+
 ## Käyttö
 Komennot ajetaan ohjelman juuri kansiossa.
 
