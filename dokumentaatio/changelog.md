@@ -10,7 +10,13 @@
 
 ## Viikko 4
 
--
+- Lisätty suuri määrä luokkia ja muokattu sovelluksen rakennetta.
+- Lisätty viholliset ja niille tarvittava logiikka ja liikkuminen.
+- Lisätty ajan ottaminen, sen tietokantaan tallentaminen ja sieltä lukeminen.
+- Lisätty tasojen tallentaminen tietokantaan ja sieltä lukeminen.
+- Lisätty käyttöliittymään aloitusruutu, lopetusruutu, lista tasoista, tason tiedot, esikuva tasoista.
+- Kenttä palikoihin lisätty vaaditut käyttörajoitukset.
+- Testattu GameLoop ja Map luokkien logiikka.
 
 ## Viikko 5
 
