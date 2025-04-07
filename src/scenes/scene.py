@@ -1,8 +1,6 @@
 class Scene():
     def __init__(self):
-        self._end_scene = False
         self._next_scene = None
-        self._next_scene_data = None
 
     def input_key(self, key):
         pass
@@ -17,13 +15,16 @@ class Scene():
         pass
 
     def is_done(self):
-        return self._end_scene
+        return self._next_scene is not None
 
     def get_next_scene(self):
-        return self._next_scene
+        return self._next_scene[0] if self._next_scene else None
 
     def get_next_scene_data(self):
-        return self._next_scene_data
+        return self._next_scene[1] if self._next_scene else None
+
+    def set_next_scene(self, scene, data=None):
+        self._next_scene = (scene, data)
 
     def cleanup(self):
         pass

@@ -1,16 +1,18 @@
 import pygame
 import constants
 
+from scenes.scene import Scene
+
 from sprites.block import Block
 from sprites.player import Player
 from sprites.placeable import Placeable
 from sprites.enemy import Enemy
 from sprites.end import End
 from sprites.tile_cursor import TileCursor
-from scenes.scene import Scene
-from game.map import Map
 
+from game.map import Map
 from game.sprites import Sprites
+from game.timer import Timer
 
 from ui.level_ui import LevelUI
 
@@ -25,6 +27,7 @@ class Level(Scene):
         self._map_objects = {}
         self._sprites = Sprites()
 
+        self._timer = Timer(level["id"])
         self._level_ui = LevelUI(level["name"])
 
         self._initialize_sprites()
@@ -60,9 +63,11 @@ class Level(Scene):
     def draw(self, display):
         self._sprites.all.draw(display)
         display.blit(self._sprites.cursor.image, self._sprites.cursor.rect)
-        self._level_ui.draw(display, self._sprites.player.charges)
+        self._level_ui.draw(display, self._sprites.player.charges, self._timer)
 
     def input_key(self, key):
+        self._timer.activate()
+
         if key == "left":
             self._sprites.player.add_input(-1, 0)
         elif key == "right":
@@ -74,8 +79,7 @@ class Level(Scene):
 
     def input_mouse(self, click, pos):
         if click == "left" and self._level_ui.is_back_clicked(pos):
-            self._end_scene = True
-            self._next_scene = "mainmenu"
+            self.set_next_scene("mainmenu")
 
         grid_x, grid_y = self._map.screen_pos_to_grid(pos)
 
@@ -93,7 +97,8 @@ class Level(Scene):
             self._remove_placeable_from_world(grid_x, grid_y)
 
     def update(self, dt, mouse_pos):
-        self._level_ui.update(dt, mouse_pos)
+        self._timer.update(dt)
+        self._level_ui.update(mouse_pos)
 
         self._sprites.player.move(dt, self._sprites.blocks)
         self._sprites.enemies.update(
@@ -147,11 +152,13 @@ class Level(Scene):
 
     def _check_enemy_collisions(self):
         if pygame.sprite.spritecollide(self._sprites.player, self._sprites.enemies, False):
-            self._end_scene = True
-            self._next_scene = "level"
-            self._next_scene_data = self.level
+            self.set_next_scene("level", self.level)
 
     def _check_end_collisions(self):
         if pygame.sprite.spritecollide(self._sprites.player, [self._sprites.end], False):
-            self._end_scene = True
-            self._next_scene = "mainmenu"
+            self._timer.finish()
+
+            self.set_next_scene("endscreen", {
+                "level": self.level,
+                "timer": self._timer,
+            })

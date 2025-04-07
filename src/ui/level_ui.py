@@ -10,11 +10,20 @@ class LevelUI:
 
         self.back_button = Button("Back", self._font, 1180, 20, 60, 30)
 
-    def draw(self, display, item):
-        text = f"Level: {self.name}     Inventory: {item}"
+    def draw(self, display, item, timer):
+        best_time = timer.get_best_time()
+        time = timer.get_time()
+
+        record = f"{best_time:<10.2f}" if best_time != None else "--:--"
+        text = (
+            f"Level: {self.name:<33}"
+            f"Inventory: {item:<10}"
+            f"Best Time: {record:<10}"
+            f"Time: {time:<10.2f}"
+        )
         text_surface = self._font.render(text, True, (255, 255, 255))
         text_rect = text_surface.get_rect(
-            center=(display.get_width() // 2, 20))
+            topleft=(500, 20))
         display.blit(text_surface, text_rect)
 
         self.back_button.draw(display)
@@ -24,5 +33,5 @@ class LevelUI:
             return True
         return False
 
-    def update(self, dt, mouse_pos):
+    def update(self, mouse_pos):
         self.back_button.update(mouse_pos)

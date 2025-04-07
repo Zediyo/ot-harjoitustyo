@@ -26,8 +26,7 @@ class LevelEditor(Scene):
         display.blit(res, (540, 200))
 
     def input_mouse(self, click, pos):
-        self._next_scene = "mainmenu"
-        self._end_scene = True
+        self.set_next_scene("mainmenu")
 
     def update(self, dt, mouse_pos):
         pass

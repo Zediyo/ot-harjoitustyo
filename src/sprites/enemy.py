@@ -53,7 +53,7 @@ class Enemy(pygame.sprite.Sprite):
         if abs(player_rect.bottom - self.rect.top) > self._DISTANCE_TO_JUMP:
             return False
 
-        if player_rect.bottom >= self.rect.top:
+        if player_rect.bottom+1 >= self.rect.bottom:
             return False
 
         if self._dir == 1 and player_rect.x <= self.rect.x:

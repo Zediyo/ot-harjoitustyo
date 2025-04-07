@@ -36,9 +36,7 @@ class MainMenu(Scene):
 
         for (button, next_scene, next_scene_data) in self._buttons.values():
             if button.is_clicked(pos):
-                self._next_scene = next_scene
-                self._end_scene = True
-                self._next_scene_data = next_scene_data
+                self.set_next_scene(next_scene, next_scene_data)
                 break
 
     def update(self, dt, mouse_pos):

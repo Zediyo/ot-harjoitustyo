@@ -83,3 +83,13 @@ def get_all_levels():
     cursor.execute("SELECT id, name, data FROM levels ORDER BY id ASC")
     levels = cursor.fetchall()
     return [(level_id, name, json.loads(data)) for (level_id, name, data) in levels]
+
+
+def get_all_best_times():
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT level_id, MIN(time)
+        FROM level_times
+        GROUP BY level_id
+    ''')
+    return dict(cursor.fetchall())

@@ -62,18 +62,21 @@ class SimpleScene(Scene):
         self.events.append(("draw", display))
 
         if self.one_loop:
-            self._end_scene = True
-            self._next_scene = "text"
+            self.set_next_scene("test")
 
         self.one_loop = True
 
     def is_done(self):
         self.events.append(("is_done"))
-        return self._end_scene
+        return super().is_done()
 
     def get_next_scene(self):
         self.events.append(("get_next_scene"))
-        return self._next_scene
+        return super().get_next_scene()
+    
+    def get_next_scene_data(self):
+        self.events.append(("get_next_scene_data"))
+        return super().get_next_scene_data()
 
     def cleanup(self):
         self.events.append(("cleanup"))
@@ -127,6 +130,7 @@ class TestGameLoop(unittest.TestCase):
             ("draw", None),
             ("is_done"),
             ("get_next_scene"),
+            ("get_next_scene_data"),
             ("cleanup")
         ])
 
@@ -168,5 +172,6 @@ class TestGameLoop(unittest.TestCase):
             ("draw", None),
             ("is_done"),
             ("get_next_scene"),
+            ("get_next_scene_data"),
             ("cleanup")
         ])

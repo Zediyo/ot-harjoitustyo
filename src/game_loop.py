@@ -4,6 +4,8 @@ from scenes.main_menu import MainMenu
 from scenes.level import Level
 from scenes.level_editor import LevelEditor
 from scenes.level_list import LevelList
+from scenes.end_screen import EndScreen
+
 
 class GameLoop:
     def __init__(self, scene, renderer, user_input, clock):
@@ -74,17 +76,33 @@ class GameLoop:
         elif new_scene == "level_list":
             new_scene = LevelList(new_scene_data)
         elif new_scene == "level":
-            if ("data" not in new_scene_data or
-                    "id" not in new_scene_data or
-                    "name" not in new_scene_data):
+            if not self._level_data_exists(new_scene_data):
                 return False
             new_scene = Level(new_scene_data)
         elif new_scene == "editor":
             new_scene = LevelEditor()
+        elif new_scene == "endscreen":
+            if not self._end_data_exists(new_scene_data):
+                return False
+            new_scene = EndScreen(new_scene_data)
         else:
             return False
 
         self._renderer.set_scene(new_scene)
         self._scene = new_scene
+
+        return True
+
+    def _level_data_exists(self, data):
+        if ("data" not in data or "id" not in data or "name" not in data):
+            return False
+        return True
+
+    def _end_data_exists(self, data):
+        if ("level" not in data or "timer" not in data):
+            return False
+
+        if not self._level_data_exists(data["level"]):
+            return False
 
         return True

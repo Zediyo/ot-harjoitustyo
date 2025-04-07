@@ -57,7 +57,7 @@ class TestPlayer(unittest.TestCase):
         self.assertFalse(self.player.body.on_floor)
 
     def test_vertical_collision(self):
-        block_below = Block(256, 129)
+        block_below = Block(256, 97)
         block_above = Block(256, -1)
         self.blocks.add(block_below)
         self.blocks.add(block_above)
