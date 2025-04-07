@@ -5,18 +5,18 @@
 
 ## Perusversio
 
-- Aloitusruutu josta voi valita tason pelattavaksi tai siirtyä muokkaustilaan.
+- Aloitusruutu josta voi valita tason pelattavaksi tai siirtyä muokkaustilaan. **(tehty)**
 		
-- Pelissä voi liikkua vapaasti vasemmalle ja oikealle sekä hyppiä.
-	- seinät/katto/lattia estävät liikkeen.
+- Pelissä voi liikkua vapaasti vasemmalle ja oikealle sekä hyppiä. **(tehty)**
+	- seinät/katto/lattia estävät liikkeen. **(tehty)**
 	
-- Pelissä voi asetella ja poistaa omia paloja tason aikana.
-	- maximi 3 palikan päähän.
+- Pelissä voi asetella ja poistaa omia paloja tason aikana. **(tehty)**
+	- maximi 3 palikan päähän. **(tehty)**
 	
-- Pelissä on liikkuvia "vihollisia"
+- Pelissä on liikkuvia "vihollisia" **(tehty)**
 
-- Peli ottaa aikaa tasojen suorituksesta ja tallentaa ne.
-	- SQL db
+- Peli ottaa aikaa tasojen suorituksesta ja tallentaa ne. **(tehty)**
+	- SQL db **(tehty)**
 	
 - Pelissä voi tehdä/muokata omia tasoja ja tallentaa niitä pysyvästi.
 
