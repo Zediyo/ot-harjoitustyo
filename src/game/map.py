@@ -47,12 +47,15 @@ class Map:
 
         new_width = (screen_width // self.tile_size)
         new_height = (screen_height // self.tile_size)
+
+        pad_x = (new_width - self.width) // 2
+        pad_y = (new_height - self.height) // 2
         
         new_map_data = [[0 for _ in range(new_width)] for _ in range(new_height)]
         
         for y in range(self.height):
             for x in range(self.width):
-                new_map_data[y][x] = self.data[y][x]
+                new_map_data[y+pad_y][x+pad_x] = self.data[y][x]
         
         self.data = new_map_data
         self.width = new_width
