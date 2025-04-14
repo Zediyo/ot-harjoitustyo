@@ -28,7 +28,7 @@ class EndScreen(Scene):
 
         self._buttons = {
             "retry": (retry_button, "level", self._data["level"]),
-            "back": (back_button, "mainmenu", None),
+            "back": (back_button, "level_list", "level"),
         }
 
     def _init_texts(self):
