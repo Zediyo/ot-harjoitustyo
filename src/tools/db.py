@@ -9,26 +9,32 @@ def init_db():
 
     cursor = conn.cursor()
 
-    cursor.execute('''
+    #cursor.execute("DROP TABLE IF EXISTS level_times")
+    #cursor.execute("DROP TABLE IF EXISTS levels")
+
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS level_times (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             level_id integer NOT NULL,
             time REAL NOT NULL,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-    ''')
+    """)
 
-    cursor.execute('''
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS levels (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT UNIQUE,
             data TEXT
         )
-    ''')
+    """)
 
-    cursor.execute('''
-        INSERT OR IGNORE INTO levels (name, data) VALUES (?, ?)
-    ''', ("test_level", json.dumps(constants.TEST_LEVEL)))
+    cursor.execute("SELECT 1 FROM levels WHERE name = ?", ("test_level",))
+
+    if cursor.fetchone() is None:
+        cursor.execute("""
+            INSERT INTO levels (name, data) VALUES (?, ?)
+        """, ("test_level", json.dumps(constants.TEST_LEVEL)))
 
     conn.commit()
 
@@ -58,8 +64,10 @@ def save_level(name, level_data):
     data = json.dumps(level_data)
 
     cursor = conn.cursor()
-    cursor.execute(
-        "INSERT OR REPLACE INTO levels (name, data) VALUES (?, ?)",
+    cursor.execute("""
+        INSERT OR REPLACE INTO levels (name, data) VALUES (?, ?)
+            ON CONFLICT(name) DO UPDATE SET data = excluded.data
+        """,
         (name, data)
     )
 
@@ -93,3 +101,32 @@ def get_all_best_times():
         GROUP BY level_id
     ''')
     return dict(cursor.fetchall())
+
+def level_name_exists(name):
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT COUNT(*) FROM levels WHERE name = ?",
+        (name,)
+    )
+    result = cursor.fetchone()
+    return result[0] > 0
+
+def delete_level(level_id):
+    cursor = conn.cursor()
+    cursor.execute(
+        "DELETE FROM levels WHERE id = ?",
+        (level_id,)
+    )
+    cursor.execute(
+        "DELETE FROM level_times WHERE level_id = ?",
+        (level_id,)
+    )
+    conn.commit()
+
+def delete_times(level_id):
+    cursor = conn.cursor()
+    cursor.execute(
+        "DELETE FROM level_times WHERE level_id = ?",
+        (level_id,)
+    )
+    conn.commit()

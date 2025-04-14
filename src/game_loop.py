@@ -36,7 +36,8 @@ class GameLoop:
                     break
 
     def _handle_events(self):
-        for event in self._user_input.get_events():
+        events = self._user_input.get_events()
+        for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self._scene.input_mouse("left", event.pos)
@@ -48,6 +49,9 @@ class GameLoop:
                     self._scene.input_mouse("scroll_down", event.pos)
             elif event.type == pygame.QUIT:
                 return False
+        
+        ## for text fields
+        self._scene.input_raw(events)
 
         return True
 
@@ -80,7 +84,9 @@ class GameLoop:
                 return False
             new_scene = Level(new_scene_data)
         elif new_scene == "editor":
-            new_scene = LevelEditor()
+            if not self._level_data_exists(new_scene_data):
+                return False
+            new_scene = LevelEditor(new_scene_data)
         elif new_scene == "endscreen":
             if not self._end_data_exists(new_scene_data):
                 return False

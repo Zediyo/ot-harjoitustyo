@@ -13,8 +13,15 @@ class Button:
         self._text = font.render(text, True, text_color)
         self._above_text = None
 
+        self._active = True
+
     def draw(self, display, offset_y=0):
-        if self._rect.bottom + offset_y < 0 or self._rect.top + offset_y > display.get_height():
+        ## check if button is on screen.
+        y_bottom, y_top = self.get_y_minmax()
+        if y_bottom + offset_y < 0 or y_top + offset_y > display.get_height():
+            return
+        
+        if not self._active:
             return
 
         self._rect.y += offset_y
@@ -50,3 +57,16 @@ class Button:
 
     def set_above_text(self, text, color):
         self._above_text = self._font.render(text, True, color)
+
+    def set_text(self, text):
+        self._text = self._font.render(text, True, self._text_color)
+
+    def get_y_minmax(self):
+        if self._preview:
+            height = max(self._preview.get_height(), self._rect.height)
+            return self._rect.centery + height // 2, self._rect.centery - height // 2
+
+        return self._rect.bottom, self._rect.top
+    
+    def set_active(self, active):
+        self._active = active

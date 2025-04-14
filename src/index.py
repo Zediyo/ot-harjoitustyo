@@ -13,6 +13,7 @@ def main():
     init_db()
 
     pygame.init()
+    pygame.key.set_repeat(500, 50)
 
     display = pygame.display.set_mode(
         (constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))

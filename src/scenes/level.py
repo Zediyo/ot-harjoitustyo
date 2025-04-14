@@ -79,7 +79,7 @@ class Level(Scene):
 
     def input_mouse(self, click, pos):
         if click == "left" and self._level_ui.is_back_clicked(pos):
-            self.set_next_scene("mainmenu")
+            self.set_next_scene("level_list", "level")
 
         grid_x, grid_y = self._map.screen_pos_to_grid(pos)
 
@@ -107,6 +107,7 @@ class Level(Scene):
         self._sprites.cursor.update(
             self._map.screen_pos_to_grid(mouse_pos), self._sprites.player.rect)
 
+        self._check_entities_in_bounds()
         self._check_enemy_collisions()
         self._check_end_collisions()
 
@@ -162,3 +163,19 @@ class Level(Scene):
                 "level": self.level,
                 "timer": self._timer,
             })
+
+    def _check_entities_in_bounds(self):
+        # check if player is in bounds
+        left = self._sprites.player.rect.left
+        right = self._sprites.player.rect.right
+        top = self._sprites.player.rect.top
+        if right < 0 or \
+              left > constants.SCREEN_WIDTH or \
+                top > constants.SCREEN_HEIGHT:
+            self.set_next_scene("level", self.level)
+
+        for sprite in self._sprites.enemies:
+            if sprite.rect.right < 0 or \
+                  sprite.rect.left > constants.SCREEN_WIDTH or \
+                    sprite.rect.top > constants.SCREEN_HEIGHT:
+                sprite.kill()
