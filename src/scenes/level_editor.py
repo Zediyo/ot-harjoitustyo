@@ -1,13 +1,14 @@
 import pygame
 
+import constants
+
 from scenes.scene import Scene
 from ui.editor_ui import EditorUI
 from game.map import Map
 
 from tools.preview_generator import generate_level_preview
-import constants
-
 from tools.db import save_level
+
 
 class LevelEditor(Scene):
 
@@ -24,7 +25,6 @@ class LevelEditor(Scene):
         self.image = None
         self._update_image()
         self._update_required()
-
 
     def draw(self, display):
         display.fill((128, 128, 128))
@@ -66,66 +66,70 @@ class LevelEditor(Scene):
     def _add_to_map(self, pos):
         x, y = self._map.screen_pos_to_cell(pos)
 
-        updated = False
-
-        ## normal, placeable - 1x1 no limit
-        if self._hand == constants.TILE_BLOCK or self._hand == constants.TILE_PLACEABLE:
-            if self._map.get_cell(x, y) == 0:
-                self._map.insert_cell(x, y, self._hand)
-                updated = True
-        ## player spawn - 2x2 max 1
-        elif self._hand == constants.TILE_SPAWN:
-            if not self._map.has_spawn() and self._map.has_empty_area(x, y, 2, 2):
-                self._map.add_tile(x, y, self._hand, 2, 2)
-                updated = True
-        ## enemy spawn - 2x2 no limit
-        elif self._hand == constants.TILE_ENEMY:
-            if self._map.has_empty_area(x, y, 2, 2):
-                self._map.add_tile(x, y, self._hand, 2, 2)
-                updated = True
-        ## end - 1x1 max 1
-        elif self._hand == constants.TILE_END:
-            if not self._map.has_end() and self._map.get_cell(x, y) == 0:
-                self._map.insert_cell(x, y, self._hand)
-                updated = True
+        updated = self._add_tile_to_map(x, y, self._hand)
 
         if updated:
             self._update_image()
             self._update_required()
+
+    def _add_tile_to_map(self, x, y, tile):
+        # normal, placeable - 1x1 no limit
+        if tile in (constants.TILE_BLOCK, constants.TILE_PLACEABLE):
+            if self._map.get_cell(x, y) == 0:
+                return self._map.insert_cell(x, y, tile)
+
+        # player spawn - 2x2 max 1
+        if tile == constants.TILE_SPAWN:
+            if not self._map.has_spawn() and self._map.has_empty_area(x, y, (2, 2)):
+                return self._map.add_tile(x, y, tile, (2, 2))
+
+        # enemy spawn - 2x2 no limit
+        if tile == constants.TILE_ENEMY:
+            if self._map.has_empty_area(x, y, (2, 2)):
+                return self._map.add_tile(x, y, tile, (2, 2))
+
+        # end - 1x1 max 1
+        if tile == constants.TILE_END:
+            if not self._map.has_end() and self._map.get_cell(x, y) == 0:
+                return self._map.insert_cell(x, y, tile)
+
+        return False
 
     def _remove_from_map(self, pos):
         x, y = self._map.screen_pos_to_cell(pos)
 
-        updated = False
-
-        ## remove tile under current cell, if it contains a larger tile, remove it too
-        tile = self._map.get_cell(x, y)
-        if tile == 0:
-            return
-        
-        ## 1x1 tiles
-        if tile == constants.TILE_BLOCK or tile == constants.TILE_PLACEABLE or tile == constants.TILE_END:
-            self._map.remove_cell(x, y)
-            updated = True
-        ## 2x2 tiles
-        elif tile == constants.TILE_SPAWN or tile == constants.TILE_ENEMY:
-            self._map.remove_tile(x, y, 2, 2)
-            updated = True
-        elif tile < 0:
-            if abs(tile) == constants.TILE_SPAWN or abs(tile) == constants.TILE_ENEMY:
-                res = self._map.find_nearest_corner(x, y, tile, 2, 2)
-                if res is None:
-                    return
-                corner_x, corner_y = res
-                self._map.remove_tile(corner_x, corner_y, 2, 2)
-                updated = True
+        updated = self._remove_tile_from_map(x, y)
 
         if updated:
             self._update_image()
             self._update_required()
 
+    def _remove_tile_from_map(self, x, y):
+        tile = self._map.get_cell(x, y)
+        if tile == 0:
+            return False
+
+        # 1x1 tiles
+        if tile in (constants.TILE_BLOCK, constants.TILE_PLACEABLE, constants.TILE_END):
+            return self._map.remove_cell(x, y)
+
+        # 2x2 tiles
+        if tile in (constants.TILE_SPAWN, constants.TILE_ENEMY):
+            return self._map.remove_tile(x, y, (2, 2))
+
+        if tile < 0:
+            if abs(tile) in (constants.TILE_SPAWN, constants.TILE_ENEMY):
+                res = self._map.find_nearest_corner(x, y, tile, (2, 2))
+                if res is None:
+                    return False
+                corner_x, corner_y = res
+                return self._map.remove_tile(corner_x, corner_y, (2, 2))
+
+        return False
+
     def _update_image(self):
-        self.image = generate_level_preview(self._map.data, (constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
+        self.image = generate_level_preview(
+            self._map.data, (constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
 
     def _update_required(self):
         self._has_required["spawn"] = self._map.has_spawn()

@@ -49,8 +49,8 @@ class GameLoop:
                     self._scene.input_mouse("scroll_down", event.pos)
             elif event.type == pygame.QUIT:
                 return False
-        
-        ## for text fields
+
+        # for text fields
         self._scene.input_raw(events)
 
         return True

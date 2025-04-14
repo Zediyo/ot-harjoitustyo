@@ -16,11 +16,11 @@ class Button:
         self._active = True
 
     def draw(self, display, offset_y=0):
-        ## check if button is on screen.
+        # check if button is on screen.
         y_bottom, y_top = self.get_y_minmax()
         if y_bottom + offset_y < 0 or y_top + offset_y > display.get_height():
             return
-        
+
         if not self._active:
             return
 
@@ -67,6 +67,6 @@ class Button:
             return self._rect.centery + height // 2, self._rect.centery - height // 2
 
         return self._rect.bottom, self._rect.top
-    
+
     def set_active(self, active):
         self._active = active

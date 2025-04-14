@@ -62,7 +62,7 @@ class EditorUI:
 
     def is_back_clicked(self, mouse_pos):
         return self._back_button.is_clicked(mouse_pos)
-    
+
     def is_save_clicked(self, mouse_pos):
         return self._save_button.is_clicked(mouse_pos)
 

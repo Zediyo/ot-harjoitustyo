@@ -170,12 +170,12 @@ class Level(Scene):
         right = self._sprites.player.rect.right
         top = self._sprites.player.rect.top
         if right < 0 or \
-              left > constants.SCREEN_WIDTH or \
+            left > constants.SCREEN_WIDTH or \
                 top > constants.SCREEN_HEIGHT:
             self.set_next_scene("level", self.level)
 
         for sprite in self._sprites.enemies:
             if sprite.rect.right < 0 or \
-                  sprite.rect.left > constants.SCREEN_WIDTH or \
+                sprite.rect.left > constants.SCREEN_WIDTH or \
                     sprite.rect.top > constants.SCREEN_HEIGHT:
                 sprite.kill()

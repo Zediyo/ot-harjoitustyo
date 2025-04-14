@@ -18,7 +18,7 @@
 - Peli ottaa aikaa tasojen suorituksesta ja tallentaa ne. **(tehty)**
 	- SQL db **(tehty)**
 	
-- Pelissä voi tehdä/muokata omia tasoja ja tallentaa niitä pysyvästi.
+- Pelissä voi tehdä/muokata omia tasoja ja tallentaa niitä pysyvästi. **(tehty)**
 
 ## Jatkokehitysideoita
 

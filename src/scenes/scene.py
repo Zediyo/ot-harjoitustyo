@@ -11,7 +11,7 @@ class Scene():
     def update(self, dt, mouse_pos):
         pass
 
-    def input_raw(self, event):
+    def input_raw(self, events):
         pass
 
     def draw(self, display):

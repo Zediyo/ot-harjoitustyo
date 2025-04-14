@@ -73,7 +73,7 @@ class SimpleScene(Scene):
     def get_next_scene(self):
         self.events.append(("get_next_scene"))
         return super().get_next_scene()
-    
+
     def get_next_scene_data(self):
         self.events.append(("get_next_scene_data"))
         return super().get_next_scene_data()

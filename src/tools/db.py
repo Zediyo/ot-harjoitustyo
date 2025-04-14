@@ -9,8 +9,8 @@ def init_db():
 
     cursor = conn.cursor()
 
-    #cursor.execute("DROP TABLE IF EXISTS level_times")
-    #cursor.execute("DROP TABLE IF EXISTS levels")
+    # cursor.execute("DROP TABLE IF EXISTS level_times")
+    # cursor.execute("DROP TABLE IF EXISTS levels")
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS level_times (
@@ -68,8 +68,8 @@ def save_level(name, level_data):
         INSERT OR REPLACE INTO levels (name, data) VALUES (?, ?)
             ON CONFLICT(name) DO UPDATE SET data = excluded.data
         """,
-        (name, data)
-    )
+                   (name, data)
+                   )
 
     conn.commit()
 
@@ -102,6 +102,7 @@ def get_all_best_times():
     ''')
     return dict(cursor.fetchall())
 
+
 def level_name_exists(name):
     cursor = conn.cursor()
     cursor.execute(
@@ -110,6 +111,7 @@ def level_name_exists(name):
     )
     result = cursor.fetchone()
     return result[0] > 0
+
 
 def delete_level(level_id):
     cursor = conn.cursor()
@@ -122,6 +124,7 @@ def delete_level(level_id):
         (level_id,)
     )
     conn.commit()
+
 
 def delete_times(level_id):
     cursor = conn.cursor()
