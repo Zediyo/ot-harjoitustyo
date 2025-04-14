@@ -3,7 +3,7 @@
 ## Pakkausrakenne
 ![Pakkausrakenne](./kuvat/pakkausrakenne.png)
 
-**wrappers** sisältää pygame riippuvuuksien injektointia varten liittyvät luokat. (ennen, "di": "dependecy injection")
+**wrappers** sisältää pygame riippuvuuksien injektointia varten liittyvät luokat. (ennen, "di": "dependency injection")
 
 **game** sisältää aktiivisen pelin aikana käytettäviä luokkia joille ei ole omaa kategoriaa.
 
