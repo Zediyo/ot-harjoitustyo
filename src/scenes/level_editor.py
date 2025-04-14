@@ -9,6 +9,8 @@ from game.map import Map
 from tools.preview_generator import generate_level_preview
 from tools.db import save_level
 
+from sprites.tile_cursor import TileCursor
+
 
 class LevelEditor(Scene):
 
@@ -26,9 +28,12 @@ class LevelEditor(Scene):
         self._update_image()
         self._update_required()
 
+        self._cursor = TileCursor()
+
     def draw(self, display):
         display.fill((128, 128, 128))
         display.blit(self.image, (0, 0))
+        display.blit(self._cursor.image, self._cursor.rect)
         self._ui.draw(display, self._hand, self._has_required)
 
     def input_mouse(self, click, pos):
@@ -62,6 +67,10 @@ class LevelEditor(Scene):
 
     def update(self, dt, mouse_pos):
         self._ui.update(mouse_pos)
+        self._cursor.update(self._map.screen_pos_to_grid(mouse_pos), None)
+
+    def cleanup(self):
+        return self._cursor.kill()
 
     def _add_to_map(self, pos):
         x, y = self._map.screen_pos_to_cell(pos)
