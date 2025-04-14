@@ -14,4 +14,7 @@
 | 6.4.2025   | 3        | body, enemy logic, win/lose, refactoring                        |
 | 7.4.2025   | 4        | level preview, level list, database, ui                         |
 | 7.4.2025   | 4        | end screen, timer, database, fixes                              |
-| Total      | 34       |                                                                 |
+| 14.4.2025  | 4        | ui, textbox, levellist, editor                                  |
+| 14.4.2025  | 4        | editor, levellist, map                                          |
+| 14.4.2025  | 4        | editor, map, cleanup + fixes                                    |
+| Total      | 46       |                                                                 |
