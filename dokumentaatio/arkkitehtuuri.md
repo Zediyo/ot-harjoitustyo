@@ -54,20 +54,17 @@ classDiagram
 Kulku sovelluksen tiloissa:
 ```mermaid
 flowchart TD
-    MainMenu <--> LevelListPlay["LevelList (Play)"]
     MainMenu <--> LevelListEditor["LevelList (Editor)"]
+    MainMenu <--> LevelListPlay["LevelList (Play)"]
     MainMenu --> Exit
 
-    LevelListPlay["LevelList (Play)"] --> Level
-    LevelListEditor["LevelList (Editor)"] --> LevelEditor
+    LevelListEditor["LevelList (Editor)"] <--> LevelEditor
+    LevelListPlay["LevelList (Play)"] <--> Level
 
-    LevelEditor --> MainMenu
-
-    Level --> MainMenu
     Level <--> EndScreen
     Level --> |retry|Level
 
-    EndScreen --> MainMenu
+    EndScreen --> LevelListPlay["LevelList (Play)"]
   
 ```
 
