@@ -20,7 +20,10 @@
 
 ## Viikko 5
 
--
+- Lisätty mahdollisuus muokata ja tehdä uusia tasoja peliin.
+- Muokattu käyttöliittymää tasojen listauksessa.
+- Lisätty Map luokkaan suuri määrä hyödyllisiä toimintoja.
+- Tasojen pysyvä tallennus tietokantaan.
 
 ## Viikko 6
 
