@@ -2,9 +2,9 @@ import pygame
 import constants
 
 from scenes.main_menu import MainMenu
-from di.user_input import UserInput
-from di.renderer import Renderer
-from di.clock import Clock
+from wrappers.user_input import UserInput
+from wrappers.renderer import Renderer
+from wrappers.clock import Clock
 from game_loop import GameLoop
 from tools.db import init_db
 
