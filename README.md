@@ -1,6 +1,9 @@
 # Ohjelmistotekniikka, harjoitustyö
 **pygame** 2d platformer game + *level editor*
 
+## Release
+[Viikko 5](https://github.com/Zediyo/ot-harjoitustyo/releases/tag/viikko5)
+
 ## Dokumentaatio
 [vaatimusmäärittely](dokumentaatio/vaatimusmaarittely.md)
 
