@@ -17,4 +17,5 @@
 | 14.4.2025  | 4        | ui, textbox, levellist, editor                                  |
 | 14.4.2025  | 4        | editor, levellist, map                                          |
 | 14.4.2025  | 4        | editor, map, cleanup + fixes                                    |
-| Total      | 46       |                                                                 |
+| 15.4.2025  | 4        | fixes, gameloop + maps tests, cleanup                           |
+| Total      | 50       |                                                                 |
