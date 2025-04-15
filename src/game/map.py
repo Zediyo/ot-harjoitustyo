@@ -40,13 +40,10 @@ class Map:
         x, y = self.screen_pos_to_grid(pos)
         return self.grid_pos_to_cell((x, y))
 
-    # expand to screen size
-    def expand_map(self):
-        screen_width = constants.SCREEN_WIDTH
-        screen_height = constants.SCREEN_HEIGHT
-
-        new_width = screen_width // self.tile_size
-        new_height = screen_height // self.tile_size
+    # expand to screen size (centered)
+    def expand_map(self, screen_w=constants.SCREEN_WIDTH, screen_h=constants.SCREEN_HEIGHT):
+        new_width = screen_w // self.tile_size
+        new_height = screen_h // self.tile_size
 
         pad_x = (new_width - self.width) // 2
         pad_y = (new_height - self.height) // 2
@@ -120,7 +117,7 @@ class Map:
                     return True
         return False
 
-    # has x by y empty area below and to the right of a point
+    # top left corner = x, y. depth = (width, height)
     def has_empty_area(self, x, y, depth=(1, 1)):
         width, height = depth
         for i in range(height):
@@ -129,7 +126,7 @@ class Map:
                     return False
         return True
 
-    # add tile to point and -tile_id to below and right of it by width and height
+    # top left corner = x, y. depth = (width, height). tile_id @ corner. -tile_id @ rest.
     def add_tile(self, x, y, tile_id, depth=(1, 1)):
         width, height = depth
         if not self.has_empty_area(x, y, depth):
@@ -142,18 +139,28 @@ class Map:
                 else:
                     self.insert_cell(x + j, y + i, -tile_id)
         return True
-
-    def remove_tile(self, x, y, depth=(1, 1)):
+    
+    def area_in_bounds(self, x, y, depth=(1, 1)):
         width, height = depth
         for i in range(height):
             for j in range(width):
                 if not self.cell_in_bounds(x + j, y + i):
                     return False
+        return True
 
+    # top left corner = x, y. depth = (width, height). (rename to remove_area?)
+    def remove_tile(self, x, y, depth=(1, 1)):
+        width, height = depth
+        if not self.area_in_bounds(x, y, depth):
+            return False
+
+        for i in range(height):
+            for j in range(width):
                 self.remove_cell(x + j, y + i)
         return True
 
-    # with a negative tile find the nearest positive version of that id moving to up and left
+    # find the nearest topleft corner of a tile with the given tile_id.
+    # starting from x, y. max depth = (width, height).
     def find_nearest_corner(self, x, y, tile_id, depth=(1, 1)):
         max_x, max_y = depth
         if tile_id > 0:
