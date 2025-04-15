@@ -24,6 +24,7 @@
 - Muokattu käyttöliittymää tasojen listauksessa.
 - Lisätty Map luokkaan suuri määrä hyödyllisiä toimintoja.
 - Tasojen pysyvä tallennus tietokantaan.
+- Testattu Scene vaihdot, Pelin kulku ja loppuminen, uutta Map logiikkaa.
 
 ## Viikko 6
 
