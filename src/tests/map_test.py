@@ -8,7 +8,7 @@ class TestMap(unittest.TestCase):
     def setUp(self):
         self.width = 20
         self.height = 10
-        self.test_tilesize = 28 # default is 16
+        self.test_tilesize = 28  # default is 16
 
         # wall of 1s around empty map of 0s
         self.map_data = [[0] * self.width for _ in range(self.height)]
@@ -31,9 +31,12 @@ class TestMap(unittest.TestCase):
         self.assertTrue(self.map.cell_in_bounds(18, 8))
         self.assertTrue(self.map.cell_in_bounds(11, 3))
 
-        self.assertTrue(self.map.tile_in_bounds(5 * self.test_tilesize, 5 * self.test_tilesize))
-        self.assertTrue(self.map.tile_in_bounds(18 * self.test_tilesize, 8 * self.test_tilesize))
-        self.assertTrue(self.map.tile_in_bounds(11 * self.test_tilesize, 3 * self.test_tilesize))
+        self.assertTrue(self.map.tile_in_bounds(
+            5 * self.test_tilesize, 5 * self.test_tilesize))
+        self.assertTrue(self.map.tile_in_bounds(
+            18 * self.test_tilesize, 8 * self.test_tilesize))
+        self.assertTrue(self.map.tile_in_bounds(
+            11 * self.test_tilesize, 3 * self.test_tilesize))
 
     def test_point_in_bounds_edge(self):
         self.assertTrue(self.map.cell_in_bounds(0, 0))
@@ -42,7 +45,8 @@ class TestMap(unittest.TestCase):
         self.assertTrue(self.map.cell_in_bounds(0, 9))
 
         self.assertTrue(self.map.tile_in_bounds(0, 0))
-        self.assertTrue(self.map.tile_in_bounds(19 * self.test_tilesize, 9 * self.test_tilesize))
+        self.assertTrue(self.map.tile_in_bounds(
+            19 * self.test_tilesize, 9 * self.test_tilesize))
         self.assertTrue(self.map.tile_in_bounds(19 * self.test_tilesize, 0))
         self.assertTrue(self.map.tile_in_bounds(0, 9 * self.test_tilesize))
 
@@ -52,14 +56,19 @@ class TestMap(unittest.TestCase):
         self.assertFalse(self.map.cell_in_bounds(20, 5))
         self.assertFalse(self.map.cell_in_bounds(5, 10))
 
-        self.assertFalse(self.map.tile_in_bounds(-1 * self.test_tilesize, 5 * self.test_tilesize))
-        self.assertFalse(self.map.tile_in_bounds(5 * self.test_tilesize, -1 * self.test_tilesize))
-        self.assertFalse(self.map.tile_in_bounds(20 * self.test_tilesize, 5 * self.test_tilesize))
-        self.assertFalse(self.map.tile_in_bounds(5 * self.test_tilesize, 10 * self.test_tilesize))
+        self.assertFalse(self.map.tile_in_bounds(-1 *
+                         self.test_tilesize, 5 * self.test_tilesize))
+        self.assertFalse(self.map.tile_in_bounds(
+            5 * self.test_tilesize, -1 * self.test_tilesize))
+        self.assertFalse(self.map.tile_in_bounds(
+            20 * self.test_tilesize, 5 * self.test_tilesize))
+        self.assertFalse(self.map.tile_in_bounds(
+            5 * self.test_tilesize, 10 * self.test_tilesize))
 
     def test_screen_pos_to_grid(self):
         test_pos = (1627, 3243)
-        expected_pos = (1627 // self.test_tilesize * self.test_tilesize, 3243 // self.test_tilesize * self.test_tilesize)
+        expected_pos = (1627 // self.test_tilesize * self.test_tilesize,
+                        3243 // self.test_tilesize * self.test_tilesize)
         self.assertEqual(self.map.screen_pos_to_grid(test_pos), expected_pos)
 
     def test_screen_pos_to_cell(self):
@@ -99,7 +108,8 @@ class TestMap(unittest.TestCase):
                 if x < offset_x or x >= offset_x + old_width or y < offset_y or y >= offset_y + old_height:
                     self.assertEqual(self.map.data[y][x], 0)
                 else:
-                    self.assertEqual(self.map.data[y][x], old_map_data[y - offset_y][x - offset_x])
+                    self.assertEqual(
+                        self.map.data[y][x], old_map_data[y - offset_y][x - offset_x])
 
     def test_shrink_map(self):
         # map of 1's with wall of 3 0's around it
@@ -110,7 +120,7 @@ class TestMap(unittest.TestCase):
             for y in range(3):
                 map_data[y][x] = 0
                 map_data[-y-1][x] = 0
-        
+
         for y in range(start_height):
             for x in range(3):
                 map_data[y][x] = 0
@@ -131,7 +141,6 @@ class TestMap(unittest.TestCase):
             for x in range(test_map.width):
                 self.assertEqual(test_map.data[y][x], 1)
 
-    
     def test_single_cell_operations(self):
         # test insert + get
         self.assertTrue(self.map.insert_cell(5, 5, 2))
@@ -146,7 +155,8 @@ class TestMap(unittest.TestCase):
 
         # test invalid insert (out of bounds)
         self.assertFalse(self.map.insert_cell(-1, -1, 2))
-        self.assertFalse(self.map.insert_cell(self.width + 1, self.height + 1, 2))
+        self.assertFalse(self.map.insert_cell(
+            self.width + 1, self.height + 1, 2))
 
         # test invalid remove (out of bounds)
         self.assertFalse(self.map.remove_cell(-1, -1))
@@ -188,37 +198,43 @@ class TestMap(unittest.TestCase):
                 depth = (x+1, y+1)
 
                 # test area in bounds
-                self.assertTrue(self.map.area_in_bounds(start_x, start_y, depth))
+                self.assertTrue(self.map.area_in_bounds(
+                    start_x, start_y, depth))
 
                 # test start condition + add area
-                self.assertTrue(self.map.has_empty_area(start_x, start_y, depth))
-                self.assertTrue(self.map.add_tile(start_x, start_y, tile, depth))
-                self.assertFalse(self.map.has_empty_area(start_x, start_y, depth))
+                self.assertTrue(self.map.has_empty_area(
+                    start_x, start_y, depth))
+                self.assertTrue(self.map.add_tile(
+                    start_x, start_y, tile, depth))
+                self.assertFalse(self.map.has_empty_area(
+                    start_x, start_y, depth))
 
                 # test each cell in the area is correct + corner finding
                 for i in range(depth[1]):
                     for j in range(depth[0]):
-                        if i == 0 and j == 0: #top left corner is positive
-                            self.assertEqual(self.map.get_cell(start_x + j, start_y + i), tile)
-                            self.assertEqual(self.map.find_nearest_corner(start_x + j, start_y + i, tile, depth), (start_x, start_y))
-                        else: #rest of the connected cells are negative
-                            self.assertEqual(self.map.get_cell(start_x + j, start_y + i), -tile)
-                            self.assertEqual(self.map.find_nearest_corner(start_x + j, start_y + i, -tile, depth), (start_x, start_y))
-                        
-
-
+                        if i == 0 and j == 0:  # top left corner is positive
+                            self.assertEqual(self.map.get_cell(
+                                start_x + j, start_y + i), tile)
+                            self.assertEqual(self.map.find_nearest_corner(
+                                start_x + j, start_y + i, tile, depth), (start_x, start_y))
+                        else:  # rest of the connected cells are negative
+                            self.assertEqual(self.map.get_cell(
+                                start_x + j, start_y + i), -tile)
+                            self.assertEqual(self.map.find_nearest_corner(
+                                start_x + j, start_y + i, -tile, depth), (start_x, start_y))
 
                 # test removing the area
                 self.assertTrue(self.map.remove_tile(start_x, start_y, depth))
-                self.assertTrue(self.map.has_empty_area(start_x, start_y, depth))
-
+                self.assertTrue(self.map.has_empty_area(
+                    start_x, start_y, depth))
 
     def test_invalid_map_area_operations(self):
         start_map_data = self.map.data.copy()
 
         # test invalid area in bounds (out of bounds)
         self.assertFalse(self.map.area_in_bounds(-1, -1, (2, 2)))
-        self.assertFalse(self.map.area_in_bounds(0, 0, (self.width + 1, self.height + 1)))
+        self.assertFalse(self.map.area_in_bounds(
+            0, 0, (self.width + 1, self.height + 1)))
 
         # test invalid corner finding (not able to find and going out of bounds)
         self.assertIsNone(self.map.find_nearest_corner(4, 4, -2, (10, 10)))
@@ -228,7 +244,8 @@ class TestMap(unittest.TestCase):
 
         # test invalid remove tile (out of bounds)
         self.assertFalse(self.map.remove_tile(-1, -1, (2, 2)))
-        self.assertFalse(self.map.remove_tile(0, 0, (self.width + 1, self.height + 1)))
+        self.assertFalse(self.map.remove_tile(
+            0, 0, (self.width + 1, self.height + 1)))
 
         # map should not have changed
         self.assertEqual(self.map.data, start_map_data)

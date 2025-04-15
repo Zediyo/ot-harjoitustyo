@@ -139,7 +139,7 @@ class Map:
                 else:
                     self.insert_cell(x + j, y + i, -tile_id)
         return True
-    
+
     def area_in_bounds(self, x, y, depth=(1, 1)):
         width, height = depth
         for i in range(height):

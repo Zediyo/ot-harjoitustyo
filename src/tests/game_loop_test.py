@@ -34,7 +34,8 @@ class StubUserInput:
 
     def get_mouse_pos(self):
         return self.mouse_pos
-    
+
+
 class StubDisplay:
     def fill(self, color):
         pass
@@ -226,7 +227,7 @@ class TestGameLoop(unittest.TestCase):
     @patch("scenes.main_menu.Button")
     @patch("pygame.font.SysFont")
     def test_scene_switch_to_main_menu(self, mock_sysfont, mock_button):
-        #pygame.font.init()
+        # pygame.font.init()
         self.scene.set_next_scene("mainmenu")
 
         self.scene.one_loop = False
@@ -243,7 +244,7 @@ class TestGameLoop(unittest.TestCase):
 
         self.assertFalse(result)
 
-        #check if scene was mainmenu
+        # check if scene was mainmenu
         self.assertIsInstance(game_loop._scene, MainMenu)
         self.assertIsInstance(game_loop._renderer.scene, MainMenu)
         self.assertIsNone(game_loop._scene.get_next_scene())
@@ -254,7 +255,7 @@ class TestGameLoop(unittest.TestCase):
     @patch("scenes.level_list.Button")
     @patch("pygame.font.SysFont")
     def test_scene_switch_to_level_list(self, mock_sysfont, mock_button, mock_preview):
-        #pygame.font.init()
+        # pygame.font.init()
         self.scene.set_next_scene("level_list", "level")
 
         self.scene.one_loop = False
@@ -271,7 +272,7 @@ class TestGameLoop(unittest.TestCase):
 
         self.assertFalse(result)
 
-        #check if scene was levellist
+        # check if scene was levellist
         self.assertIsInstance(game_loop._scene, LevelList)
         self.assertIsInstance(game_loop._renderer.scene, LevelList)
         self.assertIsNone(game_loop._scene.get_next_scene())
@@ -283,7 +284,8 @@ class TestGameLoop(unittest.TestCase):
     @patch("scenes.level.LevelUI")
     @patch("scenes.level.Level.draw")
     def test_scene_switch_to_level(self, mock_ui, mock_draw):
-        self.scene.set_next_scene("level", {"data": constants.TEST_LEVEL, "id": 1, "name": "Level 1"})
+        self.scene.set_next_scene(
+            "level", {"data": constants.TEST_LEVEL, "id": 1, "name": "Level 1"})
 
         self.scene.one_loop = False
         user_input = StubUserInput(break_after=5)
@@ -299,7 +301,7 @@ class TestGameLoop(unittest.TestCase):
 
         self.assertFalse(result)
 
-        #check if scene was level
+        # check if scene was level
         self.assertIsInstance(game_loop._scene, Level)
         self.assertIsInstance(game_loop._renderer.scene, Level)
         self.assertIsNone(game_loop._scene.get_next_scene())
@@ -332,7 +334,8 @@ class TestGameLoop(unittest.TestCase):
     @patch("scenes.level_editor.generate_level_preview")
     @patch("scenes.level_editor.EditorUI")
     def test_scene_switch_to_editor(self, mock_ui, mock_preview):
-        self.scene.set_next_scene("editor", {"data": constants.TEST_LEVEL, "id": 1, "name": "Level 1"})
+        self.scene.set_next_scene(
+            "editor", {"data": constants.TEST_LEVEL, "id": 1, "name": "Level 1"})
 
         self.scene.one_loop = False
         user_input = StubUserInput(break_after=5)
@@ -348,7 +351,7 @@ class TestGameLoop(unittest.TestCase):
 
         self.assertFalse(result)
 
-        #check if scene was level editor
+        # check if scene was level editor
         self.assertIsInstance(game_loop._scene, LevelEditor)
         self.assertIsInstance(game_loop._renderer.scene, LevelEditor)
         self.assertIsNone(game_loop._scene.get_next_scene())
@@ -378,14 +381,14 @@ class TestGameLoop(unittest.TestCase):
         self.assertIsInstance(game_loop._scene, SimpleScene)
         self.assertIsInstance(game_loop._renderer.scene, SimpleScene)
 
-
     @patch("scenes.end_screen.Button")
     @patch("scenes.end_screen.generate_level_preview")
     @patch("scenes.level.Level.draw")
     @patch("scenes.level.LevelUI")
     @patch("pygame.font.SysFont")
     def test_level_ends_and_changes_to_endscreen(self, mock_font, mock_ui, mock_draw, mock_preview, mock_button):
-        self.scene.set_next_scene("level", {"data": constants.TEST_LEVEL_END, "id": 1, "name": "Level 1"})
+        self.scene.set_next_scene(
+            "level", {"data": constants.TEST_LEVEL_END, "id": 1, "name": "Level 1"})
 
         self.scene.one_loop = False
         user_input = StubUserInput(break_after=10)
@@ -401,7 +404,7 @@ class TestGameLoop(unittest.TestCase):
 
         self.assertFalse(result)
 
-        #check if scene was endscreen
+        # check if scene was endscreen
         self.assertIsInstance(game_loop._scene, EndScreen)
         self.assertIsInstance(game_loop._renderer.scene, EndScreen)
         self.assertIsNone(game_loop._scene.get_next_scene())
@@ -413,7 +416,8 @@ class TestGameLoop(unittest.TestCase):
         mock_button.assert_called()
 
     def test_change_to_endscreen_invalid(self):
-        self.scene.set_next_scene("endscreen", {"level:": "123", "timer": "123"})
+        self.scene.set_next_scene(
+            "endscreen", {"level:": "123", "timer": "123"})
 
         self.scene.one_loop = False
         user_input = StubUserInput(break_after=5)
@@ -431,4 +435,3 @@ class TestGameLoop(unittest.TestCase):
 
         self.assertIsInstance(game_loop._scene, SimpleScene)
         self.assertIsInstance(game_loop._renderer.scene, SimpleScene)
-
