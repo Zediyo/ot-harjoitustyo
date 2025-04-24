@@ -22,4 +22,4 @@
 
 ## Jatkokehitysideoita
 
-- -
+- Animoitu pelihahmo ja viholliset. **(tehty)**

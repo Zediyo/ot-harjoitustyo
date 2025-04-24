@@ -18,4 +18,6 @@
 | 14.4.2025  | 4        | editor, levellist, map                                          |
 | 14.4.2025  | 4        | editor, map, cleanup + fixes                                    |
 | 15.4.2025  | 4        | fixes, gameloop + maps tests, cleanup                           |
-| Total      | 50       |                                                                 |
+| 25.4.2025  | 4        | animations, sprite images                                       |
+| 25.4.2025  | 4        | level editor, level and db tests + db conn class, cleanup       |
+| Total      | 58       |                                                                 |

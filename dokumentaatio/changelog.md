@@ -28,4 +28,7 @@
 
 ## Viikko 6
 
--
+- Lisätty pelaajalle animoitu hahmo. (liikkuminen, seisominen, hyppiminen)
+- Lisätty vihollisille animoitu hahmo. (liikkuminen)
+- Paranneltu tietokanta yhdistys koodia.
+- Testattu Level, LevelEditor ja db.
