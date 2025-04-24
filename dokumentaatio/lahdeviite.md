@@ -1,8 +1,6 @@
 # Lähdeviitteet
 
-# Suunnitellut toiminnallisuudet
-
-## Player Character
+### Player Character
 
 CC0
 
@@ -10,7 +8,7 @@ HDST
 
 https://opengameart.org/content/fox-animated
 
-## Enemy Character
+### Enemy Character
 
 CC0
 
