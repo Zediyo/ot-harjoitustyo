@@ -55,34 +55,10 @@ class LevelList(Scene):
             best_time = best_times.get(level_id, None)
 
             if self._source_button == "editor":
-                # add delete + clear times buttons
                 button.set_text("Edit")
 
-                delete_button = Button(
-                    "Delete", self._font, 200, 65 + (i * 160), 150, 30, text_color=(255, 0, 0))
-                delete_button.set_above_text(f"{level_name}", (50, 200, 50))
-
-                self._buttons.append((
-                    delete_button,
-                    "confirm",
-                    {"action": "delete", "id": level_id,  "name": level_name,
-                        "text": f"Delete map {level_id}: {level_name}?"},
-                    True,
-                ))
-
-                if best_time is not None:
-                    clear_button = Button(
-                        "Clear Times", self._font,
-                        200, 155 + (i * 160), 150, 30,
-                        text_color=(200, 50, 50))
-
-                    self._buttons.append((
-                        clear_button,
-                        "confirm",
-                        {"action": "clear", "id": level_id,  "name": level_name,
-                            "text": f"Clear times for map {level_id}: {level_name}?"},
-                        True,
-                    ))
+                self._add_delete_and_clear_button(
+                    i, level_id, level_name, best_time)
             else:
 
                 if best_time is not None:
@@ -99,6 +75,33 @@ class LevelList(Scene):
             ))
 
             self._scrollable_count += 1
+
+    def _add_delete_and_clear_button(self, index, level_id, level_name, best_time):
+        delete_button = Button(
+            "Delete", self._font, 200, 65 + (index * 160), 150, 30, text_color=(255, 0, 0))
+        delete_button.set_above_text(f"{level_name}", (50, 200, 50))
+
+        self._buttons.append((
+            delete_button,
+            "confirm",
+            {"action": "delete", "id": level_id,  "name": level_name,
+                "text": f"Delete map {level_id}: {level_name}?"},
+            True,
+        ))
+
+        if best_time is not None:
+            clear_button = Button(
+                "Clear Times", self._font,
+                200, 155 + (index * 160), 150, 30,
+                text_color=(200, 50, 50))
+
+            self._buttons.append((
+                clear_button,
+                "confirm",
+                {"action": "clear", "id": level_id,  "name": level_name,
+                    "text": f"Clear times for map {level_id}: {level_name}?"},
+                True,
+            ))
 
     def draw(self, display):
         display.fill((128, 128, 128))
