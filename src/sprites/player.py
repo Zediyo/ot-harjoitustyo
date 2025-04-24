@@ -14,8 +14,10 @@ class Player(pygame.sprite.Sprite):
         self._base.set_alpha(100)
 
         self._animation = SpriteAnimation(fps=15, scale=(32, 32))
-        self._animation.add_image_set("move", "player_move_spritesheet.png", (19, 16), 8)
-        self._animation.add_image_set("idle", "player_idle_spritesheet.png", (17, 16), 8)
+        self._animation.add_image_set(
+            "move", "player_move_spritesheet.png", (19, 16), 8)
+        self._animation.add_image_set(
+            "idle", "player_idle_spritesheet.png", (17, 16), 8)
 
         self.image = pygame.Surface((32, 32))
         self.rect = self.image.get_rect()

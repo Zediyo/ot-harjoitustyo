@@ -47,9 +47,9 @@ class TestDB(unittest.TestCase):
         best_time = db.get_best_time(12)
         self.assertEqual(best_time, -1)
         best_time = db.get_best_time(-1)
-        self.assertEqual(best_time, -1) 
+        self.assertEqual(best_time, -1)
         best_time = db.get_best_time(567)
-        self.assertEqual(best_time, -1) 
+        self.assertEqual(best_time, -1)
 
     def test_save_and_load_level(self):
         test_level = constants.TEST_LEVEL_END
@@ -103,7 +103,7 @@ class TestDB(unittest.TestCase):
         db.save_level_time(3, 987)
 
         best_times = db.get_all_best_times()
-        
+
         best_time1 = best_times.get(1, None)
         best_time2 = best_times.get(2, None)
         best_time3 = best_times.get(3, None)
@@ -160,7 +160,7 @@ class TestDB(unittest.TestCase):
         db.save_level_time(2, 456)
 
         best_times = db.get_all_best_times()
-        
+
         best_time1 = best_times.get(1, None)
         best_time2 = best_times.get(2, None)
 
@@ -172,7 +172,7 @@ class TestDB(unittest.TestCase):
         db.delete_times(5)
 
         best_times = db.get_all_best_times()
-        
+
         best_time1 = best_times.get(1, None)
         best_time2 = best_times.get(2, None)
 
@@ -183,7 +183,7 @@ class TestDB(unittest.TestCase):
         db.delete_times(1)
 
         best_times = db.get_all_best_times()
-        
+
         best_time1 = best_times.get(1, None)
         best_time2 = best_times.get(2, None)
 

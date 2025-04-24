@@ -18,7 +18,8 @@ class Enemy(pygame.sprite.Sprite):
         self._base.set_alpha(100)
 
         self._animation = SpriteAnimation(fps=15, scale=(32, 32))
-        self._animation.add_image_set("move", "enemy_spritesheet.png", (72, 51), 5)
+        self._animation.add_image_set(
+            "move", "enemy_spritesheet.png", (72, 51), 5)
 
         self.image = pygame.Surface((32, 32))
         self.rect = self.image.get_rect()
@@ -44,7 +45,6 @@ class Enemy(pygame.sprite.Sprite):
         self.image.fill((0, 0, 0, 0))
         self.image.blit(self._base, (0, 0))
         self.image.blit(frame, (0, 0))
-
 
     def update(self, dt, colliders, player_rect):
         self._animate(dt)

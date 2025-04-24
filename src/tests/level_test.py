@@ -14,14 +14,20 @@ class TestLevel(unittest.TestCase):
         self.data = constants.TEST_LEVEL
         self.level = Level({"id": "1", "name": "potato", "data": self.data})
 
-        self.enemies = sum(row.count(constants.TILE_ENEMY) for row in self.data)
+        self.enemies = sum(row.count(constants.TILE_ENEMY)
+                           for row in self.data)
         self.blocks = sum(row.count(constants.TILE_BLOCK) for row in self.data)
-        self.placeable = sum(row.count(constants.TILE_PLACEABLE) for row in self.data)
+        self.placeable = sum(row.count(constants.TILE_PLACEABLE)
+                             for row in self.data)
 
-        self.enemy_location = [(x, y) for y in range(len(self.data)) for x in range(len(self.data[0])) if self.data[y][x] == constants.TILE_ENEMY]
-        self.end_location = [(x, y) for y in range(len(self.data)) for x in range(len(self.data[0])) if self.data[y][x] == constants.TILE_END]
-        self.enemy_screen_location = [(x * constants.TILE_SIZE, y * constants.TILE_SIZE) for x, y in self.enemy_location]
-        self.end_screen_location = [(x * constants.TILE_SIZE, y * constants.TILE_SIZE) for x, y in self.end_location]
+        self.enemy_location = [(x, y) for y in range(len(self.data)) for x in range(
+            len(self.data[0])) if self.data[y][x] == constants.TILE_ENEMY]
+        self.end_location = [(x, y) for y in range(len(self.data)) for x in range(
+            len(self.data[0])) if self.data[y][x] == constants.TILE_END]
+        self.enemy_screen_location = [
+            (x * constants.TILE_SIZE, y * constants.TILE_SIZE) for x, y in self.enemy_location]
+        self.end_screen_location = [
+            (x * constants.TILE_SIZE, y * constants.TILE_SIZE) for x, y in self.end_location]
 
         self.level.update(0.01, (0, 0))
 
@@ -42,9 +48,11 @@ class TestLevel(unittest.TestCase):
 
         self.assertEqual(len(self.level._map_objects), self.placeable)
         self.assertEqual(len(self.level._sprites.enemies), self.enemies)
-        self.assertEqual(len(self.level._sprites.blocks), self.blocks + self.placeable)
+        self.assertEqual(len(self.level._sprites.blocks),
+                         self.blocks + self.placeable)
 
-        self.assertEqual(len(self.level._sprites.all), self.enemies + self.blocks + self.placeable + 2)
+        self.assertEqual(len(self.level._sprites.all),
+                         self.enemies + self.blocks + self.placeable + 2)
 
         self.assertEqual(self.level._sprites.player.charges, 3)
 
@@ -71,53 +79,66 @@ class TestLevel(unittest.TestCase):
     def test_input_mouse_add_placeable_valid(self):
         self.level.input_mouse("left", (80, 80))
         self.assertEqual(len(self.level._map_objects), self.placeable + 1)
-        self.assertEqual(len(self.level._sprites.blocks), self.blocks + self.placeable + 1)
-        self.assertEqual(len(self.level._sprites.all), self.enemies + self.blocks + self.placeable + 3)
+        self.assertEqual(len(self.level._sprites.blocks),
+                         self.blocks + self.placeable + 1)
+        self.assertEqual(len(self.level._sprites.all),
+                         self.enemies + self.blocks + self.placeable + 3)
         self.assertEqual(self.level._sprites.player.charges, 2)
 
     def test_input_mouse_add_placeable_out_of_bounds(self):
         self.level.input_mouse("left", (-1, -1))
         self.assertEqual(len(self.level._map_objects), self.placeable)
-        self.assertEqual(len(self.level._sprites.blocks), self.blocks + self.placeable)
-        self.assertEqual(len(self.level._sprites.all), self.enemies + self.blocks + self.placeable + 2)
+        self.assertEqual(len(self.level._sprites.blocks),
+                         self.blocks + self.placeable)
+        self.assertEqual(len(self.level._sprites.all),
+                         self.enemies + self.blocks + self.placeable + 2)
         self.assertEqual(self.level._sprites.player.charges, 3)
 
     def test_input_mouse_add_placeable_out_of_range(self):
         self.level.input_mouse("left", (256, 256))
         self.assertEqual(len(self.level._map_objects), self.placeable)
-        self.assertEqual(len(self.level._sprites.blocks), self.blocks + self.placeable)
-        self.assertEqual(len(self.level._sprites.all), self.enemies + self.blocks + self.placeable + 2)
+        self.assertEqual(len(self.level._sprites.blocks),
+                         self.blocks + self.placeable)
+        self.assertEqual(len(self.level._sprites.all),
+                         self.enemies + self.blocks + self.placeable + 2)
         self.assertEqual(self.level._sprites.player.charges, 3)
 
     def test_input_mouse_add_placeable_occupied(self):
         self.level.input_mouse("left", (1, 1))
         self.assertEqual(len(self.level._map_objects), self.placeable)
-        self.assertEqual(len(self.level._sprites.blocks), self.blocks + self.placeable)
-        self.assertEqual(len(self.level._sprites.all), self.enemies + self.blocks + self.placeable + 2)
+        self.assertEqual(len(self.level._sprites.blocks),
+                         self.blocks + self.placeable)
+        self.assertEqual(len(self.level._sprites.all),
+                         self.enemies + self.blocks + self.placeable + 2)
         self.assertEqual(self.level._sprites.player.charges, 3)
 
     def test_input_mouse_add_placeable_no_charges(self):
         self.level._sprites.player.charges = 0
         self.level.input_mouse("left", (80, 80))
         self.assertEqual(len(self.level._map_objects), self.placeable)
-        self.assertEqual(len(self.level._sprites.blocks), self.blocks + self.placeable)
-        self.assertEqual(len(self.level._sprites.all), self.enemies + self.blocks + self.placeable + 2)
+        self.assertEqual(len(self.level._sprites.blocks),
+                         self.blocks + self.placeable)
+        self.assertEqual(len(self.level._sprites.all),
+                         self.enemies + self.blocks + self.placeable + 2)
         self.assertEqual(self.level._sprites.player.charges, 0)
 
     def test_input_mouse_add_placeable_duplicate_placement(self):
         self.level.input_mouse("left", (80, 80))
         self.level.input_mouse("left", (80, 80))
         self.assertEqual(len(self.level._map_objects), self.placeable + 1)
-        self.assertEqual(len(self.level._sprites.blocks), self.blocks + self.placeable + 1)
-        self.assertEqual(len(self.level._sprites.all), self.enemies + self.blocks + self.placeable + 3)
-
+        self.assertEqual(len(self.level._sprites.blocks),
+                         self.blocks + self.placeable + 1)
+        self.assertEqual(len(self.level._sprites.all),
+                         self.enemies + self.blocks + self.placeable + 3)
 
     def test_input_mouse_remove_placeable_valid(self):
         self.level.input_mouse("left", (80, 80))
         self.level.input_mouse("right", (80, 80))
         self.assertEqual(len(self.level._map_objects), self.placeable)
-        self.assertEqual(len(self.level._sprites.blocks), self.blocks + self.placeable)
-        self.assertEqual(len(self.level._sprites.all), self.enemies + self.blocks + self.placeable + 2)
+        self.assertEqual(len(self.level._sprites.blocks),
+                         self.blocks + self.placeable)
+        self.assertEqual(len(self.level._sprites.all),
+                         self.enemies + self.blocks + self.placeable + 2)
         self.assertEqual(self.level._sprites.player.charges, 3)
 
     def test_input_mouse_remove_placeable_out_of_range(self):
@@ -126,8 +147,10 @@ class TestLevel(unittest.TestCase):
         self.level._sprites.player.rect.y = 256
         self.level.input_mouse("right", (256, 256))
         self.assertEqual(len(self.level._map_objects), self.placeable + 1)
-        self.assertEqual(len(self.level._sprites.blocks), self.blocks + self.placeable + 1)
-        self.assertEqual(len(self.level._sprites.all), self.enemies + self.blocks + self.placeable + 3)
+        self.assertEqual(len(self.level._sprites.blocks),
+                         self.blocks + self.placeable + 1)
+        self.assertEqual(len(self.level._sprites.all),
+                         self.enemies + self.blocks + self.placeable + 3)
         self.assertEqual(self.level._sprites.player.charges, 2)
 
     def test_input_mouse_remove_placeable_duplicate_removal(self):
@@ -135,8 +158,10 @@ class TestLevel(unittest.TestCase):
         self.level.input_mouse("right", (80, 80))
         self.level.input_mouse("right", (80, 80))
         self.assertEqual(len(self.level._map_objects), self.placeable)
-        self.assertEqual(len(self.level._sprites.blocks), self.blocks + self.placeable)
-        self.assertEqual(len(self.level._sprites.all), self.enemies + self.blocks + self.placeable + 2)
+        self.assertEqual(len(self.level._sprites.blocks),
+                         self.blocks + self.placeable)
+        self.assertEqual(len(self.level._sprites.all),
+                         self.enemies + self.blocks + self.placeable + 2)
         self.assertEqual(self.level._sprites.player.charges, 3)
 
     def test_check_enemy_collisions(self):
@@ -179,13 +204,15 @@ class TestLevel(unittest.TestCase):
         enemy.rect.y = 0
         self.level._check_entities_in_bounds()
         self.assertEqual(len(self.level._sprites.enemies), self.enemies)
-        self.assertEqual(len(self.level._sprites.all), self.enemies + self.blocks + self.placeable + 2)
+        self.assertEqual(len(self.level._sprites.all),
+                         self.enemies + self.blocks + self.placeable + 2)
 
         # right horizontal limit
         enemy.rect.x = 1500
         self.level._check_entities_in_bounds()
         self.assertEqual(len(self.level._sprites.enemies), self.enemies - 1)
-        self.assertEqual(len(self.level._sprites.all), self.enemies + self.blocks + self.placeable + 1)
+        self.assertEqual(len(self.level._sprites.all),
+                         self.enemies + self.blocks + self.placeable + 1)
 
     def test_check_entities_in_bounds_enemy_vertical(self):
         enemy = self.level._sprites.enemies.sprites()[0]
@@ -194,16 +221,19 @@ class TestLevel(unittest.TestCase):
         enemy.rect.y = 0
         self.level._check_entities_in_bounds()
         self.assertEqual(len(self.level._sprites.enemies), self.enemies)
-        self.assertEqual(len(self.level._sprites.all), self.enemies + self.blocks + self.placeable + 2)
+        self.assertEqual(len(self.level._sprites.all),
+                         self.enemies + self.blocks + self.placeable + 2)
 
         # out of bounds above is fine
         enemy.rect.y = -400
         self.level._check_entities_in_bounds()
         self.assertEqual(len(self.level._sprites.enemies), self.enemies)
-        self.assertEqual(len(self.level._sprites.all), self.enemies + self.blocks + self.placeable + 2)
+        self.assertEqual(len(self.level._sprites.all),
+                         self.enemies + self.blocks + self.placeable + 2)
 
         # below limit
         enemy.rect.y = 1500
         self.level._check_entities_in_bounds()
         self.assertEqual(len(self.level._sprites.enemies), self.enemies - 1)
-        self.assertEqual(len(self.level._sprites.all), self.enemies + self.blocks + self.placeable + 1)
+        self.assertEqual(len(self.level._sprites.all),
+                         self.enemies + self.blocks + self.placeable + 1)

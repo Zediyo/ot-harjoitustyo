@@ -2,63 +2,73 @@ import sqlite3
 import json
 import constants
 
-conn = None
+
+class _DBConnection:
+    connection = None
+
+    @classmethod
+    def get_connection(cls):
+        if cls.connection is None:
+            cls.connection = sqlite3.connect(":memory:")
+            cls.create_tables()
+        return cls.connection
+
+    @classmethod
+    def close_connection(cls):
+        if cls.connection is not None:
+            cls.connection.close()
+            cls.connection = None
+
+    @classmethod
+    def init_db(cls):
+        if cls.connection is not None:
+            cls.connection.close()
+
+        cls.connection = sqlite3.connect("data.db")
+        cls.create_tables()
+
+    @classmethod
+    def create_tables(cls):
+        conn = cls.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS level_times (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                level_id integer NOT NULL,
+                time REAL NOT NULL,
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS levels (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT UNIQUE,
+                data TEXT
+            )
+        """)
+
+        cursor.execute("SELECT 1 FROM levels WHERE name = ?", ("test_level",))
+
+        if cursor.fetchone() is None:
+            cursor.execute("""
+                INSERT INTO levels (name, data) VALUES (?, ?)
+            """, ("test_level", json.dumps(constants.TEST_LEVEL)))
+
+        conn.commit()
+
 
 def get_connection():
-    global conn
-    #use memory db if not initialized
-    if conn is None:
-        conn = sqlite3.connect(":memory:")
-        create_tables()
-    return conn
+    return _DBConnection.get_connection()
+
 
 def close_connection():
-    global conn
-    if conn is not None:
-        conn.close()
-        conn = None
+    _DBConnection.close_connection()
+
 
 def init_db():
-    global conn
-
-    if conn is not None:
-        conn.close()
-
-    conn = sqlite3.connect("data.db")
-    create_tables()
-
-def create_tables():
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    # cursor.execute("DROP TABLE IF EXISTS level_times")
-    # cursor.execute("DROP TABLE IF EXISTS levels")
-
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS level_times (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            level_id integer NOT NULL,
-            time REAL NOT NULL,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
-
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS levels (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT UNIQUE,
-            data TEXT
-        )
-    """)
-
-    cursor.execute("SELECT 1 FROM levels WHERE name = ?", ("test_level",))
-
-    if cursor.fetchone() is None:
-        cursor.execute("""
-            INSERT INTO levels (name, data) VALUES (?, ?)
-        """, ("test_level", json.dumps(constants.TEST_LEVEL)))
-
-    conn.commit()
+    _DBConnection.init_db()
 
 
 def save_level_time(level_id, time):
@@ -90,10 +100,10 @@ def get_best_time(level_id):
 def save_level(name, level_data):
     if not isinstance(level_data, list) or len(level_data) == 0:
         return
-    
+
     if not isinstance(level_data[0], list) or len(level_data[0]) == 0:
         return
-    
+
     conn = get_connection()
     data = json.dumps(level_data)
 
@@ -149,6 +159,7 @@ def level_name_exists(name):
     )
     result = cursor.fetchone()
     return result[0] > 0
+
 
 def get_level_id(name):
     conn = get_connection()
