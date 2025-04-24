@@ -60,7 +60,6 @@ class LevelList(Scene):
                 self._add_delete_and_clear_button(
                     i, level_id, level_name, best_time)
             else:
-
                 if best_time is not None:
                     button.set_above_text(
                         f"Best Time: {best_time:.2f}", (50, 200, 50))
