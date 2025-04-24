@@ -9,6 +9,7 @@ class _DBConnection:
     @classmethod
     def get_connection(cls):
         if cls.connection is None:
+            # use memory db if init_db() is not called
             cls.connection = sqlite3.connect(":memory:")
             cls.create_tables()
         return cls.connection

@@ -1,13 +1,13 @@
 import pygame
 
-from tools.asset_path import get_asset_path
+from tools.asset_helpers import load_image
 
 
 class TileCursor(pygame.sprite.Sprite):
     def __init__(self, max_range=0):
         super().__init__()
-        self.image = pygame.image.load(
-            get_asset_path("pl_block_placeable.png"))
+
+        self.image = load_image("pl_block_placeable.png")
         self.image.set_alpha(128)
         self.rect = self.image.get_rect()
         self._max_range = max_range

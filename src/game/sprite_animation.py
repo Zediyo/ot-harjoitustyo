@@ -1,6 +1,5 @@
 import pygame
-from tools.asset_path import get_asset_path
-from tools.spritesheet_frames import get_spritesheet_frames
+from tools.asset_helpers import load_image, get_spritesheet_frames
 
 
 class SpriteAnimation():
@@ -23,7 +22,9 @@ class SpriteAnimation():
 
     def add_image_set(self, name, image_path, frame_size, count):
         (frame_width, frame_height) = frame_size
-        sheet = pygame.image.load(get_asset_path(image_path))
+
+        sheet = load_image(image_path)
+
         self._images[name] = get_spritesheet_frames(
             sheet, frame_width, frame_height, count=count, scale=self._scale)
 

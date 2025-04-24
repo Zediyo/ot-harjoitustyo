@@ -1,6 +1,6 @@
 import pygame
 
-from tools.asset_path import get_asset_path
+from tools.asset_helpers import load_image
 
 from game.body import Body
 from game.sprite_animation import SpriteAnimation
@@ -14,7 +14,7 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, x=0, y=0, start_dir=1):
         super().__init__()
 
-        self._base = pygame.image.load(get_asset_path("pl_enemy.png"))
+        self._base = load_image("pl_enemy.png")
         self._base.set_alpha(100)
 
         self._animation = SpriteAnimation(fps=15, scale=(32, 32))
