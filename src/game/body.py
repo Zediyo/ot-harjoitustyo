@@ -11,6 +11,9 @@ class Body():
     _FLOOR_GRAVITY = 100.0
     _STEP_SIZE = 10.0
 
+    _DIR_VERTICAL = 1
+    _DIR_HORIZONTAL = 0
+
     def __init__(self, rect, x, y):
         self.rect = rect
 
@@ -26,22 +29,10 @@ class Body():
     def move(self, dt, colliders):
         # update velocity + gravity
         self._velocity.x = self._input[0] * self._BASE_MOVEMENT_SPEED
-        # self._velocity.y = self._input[1] * self._movement_speed
 
-        # jumping and walk off gravity
-        if self.on_floor:
-            if self._input[1] < 0:
-                self._gravity = self._BASE_JUMP_FORCE
-            else:
-                self._gravity = self._FLOOR_GRAVITY
+        self._handle_jump()
+        self._update_gravity(dt)
 
-        # gravity
-        self._velocity.y = self._gravity + dt * self._GRAVITY_CONSTANT / 2
-        self._gravity += self._GRAVITY_CONSTANT * dt
-
-        self._gravity = min(self._gravity, self._TERMINAL_VELOCITY)
-
-        # update position
         move = self._velocity * dt
 
         # remember last direction
@@ -58,37 +49,49 @@ class Body():
         self._input[0] += dx
         self._input[1] += dy
 
+    def _handle_jump(self):
+        if self.on_floor:
+            if self._input[1] < 0:
+                self._gravity = self._BASE_JUMP_FORCE
+            else:
+                self._gravity = self._FLOOR_GRAVITY
+
+    def _update_gravity(self, dt):
+        self._velocity.y = self._gravity + dt * self._GRAVITY_CONSTANT / 2
+        self._gravity += self._GRAVITY_CONSTANT * dt
+
+        self._gravity = min(self._gravity, self._TERMINAL_VELOCITY)
+
     def _move_and_collide(self, colliders, move):
         self.on_floor = False
         self.touching_wall = False
 
         # move in steps to avoid going through walls
-
-        # horizontal movement steps
-        while abs(move.x) > 0.01:
-            if abs(move.x) > self._STEP_SIZE:
-                self._position.x += self._STEP_SIZE * math.copysign(1, move.x)
-                move.x -= self._STEP_SIZE * math.copysign(1, move.x)
-            else:
-                self._position.x += move.x
-                move.x = 0.0
-
-            if self._horizontal_move(colliders):
-                break
-
-        # vertical movement steps
-        while abs(move.y) > 0.01:
-            if abs(move.y) > self._STEP_SIZE:
-                self._position.y += self._STEP_SIZE * math.copysign(1, move.y)
-                move.y -= self._STEP_SIZE * math.copysign(1, move.y)
-            else:
-                self._position.y += move.y
-                move.y = 0.0
-
-            if self._vertical_move(colliders):
-                break
+        self._step_move(colliders, move, self._DIR_HORIZONTAL)
+        self._step_move(colliders, move, self._DIR_VERTICAL)
 
         self._check_for_ground(colliders)
+
+    def _step_move(self, colliders, move, direction):
+        if direction not in [self._DIR_HORIZONTAL, self._DIR_VERTICAL]:
+            return
+
+        while abs(move[direction]) > 0.01:
+            if abs(move[direction]) > self._STEP_SIZE:
+                self._position[direction] += self._STEP_SIZE * \
+                    math.copysign(1, move[direction])
+                move[direction] -= self._STEP_SIZE * \
+                    math.copysign(1, move[direction])
+            else:
+                self._position[direction] += move[direction]
+                move[direction] = 0.0
+
+            if direction == self._DIR_VERTICAL:
+                if self._vertical_move(colliders):
+                    break
+            elif direction == self._DIR_HORIZONTAL:
+                if self._horizontal_move(colliders):
+                    break
 
     def _horizontal_move(self, colliders):
         self.rect.x = self._position.x
