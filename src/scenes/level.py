@@ -78,6 +78,8 @@ class Level(Scene):
             self._sprites.player.add_input(0, 1)
 
     def input_mouse(self, click, pos):
+        self._update_cursor(pos)
+
         if click == "left" and self._level_ui.is_back_clicked(pos):
             self.set_next_scene("level_list", "level")
 
@@ -104,8 +106,7 @@ class Level(Scene):
         self._sprites.enemies.update(
             dt, self._sprites.blocks, self._sprites.player.rect)
 
-        self._sprites.cursor.update(
-            self._map.screen_pos_to_grid(mouse_pos), self._sprites.player.rect)
+        self._update_cursor(mouse_pos)
 
         self._check_entities_in_bounds()
         self._check_enemy_collisions()
@@ -114,6 +115,10 @@ class Level(Scene):
     def cleanup(self):
         for sprite in self._sprites.all:
             sprite.kill()
+
+    def _update_cursor(self, pos):
+        self._sprites.cursor.update(
+            self._map.screen_pos_to_grid(pos), self._sprites.player.rect)
 
     def _add_placeable_to_world(self, grid_x, grid_y):
         # check if player has placeable blocks in inventory

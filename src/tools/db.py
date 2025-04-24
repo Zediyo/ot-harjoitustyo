@@ -2,11 +2,33 @@ import sqlite3
 import json
 import constants
 
-conn = sqlite3.connect("data.db")
+conn = None
 
+def get_connection():
+    global conn
+    #use memory db if not initialized
+    if conn is None:
+        conn = sqlite3.connect(":memory:")
+        create_tables()
+    return conn
+
+def close_connection():
+    global conn
+    if conn is not None:
+        conn.close()
+        conn = None
 
 def init_db():
+    global conn
 
+    if conn is not None:
+        conn.close()
+
+    conn = sqlite3.connect("data.db")
+    create_tables()
+
+def create_tables():
+    conn = get_connection()
     cursor = conn.cursor()
 
     # cursor.execute("DROP TABLE IF EXISTS level_times")
@@ -40,6 +62,10 @@ def init_db():
 
 
 def save_level_time(level_id, time):
+    if level_id < 0 or time < 0:
+        return
+
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "INSERT INTO level_times (level_id, time) VALUES (?, ?)",
@@ -50,6 +76,7 @@ def save_level_time(level_id, time):
 
 
 def get_best_time(level_id):
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "SELECT MIN(time) FROM level_times WHERE level_id = ?",
@@ -61,6 +88,13 @@ def get_best_time(level_id):
 
 
 def save_level(name, level_data):
+    if not isinstance(level_data, list) or len(level_data) == 0:
+        return
+    
+    if not isinstance(level_data[0], list) or len(level_data[0]) == 0:
+        return
+    
+    conn = get_connection()
     data = json.dumps(level_data)
 
     cursor = conn.cursor()
@@ -75,6 +109,7 @@ def save_level(name, level_data):
 
 
 def load_level_data(level_id):
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "SELECT data FROM levels WHERE id = ?",
@@ -83,10 +118,11 @@ def load_level_data(level_id):
 
     result = cursor.fetchone()
 
-    return json.loads(result[0]) if result[0] is not None else None
+    return json.loads(result[0]) if result is not None else None
 
 
 def get_all_levels():
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT id, name, data FROM levels ORDER BY id ASC")
     levels = cursor.fetchall()
@@ -94,6 +130,7 @@ def get_all_levels():
 
 
 def get_all_best_times():
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute('''
         SELECT level_id, MIN(time)
@@ -104,6 +141,7 @@ def get_all_best_times():
 
 
 def level_name_exists(name):
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "SELECT COUNT(*) FROM levels WHERE name = ?",
@@ -112,8 +150,19 @@ def level_name_exists(name):
     result = cursor.fetchone()
     return result[0] > 0
 
+def get_level_id(name):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT id FROM levels WHERE name = ?",
+        (name,)
+    )
+    result = cursor.fetchone()
+    return result[0] if result is not None else None
+
 
 def delete_level(level_id):
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "DELETE FROM levels WHERE id = ?",
@@ -127,6 +176,7 @@ def delete_level(level_id):
 
 
 def delete_times(level_id):
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "DELETE FROM level_times WHERE level_id = ?",
