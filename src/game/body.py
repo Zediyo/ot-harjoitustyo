@@ -21,6 +21,7 @@ class Body():
         self._position = pygame.Vector2(x, y)
         self.on_floor = False
         self.touching_wall = False
+        self.last_direction = 1
 
     def move(self, dt, colliders):
         # update velocity + gravity
@@ -42,6 +43,10 @@ class Body():
 
         # update position
         move = self._velocity * dt
+
+        # remember last direction
+        if self.is_moving_horizontal():
+            self.last_direction = 1 if self._velocity.x > 0 else -1
 
         # reset input
         self._input[0] = 0
@@ -83,6 +88,8 @@ class Body():
             if self._vertical_move(colliders):
                 break
 
+        self._check_for_ground(colliders)
+
     def _horizontal_move(self, colliders):
         self.rect.x = self._position.x
         colliding = pygame.sprite.spritecollide(self, colliders, False)
@@ -121,3 +128,25 @@ class Body():
             return True
 
         return False
+
+    def _check_for_ground(self, colliders):
+        # check if not going up
+        if self._velocity[1] < 0:
+            return
+
+        self.rect.y += 1
+        if pygame.sprite.spritecollide(self, colliders, False):
+            self.on_floor = True
+        self.rect.y -= 1
+
+    def is_moving(self):
+        return self.is_moving_horizontal() or self.is_moving_vertical()
+
+    def is_moving_horizontal(self):
+        return abs(self._velocity[0]) > 0.001
+
+    def is_moving_vertical(self):
+        return abs(self._velocity[1]) > 0.001 and not self.on_floor
+
+    def get_velocity(self):
+        return self._velocity

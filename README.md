@@ -13,6 +13,8 @@
 
 [arkkitehtuurikuvaus](dokumentaatio/arkkitehtuuri.md)
 
+[lähdeviite](dokumentaatio/lahdeviite.md)
+
 ## Käyttö
 Komennot ajetaan ohjelman juuri kansiossa.
 
