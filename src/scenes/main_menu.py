@@ -2,6 +2,7 @@ import pygame
 
 from scenes.scene import Scene
 from ui.button import Button
+from game.sprite_animation import SpriteAnimation
 
 
 class MainMenu(Scene):
@@ -10,6 +11,11 @@ class MainMenu(Scene):
         super().__init__()
         self._font = pygame.font.SysFont("Arial", 24)
         self._buttons = {}
+
+        self._player_sprite = SpriteAnimation(fps=15, scale=(32, 32))
+        self._player_sprite.add_image_set(
+            "idle", "player_idle_spritesheet.png", (17, 16), 9)
+
 
         self._init_buttons()
 
@@ -30,6 +36,8 @@ class MainMenu(Scene):
         for (button, _, _) in self._buttons.values():
             button.draw(display)
 
+        display.blit(self._player_sprite.get_frame("idle"), (620, 100))
+
     def input_mouse(self, click, pos):
         if click != "left":
             return
@@ -40,5 +48,6 @@ class MainMenu(Scene):
                 break
 
     def update(self, dt, mouse_pos):
+        self._player_sprite.update(dt)
         for (button, _, _) in self._buttons.values():
             button.update(mouse_pos)
