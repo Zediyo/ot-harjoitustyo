@@ -8,6 +8,9 @@ class Scene():
     def input_mouse(self, click, pos):
         pass
 
+    def input_mouse_hold(self, click, pos):
+        pass
+
     def update(self, dt, mouse_pos):
         pass
 

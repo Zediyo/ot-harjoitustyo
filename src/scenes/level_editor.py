@@ -21,7 +21,7 @@ class LevelEditor(Scene):
         self._ui = EditorUI(level["name"])
         self._map = Map(self._level["data"])
         self._map.expand_map()
-        self._hand = 1
+        self._hand = 0
 
         self._has_required = {"spawn": False, "end": False}
         self.image = None
@@ -45,6 +45,10 @@ class LevelEditor(Scene):
             if self._map.is_map_viable():
                 save_level(self._level["name"], self._map.data)
             self.set_next_scene("level_list", "editor")
+
+    def input_mouse_hold(self, click, pos):
+        if self._hand == 0:
+            return
 
         if click == "left":
             self._add_to_map(pos)

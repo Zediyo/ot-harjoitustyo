@@ -66,6 +66,12 @@ class GameLoop:
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
             self._scene.input_key("down")
 
+        mouse = self._user_input.get_mouse_pressed()
+        if mouse[0]:
+            self._scene.input_mouse_hold("left", self._user_input.get_mouse_pos())
+        if mouse[2]:
+            self._scene.input_mouse_hold("right", self._user_input.get_mouse_pos())
+
     def _render(self):
         self._renderer.render()
 

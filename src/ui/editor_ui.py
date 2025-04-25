@@ -81,3 +81,4 @@ class EditorUI:
             return "Spawn"
         elif item == constants.TILE_END:
             return "End"
+        return "None"
