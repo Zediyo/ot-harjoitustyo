@@ -1,72 +1,143 @@
+""" Contains the Map class, which represents a 2D grid of tiles for game levels. """
+
 import constants
 
 
 class Map:
+    """ Map class represents a 2D grid of tiles for a game level.
+
+    Handles tile data, dimensions, and provides methods for manipulating the map.
+    Allows for operations such as tile placement, removal, bounds and area checking,
+    iterating over cells and map resizing,
+    as well as performing coordinate conversion between screen, world and cell space.
+
+    Attributes:
+        data (list[list[int]]): 2D list representing the map data, where each element is a tile ID.
+        width (int): Width of the map in cells.
+        height (int): Height of the map in cells.
+        tile_size (int): Size of each tile in pixels.
+    """
+
     def __init__(self, map_data, tile_size=constants.TILE_SIZE):
-        self.data = map_data
-        self.width = len(map_data[0])
-        self.height = len(map_data)
-        self.tile_size = tile_size
+        """ Initializes the Map object.
 
-    def tile_in_bounds(self, x, y):
-        cell_x, cell_y = self.grid_pos_to_cell((x, y))
-        return self.cell_in_bounds(cell_x, cell_y)
+        Args:
+            map_data (list[list[int]]): 2D list of tile IDs.
+            tile_size (int, optional): Size of each tile in pixels. Defaults to constants.TILE_SIZE.
+        """
+        self._data = map_data
+        self._width = len(map_data[0])
+        self._height = len(map_data)
+        self._tile_size = tile_size
 
-    def cell_in_bounds(self, cell_x, cell_y):
-        return 0 <= cell_x < self.width and 0 <= cell_y < self.height
+    @property
+    def data(self):
+        """ list[list[int]]: 2D list of tile IDs representing the map. Read-only property. """
+        return self._data
 
-    def screen_pos_to_grid(self, pos):
+    @property
+    def width(self):
+        """ int: Width of the map in cells. Read-only property. """
+        return self._width
+
+    @property
+    def height(self):
+        """ int: Height of the map in cells. Read-only property. """
+        return self._height
+
+    @property
+    def tile_size(self):
+        """ int: Size of each tile in pixels. Read-only property. """
+        return self._tile_size
+
+    def iterate_cells(self):
+        """ Yield the indices and tile ID of each cell in the map.
+
+        Yields:
+            tuple[int, int, int]: Contains (cell_x, cell_y, tile_id) for each cell.
+        """
+        for y in range(self._height):
+            for x in range(self._width):
+                yield x, y, self._data[y][x]
+
+    def snap_to_grid(self, pos):
+        """ Snap screen position to the nearest grid-aligned position.
+
+        Args:
+            pos (tuple[float, float]): The screen position to snap.
+
+        Returns:
+            tuple[int, int]: The snapped position aligned to the grid.
+
+        """
         x, y = pos
-        ret_x = round(x // self.tile_size * self.tile_size)
-        ret_y = round(y // self.tile_size * self.tile_size)
+        ret_x = round(x // self._tile_size * self._tile_size)
+        ret_y = round(y // self._tile_size * self._tile_size)
 
         return ret_x, ret_y
 
-    def grid_pos_to_cell(self, pos):
+    def cell_index_to_world_pos(self, pos):
+        """ Convert cell indices (cell_x, cell_y) to world position.
+
+        Args:
+            pos (tuple[int, int]): The indices of a single cell.
+
+        Returns:
+            tuple[int, int]: The world position of the cell's top-left corner.
+        """
         x, y = pos
-        ret_x = x // self.tile_size
-        ret_y = y // self.tile_size
+        ret_x = x * self._tile_size
+        ret_y = y * self._tile_size
 
         return ret_x, ret_y
 
-    def cell_pos_to_grid(self, pos):
-        x, y = pos
-        ret_x = x * self.tile_size
-        ret_y = y * self.tile_size
+    def screen_to_cell_index(self, pos):
+        """ Convert screen position to a single cell's indices.
 
+        Args:
+            pos (tuple[float, float]): The screen position to convert.
+
+        Returns:
+            tuple[int, int]: The cell indices (cell_x, cell_y) at the given screen position.
+        """
+
+        x, y = self.snap_to_grid(pos)
+        ret_x = x // self._tile_size
+        ret_y = y // self._tile_size
         return ret_x, ret_y
 
-    def screen_pos_to_cell(self, pos):
-        x, y = self.screen_pos_to_grid(pos)
-        return self.grid_pos_to_cell((x, y))
-
-    # expand to screen size (centered)
     def expand_map(self, screen_w=constants.SCREEN_WIDTH, screen_h=constants.SCREEN_HEIGHT):
-        new_width = screen_w // self.tile_size
-        new_height = screen_h // self.tile_size
+        """ Expand the map to the given screen size, centering the current map data.
 
-        pad_x = (new_width - self.width) // 2
-        pad_y = (new_height - self.height) // 2
+        Args:
+            screen_w (int, optional): Width in pixels. Defaults to constants.SCREEN_WIDTH.
+            screen_h (int, optional): Height in pixels. Defaults to constants.SCREEN_HEIGHT.
+        """
+        new_width = screen_w // self._tile_size
+        new_height = screen_h // self._tile_size
+
+        pad_x = (new_width - self._width) // 2
+        pad_y = (new_height - self._height) // 2
 
         new_map_data = [[0 for _ in range(new_width)]
                         for _ in range(new_height)]
 
-        for y in range(self.height):
-            for x in range(self.width):
-                new_map_data[y+pad_y][x+pad_x] = self.data[y][x]
+        for y in range(self._height):
+            for x in range(self._width):
+                new_map_data[y+pad_y][x+pad_x] = self._data[y][x]
 
-        self.data = new_map_data
-        self.width = new_width
-        self.height = new_height
+        self._data = new_map_data
+        self._width = new_width
+        self._height = new_height
 
-    # shrink map to smallest rectangle that contains all tiles
     def shrink_map(self):
-        min_x, min_y = self.width, self.height
+        """ Shrink the map to the smallest rectangle that contains all non-zero tiles. """
+        min_x, min_y = self._width, self._height
         max_x, max_y = 0, 0
 
-        for y in range(self.height):
-            for x in range(self.width):
-                if self.data[y][x] != 0:
+        for y in range(self._height):
+            for x in range(self._width):
+                if self._data[y][x] != 0:
                     min_x = min(min_x, x)
                     max_x = max(max_x, x)
                     min_y = min(min_y, y)
@@ -80,67 +151,100 @@ class Map:
 
         for y in range(min_y, max_y + 1):
             for x in range(min_x, max_x + 1):
-                new_map_data[y - min_y][x - min_x] = self.data[y][x]
+                new_map_data[y - min_y][x - min_x] = self._data[y][x]
 
-        self.data = new_map_data
-        self.width = new_width
-        self.height = new_height
+        self._data = new_map_data
+        self._width = new_width
+        self._height = new_height
 
-    def insert_cell(self, cell_x, cell_y, tile_id):
+    def get_tile_at_cell(self, cell_x, cell_y):
+        """ Get the tile ID at the specified cell.
+
+        Args:
+            cell_x (int): The x index of the cell.
+            cell_y (int): The y index of the cell.
+
+        Returns:
+            int or None: The tile ID at the specified cell, or None if out of bounds.
+        """
         if self.cell_in_bounds(cell_x, cell_y):
-            self.data[cell_y][cell_x] = tile_id
-            return True
-        return False
-
-    def remove_cell(self, cell_x, cell_y):
-        if self.cell_in_bounds(cell_x, cell_y):
-            self.data[cell_y][cell_x] = 0
-            return True
-        return False
-
-    def get_cell(self, cell_x, cell_y):
-        if self.cell_in_bounds(cell_x, cell_y):
-            return self.data[cell_y][cell_x]
+            return self._data[cell_y][cell_x]
         return None
 
-    def has_spawn(self):
-        for y in range(self.height):
-            for x in range(self.width):
-                if self.data[y][x] == constants.TILE_SPAWN:
+    def set_tile_at_cell(self, cell_x, cell_y, tile_id):
+        """ Set the tile ID at the specified cell.
+
+        Args:
+            cell_x (int): The x index of the cell.
+            cell_y (int): The y index of the cell.
+            tile_id (int): The tile ID to set.
+
+        Returns:
+            bool: True if the tile was set successfully, False if out of bounds.
+        """
+        if self.cell_in_bounds(cell_x, cell_y):
+            self._data[cell_y][cell_x] = tile_id
+            return True
+        return False
+
+    def cell_in_bounds(self, cell_x, cell_y):
+        """ Check if the specified cell is within the map bounds.
+
+        Args:
+            cell_x (int): The x index of the cell.
+            cell_y (int): The y index of the cell.
+
+        Returns:
+            bool: True if the cell is within bounds, False otherwise.
+        """
+        return 0 <= cell_x < self._width and 0 <= cell_y < self._height
+
+    def contains_tile(self, tile_id):
+        """ Check if the map contains a tile with the specified ID.
+
+        Args:
+            tile_id (int): The tile ID to check for.
+
+        Returns:
+            bool: True if the tile ID is found in the map, False otherwise.
+        """
+        for y in range(self._height):
+            for x in range(self._width):
+                if self._data[y][x] == tile_id:
                     return True
         return False
 
-    def has_end(self):
-        for y in range(self.height):
-            for x in range(self.width):
-                if self.data[y][x] == constants.TILE_END:
-                    return True
-        return False
+    def is_empty_area(self, x, y, depth=(1, 1)):
+        """ Check if the rectangular area of cells is empty.
 
-    # top left corner = x, y. depth = (width, height)
-    def has_empty_area(self, x, y, depth=(1, 1)):
+        All cells in the area must be empty (0) and within the map bounds.
+
+        Args:
+            x (int): The x index of the area's top-left cell.
+            y (int): The y index of the area's top-left cell.
+            depth (tuple[int, int], optional): The width and height of the area. Defaults to (1, 1).
+
+        Returns:
+            bool: True if the area is entirely empty and within bounds, False otherwise.
+        """
         width, height = depth
         for i in range(height):
             for j in range(width):
-                if not self.cell_in_bounds(x + j, y + i) or self.data[y + i][x + j] != 0:
+                if not self.cell_in_bounds(x + j, y + i) or self._data[y + i][x + j] != 0:
                     return False
         return True
 
-    # top left corner = x, y. depth = (width, height). tile_id @ corner. -tile_id @ rest.
-    def add_tile(self, x, y, tile_id, depth=(1, 1)):
-        width, height = depth
-        if not self.has_empty_area(x, y, depth):
-            return False
+    def is_area_in_bounds(self, x, y, depth=(1, 1)):
+        """ Check if the rectangular area of cells is within the map bounds.
 
-        for i in range(height):
-            for j in range(width):
-                if i == 0 and j == 0:
-                    self.insert_cell(x + j, y + i, tile_id)
-                else:
-                    self.insert_cell(x + j, y + i, -tile_id)
-        return True
+        Args:
+            x (int): The x index of the area's top-left cell.
+            y (int): The y index of the area's top-left cell.
+            depth (tuple[int, int], optional): The width and height of the area. Defaults to (1, 1).
 
-    def area_in_bounds(self, x, y, depth=(1, 1)):
+        Returns:
+            bool: True if the area is entirely within bounds, False otherwise.
+        """
         width, height = depth
         for i in range(height):
             for j in range(width):
@@ -148,23 +252,75 @@ class Map:
                     return False
         return True
 
-    # top left corner = x, y. depth = (width, height). (rename to remove_area?)
-    def remove_tile(self, x, y, depth=(1, 1)):
+    def add_multi_tile(self, x, y, tile_id, depth=(1, 1)):
+        """ Add a multi-tile area to the map.
+
+        Places a tile with the given tile_id at the area's top-left cell (x, y),
+        and fills the rest of the cells in the area with -tile_id.
+
+        Args:
+            x (int): The x index of the area's top-left cell.
+            y (int): The y index of the area's top-left cell.
+            tile_id (int): The tile ID to set at the top-left cell.
+            depth (tuple[int, int], optional): The width and height of the area. Defaults to (1, 1).
+
+        Returns:
+            bool: True if the area was added successfully,
+                False if the area is not empty or if any cell in the area is out of bounds.
+        """
         width, height = depth
-        if not self.area_in_bounds(x, y, depth):
+        if not self.is_empty_area(x, y, depth):
             return False
 
         for i in range(height):
             for j in range(width):
-                self.remove_cell(x + j, y + i)
+                if i == 0 and j == 0:
+                    self.set_tile_at_cell(x + j, y + i, tile_id)
+                else:
+                    self.set_tile_at_cell(x + j, y + i, -tile_id)
         return True
 
-    # find the nearest topleft corner of a tile with the given tile_id.
-    # starting from x, y. max depth = (width, height).
-    def find_nearest_corner(self, x, y, tile_id, depth=(1, 1)):
+    def remove_multi_tile(self, x, y, depth=(1, 1)):
+        """ Remove all tiles from the rectangular area of cells.
+
+        Args:
+            x (int): The x index of the area's top-left cell.
+            y (int): The y index of the area's top-left cell.
+            depth (tuple[int, int], optional): The width and height of the area. Defaults to (1, 1).
+
+        Returns:
+            bool: True if the area was removed successfully, False if any cell is out of bounds.
+        """
+        width, height = depth
+        if not self.is_area_in_bounds(x, y, depth):
+            return False
+
+        for i in range(height):
+            for j in range(width):
+                self.set_tile_at_cell(x + j, y + i, 0)
+        return True
+
+    def find_nearest_tile_corner(self, x, y, tile_id, depth=(1, 1)):
+        """ Find the nearest top-left cell of a tile in area with the given tile_id.
+
+        If given tile_id is positive, only the starting cell (x, y) is checked.
+        If given tile_id is negative, searches for the nearest cell with the same absolute tile id.
+
+        Searches in a diamond pattern from the starting cell (x, y) and expanding outwards.
+        The search area is limited to the given depth in both x and y directions from the center.
+
+        Args:
+            x (int): The x index of the starting cell (center of the area).
+            y (int): The y index of the starting cell (center of the area).
+            tile_id (int): The tile ID to search for.
+            depth (tuple[int, int], optional): The x and y distance from center. Defaults to (1, 1).
+
+        Returns:
+            tuple[int, int] or None: The cell indices of the corner if found, None otherwise.
+        """
         max_x, max_y = depth
         if tile_id > 0:
-            return (x, y) if self.get_cell(x, y) == tile_id else None
+            return (x, y) if self.get_tile_at_cell(x, y) == tile_id else None
 
         for distance in range(1, max_x + max_y + 1):
             for i in range(0, min(distance, max_x) + 1):
@@ -177,16 +333,15 @@ class Map:
                 if not self.cell_in_bounds(check_x, check_y):
                     continue
 
-                if self.get_cell(check_x, check_y) == -tile_id:
+                if self.get_tile_at_cell(check_x, check_y) == -tile_id:
                     return (check_x, check_y)
 
         return None
 
     def is_map_viable(self):
-        if not self.has_spawn():
-            return False
+        """ Check if the map has a valid start and end point.
 
-        if not self.has_end():
-            return False
-
-        return True
+        Returns:
+            bool: True if the map has a valid start and end point, False otherwise.
+        """
+        return self.contains_tile(constants.TILE_SPAWN) and self.contains_tile(constants.TILE_END)
