@@ -44,14 +44,14 @@ class TestLevel(unittest.TestCase):
         self.assertIsNotNone(self.level._sprites.cursor)
         self.assertIsNotNone(self.level._sprites.blocks)
         self.assertIsNotNone(self.level._sprites.enemies)
-        self.assertIsNotNone(self.level._sprites.all)
+        self.assertIsNotNone(self.level._sprites.world)
 
         self.assertEqual(len(self.level._map_objects), self.placeable)
         self.assertEqual(len(self.level._sprites.enemies), self.enemies)
         self.assertEqual(len(self.level._sprites.blocks),
                          self.blocks + self.placeable)
 
-        self.assertEqual(len(self.level._sprites.all),
+        self.assertEqual(len(self.level._sprites.world),
                          self.enemies + self.blocks + self.placeable + 2)
 
         self.assertEqual(self.level._sprites.player.charges, 3)
@@ -81,7 +81,7 @@ class TestLevel(unittest.TestCase):
         self.assertEqual(len(self.level._map_objects), self.placeable + 1)
         self.assertEqual(len(self.level._sprites.blocks),
                          self.blocks + self.placeable + 1)
-        self.assertEqual(len(self.level._sprites.all),
+        self.assertEqual(len(self.level._sprites.world),
                          self.enemies + self.blocks + self.placeable + 3)
         self.assertEqual(self.level._sprites.player.charges, 2)
 
@@ -90,7 +90,7 @@ class TestLevel(unittest.TestCase):
         self.assertEqual(len(self.level._map_objects), self.placeable)
         self.assertEqual(len(self.level._sprites.blocks),
                          self.blocks + self.placeable)
-        self.assertEqual(len(self.level._sprites.all),
+        self.assertEqual(len(self.level._sprites.world),
                          self.enemies + self.blocks + self.placeable + 2)
         self.assertEqual(self.level._sprites.player.charges, 3)
 
@@ -99,7 +99,7 @@ class TestLevel(unittest.TestCase):
         self.assertEqual(len(self.level._map_objects), self.placeable)
         self.assertEqual(len(self.level._sprites.blocks),
                          self.blocks + self.placeable)
-        self.assertEqual(len(self.level._sprites.all),
+        self.assertEqual(len(self.level._sprites.world),
                          self.enemies + self.blocks + self.placeable + 2)
         self.assertEqual(self.level._sprites.player.charges, 3)
 
@@ -108,7 +108,7 @@ class TestLevel(unittest.TestCase):
         self.assertEqual(len(self.level._map_objects), self.placeable)
         self.assertEqual(len(self.level._sprites.blocks),
                          self.blocks + self.placeable)
-        self.assertEqual(len(self.level._sprites.all),
+        self.assertEqual(len(self.level._sprites.world),
                          self.enemies + self.blocks + self.placeable + 2)
         self.assertEqual(self.level._sprites.player.charges, 3)
 
@@ -118,7 +118,7 @@ class TestLevel(unittest.TestCase):
         self.assertEqual(len(self.level._map_objects), self.placeable)
         self.assertEqual(len(self.level._sprites.blocks),
                          self.blocks + self.placeable)
-        self.assertEqual(len(self.level._sprites.all),
+        self.assertEqual(len(self.level._sprites.world),
                          self.enemies + self.blocks + self.placeable + 2)
         self.assertEqual(self.level._sprites.player.charges, 0)
 
@@ -128,7 +128,7 @@ class TestLevel(unittest.TestCase):
         self.assertEqual(len(self.level._map_objects), self.placeable + 1)
         self.assertEqual(len(self.level._sprites.blocks),
                          self.blocks + self.placeable + 1)
-        self.assertEqual(len(self.level._sprites.all),
+        self.assertEqual(len(self.level._sprites.world),
                          self.enemies + self.blocks + self.placeable + 3)
 
     def test_input_mouse_remove_placeable_valid(self):
@@ -137,7 +137,7 @@ class TestLevel(unittest.TestCase):
         self.assertEqual(len(self.level._map_objects), self.placeable)
         self.assertEqual(len(self.level._sprites.blocks),
                          self.blocks + self.placeable)
-        self.assertEqual(len(self.level._sprites.all),
+        self.assertEqual(len(self.level._sprites.world),
                          self.enemies + self.blocks + self.placeable + 2)
         self.assertEqual(self.level._sprites.player.charges, 3)
 
@@ -149,7 +149,7 @@ class TestLevel(unittest.TestCase):
         self.assertEqual(len(self.level._map_objects), self.placeable + 1)
         self.assertEqual(len(self.level._sprites.blocks),
                          self.blocks + self.placeable + 1)
-        self.assertEqual(len(self.level._sprites.all),
+        self.assertEqual(len(self.level._sprites.world),
                          self.enemies + self.blocks + self.placeable + 3)
         self.assertEqual(self.level._sprites.player.charges, 2)
 
@@ -160,7 +160,7 @@ class TestLevel(unittest.TestCase):
         self.assertEqual(len(self.level._map_objects), self.placeable)
         self.assertEqual(len(self.level._sprites.blocks),
                          self.blocks + self.placeable)
-        self.assertEqual(len(self.level._sprites.all),
+        self.assertEqual(len(self.level._sprites.world),
                          self.enemies + self.blocks + self.placeable + 2)
         self.assertEqual(self.level._sprites.player.charges, 3)
 
@@ -204,14 +204,14 @@ class TestLevel(unittest.TestCase):
         enemy.rect.y = 0
         self.level._check_entities_in_bounds()
         self.assertEqual(len(self.level._sprites.enemies), self.enemies)
-        self.assertEqual(len(self.level._sprites.all),
+        self.assertEqual(len(self.level._sprites.world),
                          self.enemies + self.blocks + self.placeable + 2)
 
         # right horizontal limit
         enemy.rect.x = 1500
         self.level._check_entities_in_bounds()
         self.assertEqual(len(self.level._sprites.enemies), self.enemies - 1)
-        self.assertEqual(len(self.level._sprites.all),
+        self.assertEqual(len(self.level._sprites.world),
                          self.enemies + self.blocks + self.placeable + 1)
 
     def test_check_entities_in_bounds_enemy_vertical(self):
@@ -221,19 +221,19 @@ class TestLevel(unittest.TestCase):
         enemy.rect.y = 0
         self.level._check_entities_in_bounds()
         self.assertEqual(len(self.level._sprites.enemies), self.enemies)
-        self.assertEqual(len(self.level._sprites.all),
+        self.assertEqual(len(self.level._sprites.world),
                          self.enemies + self.blocks + self.placeable + 2)
 
         # out of bounds above is fine
         enemy.rect.y = -400
         self.level._check_entities_in_bounds()
         self.assertEqual(len(self.level._sprites.enemies), self.enemies)
-        self.assertEqual(len(self.level._sprites.all),
+        self.assertEqual(len(self.level._sprites.world),
                          self.enemies + self.blocks + self.placeable + 2)
 
         # below limit
         enemy.rect.y = 1500
         self.level._check_entities_in_bounds()
         self.assertEqual(len(self.level._sprites.enemies), self.enemies - 1)
-        self.assertEqual(len(self.level._sprites.all),
+        self.assertEqual(len(self.level._sprites.world),
                          self.enemies + self.blocks + self.placeable + 1)
