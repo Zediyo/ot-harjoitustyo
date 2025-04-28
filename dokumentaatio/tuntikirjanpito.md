@@ -20,4 +20,5 @@
 | 15.4.2025  | 4        | fixes, gameloop + maps tests, cleanup                           |
 | 25.4.2025  | 4        | animations, sprite images                                       |
 | 25.4.2025  | 4        | level editor, level and db tests + db conn class, cleanup       |
-| Total      | 58       |                                                                 |
+| 27.4.2025  | 8        | clean + add docstrings to body and map files. fix tests.        |
+| Total      | 66       |                                                                 |
