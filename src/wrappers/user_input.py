@@ -10,6 +10,6 @@ class UserInput:
 
     def get_mouse_pos(self):
         return pygame.mouse.get_pos()
-    
+
     def get_mouse_pressed(self):
         return pygame.mouse.get_pressed()

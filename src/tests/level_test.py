@@ -34,9 +34,9 @@ class TestLevel(unittest.TestCase):
     def test_init(self):
         self.assertEqual(self.level.level["id"], "1")
         self.assertEqual(self.level.level["name"], "potato")
-        self.assertEqual(self.level._map.data, self.data)
-        self.assertEqual(self.level._map.width, len(self.data[0]))
-        self.assertEqual(self.level._map.height, len(self.data))
+        self.assertEqual(self.level._map._data, self.data)
+        self.assertEqual(self.level._map._width, len(self.data[0]))
+        self.assertEqual(self.level._map._height, len(self.data))
         self.assertIsNotNone(self.level._timer)
 
         self.assertIsNotNone(self.level._sprites.player)

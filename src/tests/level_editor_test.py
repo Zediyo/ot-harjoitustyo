@@ -22,7 +22,7 @@ class TestLevelEditor(unittest.TestCase):
         self.editor = LevelEditor(
             {"id": "1", "name": "potato", "data": self.data})
 
-        data = self.editor._map.data
+        data = self.editor._map._data
 
         self.spawn_location = [(x, y) for y in range(len(data)) for x in range(
             len(data[0])) if data[y][x] == constants.TILE_SPAWN]
@@ -34,6 +34,7 @@ class TestLevelEditor(unittest.TestCase):
             (x * constants.TILE_SIZE, y * constants.TILE_SIZE) for x, y in self.end_location]
 
         self.editor.update(0.01, (0, 0))
+        self.editor._hand = 1
 
     def test_init(self):
         self.assertEqual(self.editor._has_required, {
@@ -45,18 +46,19 @@ class TestLevelEditor(unittest.TestCase):
                          "spawn": True, "end": True})
         self.editor.input_raw(
             [pygame.event.Event(pygame.KEYDOWN, key=pygame.K_5)])
-        self.editor.input_mouse(
+        self.editor.input_mouse_hold(
             "left", (4 * constants.TILE_SIZE, 4 * constants.TILE_SIZE))
         self.assertNotEqual(
-            self.editor._map.get_cell(4, 4), constants.TILE_END)
+            self.editor._map.get_tile_at_cell(4, 4), constants.TILE_END)
 
-        self.editor.input_mouse("right", self.end_screen_location[0])
+        self.editor.input_mouse_hold("right", self.end_screen_location[0])
         self.assertEqual(self.editor._has_required, {
                          "spawn": True, "end": False})
 
-        self.editor.input_mouse(
+        self.editor.input_mouse_hold(
             "left", (4 * constants.TILE_SIZE, 4 * constants.TILE_SIZE))
-        self.assertEqual(self.editor._map.get_cell(4, 4), constants.TILE_END)
+        self.assertEqual(self.editor._map.get_tile_at_cell(
+            4, 4), constants.TILE_END)
         self.assertEqual(self.editor._has_required, {
                          "spawn": True, "end": True})
 
@@ -67,43 +69,45 @@ class TestLevelEditor(unittest.TestCase):
                          "spawn": True, "end": True})
         self.editor.input_raw(
             [pygame.event.Event(pygame.KEYDOWN, key=pygame.K_4)])
-        self.editor.input_mouse(
+        self.editor.input_mouse_hold(
             "left", (4 * constants.TILE_SIZE, 4 * constants.TILE_SIZE))
-        self.assertNotEqual(self.editor._map.get_cell(
+        self.assertNotEqual(self.editor._map.get_tile_at_cell(
             4, 4), constants.TILE_SPAWN)
 
-        self.editor.input_mouse("right", self.spawn_screen_location[0])
+        self.editor.input_mouse_hold("right", self.spawn_screen_location[0])
         self.assertEqual(self.editor._has_required, {
                          "spawn": False, "end": True})
 
-        self.editor.input_mouse(
+        self.editor.input_mouse_hold(
             "left", (4 * constants.TILE_SIZE, 4 * constants.TILE_SIZE))
-        self.assertEqual(self.editor._map.get_cell(4, 4), constants.TILE_SPAWN)
+        self.assertEqual(self.editor._map.get_tile_at_cell(
+            4, 4), constants.TILE_SPAWN)
         self.assertEqual(self.editor._has_required, {
                          "spawn": True, "end": True})
 
     def test_input_add_and_remove_enemy(self):
         self.editor.input_raw(
             [pygame.event.Event(pygame.KEYDOWN, key=pygame.K_3)])
-        self.editor.input_mouse(
+        self.editor.input_mouse_hold(
             "left", (4 * constants.TILE_SIZE, 4 * constants.TILE_SIZE))
-        self.assertEqual(self.editor._map.get_cell(4, 4), constants.TILE_ENEMY)
+        self.assertEqual(self.editor._map.get_tile_at_cell(
+            4, 4), constants.TILE_ENEMY)
 
-        self.editor.input_mouse(
+        self.editor.input_mouse_hold(
             "right", (4 * constants.TILE_SIZE, 4 * constants.TILE_SIZE))
-        self.assertEqual(self.editor._map.get_cell(4, 4), 0)
+        self.assertEqual(self.editor._map.get_tile_at_cell(4, 4), 0)
 
     def test_input_add_and_remove_placeable(self):
         self.editor.input_raw(
             [pygame.event.Event(pygame.KEYDOWN, key=pygame.K_2)])
-        self.editor.input_mouse(
+        self.editor.input_mouse_hold(
             "left", (4 * constants.TILE_SIZE, 4 * constants.TILE_SIZE))
-        self.assertEqual(self.editor._map.get_cell(
+        self.assertEqual(self.editor._map.get_tile_at_cell(
             4, 4), constants.TILE_PLACEABLE)
 
-        self.editor.input_mouse(
+        self.editor.input_mouse_hold(
             "right", (4 * constants.TILE_SIZE, 4 * constants.TILE_SIZE))
-        self.assertEqual(self.editor._map.get_cell(4, 4), 0)
+        self.assertEqual(self.editor._map.get_tile_at_cell(4, 4), 0)
 
     def test_input_add_and_remove_block(self):
         # cant add block on top of spawn
@@ -111,18 +115,20 @@ class TestLevelEditor(unittest.TestCase):
             [pygame.event.Event(pygame.KEYDOWN, key=pygame.K_1)])
         (screen_x, screen_y) = self.spawn_screen_location[0]
         (x, y) = self.spawn_location[0]
-        self.editor.input_mouse("left", (screen_x, screen_y))
-        self.assertEqual(self.editor._map.get_cell(x, y), constants.TILE_SPAWN)
+        self.editor.input_mouse_hold("left", (screen_x, screen_y))
+        self.assertEqual(self.editor._map.get_tile_at_cell(
+            x, y), constants.TILE_SPAWN)
         self.assertEqual(self.editor._has_required, {
                          "spawn": True, "end": True})
 
-        self.editor.input_mouse(
+        self.editor.input_mouse_hold(
             "left", (4 * constants.TILE_SIZE, 4 * constants.TILE_SIZE))
-        self.assertEqual(self.editor._map.get_cell(4, 4), constants.TILE_BLOCK)
+        self.assertEqual(self.editor._map.get_tile_at_cell(
+            4, 4), constants.TILE_BLOCK)
 
-        self.editor.input_mouse(
+        self.editor.input_mouse_hold(
             "right", (4 * constants.TILE_SIZE, 4 * constants.TILE_SIZE))
-        self.assertEqual(self.editor._map.get_cell(4, 4), 0)
+        self.assertEqual(self.editor._map.get_tile_at_cell(4, 4), 0)
 
     def test_remove_large_tile(self):
         # remove spawn (2x2) tile
@@ -135,8 +141,8 @@ class TestLevelEditor(unittest.TestCase):
 
         (x, y) = self.spawn_location[0]
 
-        self.editor.input_mouse("right", (screen_x, screen_y))
+        self.editor.input_mouse_hold("right", (screen_x, screen_y))
 
-        self.assertEqual(self.editor._map.get_cell(x + 1, y + 1), 0)
+        self.assertEqual(self.editor._map.get_tile_at_cell(x + 1, y + 1), 0)
         self.assertEqual(self.editor._has_required, {
                          "spawn": False, "end": True})

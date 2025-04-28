@@ -35,6 +35,9 @@ class StubUserInput:
     def get_mouse_pos(self):
         return self.mouse_pos
 
+    def get_mouse_pressed(self):
+        return [False, False, False]
+
 
 class StubDisplay:
     def fill(self, color):

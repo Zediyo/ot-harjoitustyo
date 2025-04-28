@@ -54,6 +54,7 @@ class LevelEditor(Scene):
             self._add_to_map(pos)
         elif click == "right":
             self._remove_from_map(pos)
+        return
 
     def input_raw(self, events):
         for event in events:
@@ -71,13 +72,13 @@ class LevelEditor(Scene):
 
     def update(self, dt, mouse_pos):
         self._ui.update(mouse_pos)
-        self._cursor.update(self._map.screen_pos_to_grid(mouse_pos), None)
+        self._cursor.update(self._map.snap_to_grid(mouse_pos), None)
 
     def cleanup(self):
         return self._cursor.kill()
 
     def _add_to_map(self, pos):
-        x, y = self._map.screen_pos_to_cell(pos)
+        x, y = self._map.screen_to_cell_index(pos)
 
         updated = self._add_tile_to_map(x, y, self._hand)
 
@@ -88,28 +89,30 @@ class LevelEditor(Scene):
     def _add_tile_to_map(self, x, y, tile):
         # normal, placeable - 1x1 no limit
         if tile in (constants.TILE_BLOCK, constants.TILE_PLACEABLE):
-            if self._map.get_cell(x, y) == 0:
-                return self._map.insert_cell(x, y, tile)
+            if self._map.get_tile_at_cell(x, y) == 0:
+                return self._map.set_tile_at_cell(x, y, tile)
 
         # player spawn - 2x2 max 1
         if tile == constants.TILE_SPAWN:
-            if not self._map.has_spawn() and self._map.has_empty_area(x, y, (2, 2)):
-                return self._map.add_tile(x, y, tile, (2, 2))
+            if not self._map.contains_tile(constants.TILE_SPAWN) \
+                    and self._map.is_empty_area(x, y, (2, 2)):
+                return self._map.add_multi_tile(x, y, tile, (2, 2))
 
         # enemy spawn - 2x2 no limit
         if tile == constants.TILE_ENEMY:
-            if self._map.has_empty_area(x, y, (2, 2)):
-                return self._map.add_tile(x, y, tile, (2, 2))
+            if self._map.is_empty_area(x, y, (2, 2)):
+                return self._map.add_multi_tile(x, y, tile, (2, 2))
 
         # end - 1x1 max 1
         if tile == constants.TILE_END:
-            if not self._map.has_end() and self._map.get_cell(x, y) == 0:
-                return self._map.insert_cell(x, y, tile)
+            if not self._map.contains_tile(constants.TILE_END) \
+                    and self._map.get_tile_at_cell(x, y) == 0:
+                return self._map.set_tile_at_cell(x, y, tile)
 
         return False
 
     def _remove_from_map(self, pos):
-        x, y = self._map.screen_pos_to_cell(pos)
+        x, y = self._map.screen_to_cell_index(pos)
 
         updated = self._remove_tile_from_map(x, y)
 
@@ -118,25 +121,25 @@ class LevelEditor(Scene):
             self._update_required()
 
     def _remove_tile_from_map(self, x, y):
-        tile = self._map.get_cell(x, y)
+        tile = self._map.get_tile_at_cell(x, y)
         if tile == 0:
             return False
 
         # 1x1 tiles
         if tile in (constants.TILE_BLOCK, constants.TILE_PLACEABLE, constants.TILE_END):
-            return self._map.remove_cell(x, y)
+            return self._map.set_tile_at_cell(x, y, 0)
 
         # 2x2 tiles
         if tile in (constants.TILE_SPAWN, constants.TILE_ENEMY):
-            return self._map.remove_tile(x, y, (2, 2))
+            return self._map.remove_multi_tile(x, y, (2, 2))
 
         if tile < 0:
             if abs(tile) in (constants.TILE_SPAWN, constants.TILE_ENEMY):
-                res = self._map.find_nearest_corner(x, y, tile, (2, 2))
+                res = self._map.find_nearest_tile_corner(x, y, tile, (2, 2))
                 if res is None:
                     return False
                 corner_x, corner_y = res
-                return self._map.remove_tile(corner_x, corner_y, (2, 2))
+                return self._map.remove_multi_tile(corner_x, corner_y, (2, 2))
 
         return False
 
@@ -145,5 +148,6 @@ class LevelEditor(Scene):
             self._map.data, (constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
 
     def _update_required(self):
-        self._has_required["spawn"] = self._map.has_spawn()
-        self._has_required["end"] = self._map.has_end()
+        self._has_required["spawn"] = self._map.contains_tile(
+            constants.TILE_SPAWN)
+        self._has_required["end"] = self._map.contains_tile(constants.TILE_END)

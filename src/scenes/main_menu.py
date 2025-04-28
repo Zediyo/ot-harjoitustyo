@@ -16,7 +16,6 @@ class MainMenu(Scene):
         self._player_sprite.add_image_set(
             "idle", "player_idle_spritesheet.png", (17, 16), 9)
 
-
         self._init_buttons()
 
     def _init_buttons(self):
