@@ -51,16 +51,14 @@ class Player(pygame.sprite.Sprite):
 
     def _get_animation_frame(self):
         # first air frame
-        if self._animation.get_previous_state() == 0 and not self.body.on_floor:
-            self._animation.set_previous_state(1)
-            self._animation.reset_animation()
-            return self._animation.get_frame("move", 0)
+        if self._animation.get_mode() == 0 and not self.body.on_floor:
+            self._animation.change_mode(1, 0)
+            return self._animation.get_frame("move")
 
         # first ground frame
-        if self._animation.get_previous_state() == 1 and self.body.on_floor:
-            self._animation.set_previous_state(0)
-            self._animation.reset_animation()
-            return self._animation.get_frame("move", 7)
+        if self._animation.get_mode() == 1 and self.body.on_floor:
+            self._animation.change_mode(0, 7)
+            return self._animation.get_frame("move")
 
         # jumping or falling
         if not self.body.on_floor:
