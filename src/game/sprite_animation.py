@@ -3,6 +3,7 @@
 import pygame
 from tools.asset_helpers import load_image, get_spritesheet_frames
 
+
 class SpriteAnimation:
     """ Stores and handles sprite animations.
 
@@ -55,7 +56,7 @@ class SpriteAnimation:
 
     def get_frame(self, name, index=-1):
         """ Get a frame from the specified animation set.
-       
+
         Args:
             name (str): The name of the animation set.
             index (int, optional): The index of the frame to retrieve.
@@ -80,7 +81,7 @@ class SpriteAnimation:
 
     def change_mode(self, mode, start_frame=0):
         """ Change the animation mode and reset the animation if mode changes.
-        
+
         Args:
             mode (int): The new animation mode.
             start_frame (int, optional): The frame to start at after mode change.
