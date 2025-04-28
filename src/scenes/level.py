@@ -1,4 +1,3 @@
-import pygame
 import constants
 
 from scenes.scene import Scene
@@ -39,29 +38,22 @@ class Level(Scene):
                 (cell_x, cell_y))
 
             if tile_id == constants.TILE_BLOCK:
-                self._sprites.blocks.add(Block(world_x, world_y))
+                self._sprites.add(Block(world_x, world_y))
             elif tile_id == constants.TILE_PLACEABLE:
                 placeable = Placeable(world_x, world_y)
-                self._sprites.blocks.add(placeable)
+                self._sprites.add(placeable)
                 self._map_objects[(cell_x, cell_y)] = placeable
             elif tile_id == constants.TILE_ENEMY:
-                self._sprites.enemies.add(Enemy(world_x, world_y))
+                self._sprites.add(Enemy(world_x, world_y))
             elif tile_id == constants.TILE_SPAWN:
-                self._sprites.player = Player(world_x, world_y)
+                self._sprites.add(Player(world_x, world_y))
             elif tile_id == constants.TILE_END:
-                self._sprites.end = End(world_x, world_y)
+                self._sprites.add(End(world_x, world_y))
 
-        self._sprites.cursor = TileCursor(3 * self._map.tile_size)
-        self._sprites.all.add(
-            self._sprites.player,
-            self._sprites.blocks,
-            self._sprites.enemies,
-            self._sprites.end,
-        )
+        self._sprites.add(TileCursor(3 * self._map.tile_size))
 
     def draw(self, display):
-        self._sprites.all.draw(display)
-        display.blit(self._sprites.cursor.image, self._sprites.cursor.rect)
+        self._sprites.draw(display)
         self._level_ui.draw(display, self._sprites.player.charges, self._timer)
 
     def input_key(self, key):
@@ -110,20 +102,17 @@ class Level(Scene):
         self._check_end_collisions()
 
     def cleanup(self):
-        for sprite in self._sprites.all:
-            sprite.kill()
+        self._sprites.cleanup()
 
     def _update_cursor(self, pos):
         self._sprites.cursor.update(
             self._map.snap_to_grid(pos), self._sprites.player.rect)
 
     def _add_placeable_to_world(self, cell_x, cell_y):
-        # check if player has placeable blocks in inventory
         if self._sprites.player.charges <= 0:
             return
 
-        # check if area is empty
-        if pygame.sprite.spritecollide(self._sprites.cursor, self._sprites.all, False):
+        if self._sprites.cursor_collides_with_world():
             return
 
         if (cell_x, cell_y) in self._map_objects:
@@ -134,8 +123,7 @@ class Level(Scene):
         placeable = Placeable(world_x, world_y)
         self._map_objects[(cell_x, cell_y)] = placeable
 
-        self._sprites.blocks.add(placeable)
-        self._sprites.all.add(placeable)
+        self._sprites.add(placeable)
 
         # remove -1 from inventory
         self._sprites.player.charges -= 1
@@ -155,11 +143,11 @@ class Level(Scene):
         self._sprites.player.charges += 1
 
     def _check_enemy_collisions(self):
-        if pygame.sprite.spritecollide(self._sprites.player, self._sprites.enemies, False):
+        if self._sprites.player_collides_with_enemy():
             self.set_next_scene("level", self.level)
 
     def _check_end_collisions(self):
-        if pygame.sprite.spritecollide(self._sprites.player, [self._sprites.end], False):
+        if self._sprites.player_collides_with_end():
             self._timer.finish()
 
             self.set_next_scene("endscreen", {
