@@ -32,3 +32,5 @@
 - Lisätty vihollisille animoitu hahmo. (liikkuminen)
 - Paranneltu tietokanta yhdistys koodia.
 - Testattu Level, LevelEditor ja db.
+- Refactoroitu ja putsattu kaikki /game, /scenes ja /sprites luokat.
+- Lisätty täydet docstring dokumentaatiot kaikille /game, /scenes ja /sprites tiedostoille.
