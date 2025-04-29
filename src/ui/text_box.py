@@ -1,10 +1,19 @@
 import pygame
+from typing import Callable
 
 
 class TextBox:
 
-    def __init__(self, font, x, y, width, height, hover_color=(200, 200, 200), bg_color=(64, 64, 64), text_color=(255, 150, 25), border_color=(0, 0, 0), max_length=32):
-        self._rect = pygame.Rect(x, y, width, height)
+    def __init__(
+        self, font, rect: tuple[int, int, int, int],
+        hover_color=(200, 200, 200),
+        bg_color=(64, 64, 64),
+        text_color=(255, 150, 25),
+        border_color=(0, 0, 0),
+        max_length=32,
+        on_submit: Callable | None = None,
+    ):
+        self._rect = pygame.Rect(rect)
         self._font = font
         self._bg_color = bg_color
         self._hover_color = hover_color
@@ -16,6 +25,7 @@ class TextBox:
         self._overflow_offset = 0
         self._max_length = max_length
         self._error_text = None
+        self._on_submit = on_submit
 
     def draw(self, display):
         text = "Enter text..."if not self._text and not self._active else self._text
@@ -42,16 +52,17 @@ class TextBox:
 
     def handle_events(self, events):
         for event in events:
-            if event.type == pygame.KEYDOWN:
-                if self._active:
-                    if event.key == pygame.K_BACKSPACE:
-                        self._text = self._text[:-1]
-                    elif event.key == pygame.K_RETURN:
-                        return self._text
-                    elif len(self._text) < self._max_length:
-                        self._text += event.unicode
+            if event.type == pygame.KEYDOWN and self._active:
+                if event.key == pygame.K_BACKSPACE:
+                    self._text = self._text[:-1]
+                elif event.key == pygame.K_RETURN:
+                    if self._on_submit:
+                        self._on_submit(self._text)
+                    return self._text
+                elif len(self._text) < self._max_length:
+                    self._text += event.unicode
 
-                    self._update_overflow_offset()
+                self._update_overflow_offset()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if self._rect.collidepoint(event.pos):

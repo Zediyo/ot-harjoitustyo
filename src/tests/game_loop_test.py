@@ -228,8 +228,7 @@ class TestGameLoop(unittest.TestCase):
         self.assertFalse(result)
 
     @patch("scenes.main_menu.Button")
-    @patch("pygame.font.SysFont")
-    def test_scene_switch_to_main_menu(self, mock_sysfont, mock_button):
+    def test_scene_switch_to_main_menu(self, mock_button):
         # pygame.font.init()
         self.scene.set_next_scene(SceneName.MAIN_MENU)
 
@@ -251,13 +250,11 @@ class TestGameLoop(unittest.TestCase):
         self.assertIsInstance(game_loop._scene, MainMenu)
         self.assertIsInstance(game_loop._renderer.scene, MainMenu)
         self.assertIsNone(game_loop._scene.get_next_scene())
-        mock_sysfont.assert_called()
         mock_button.assert_called()
 
     @patch("scenes.level_list.generate_level_preview")
     @patch("scenes.level_list.Button")
-    @patch("pygame.font.SysFont")
-    def test_scene_switch_to_level_list(self, mock_sysfont, mock_button, mock_preview):
+    def test_scene_switch_to_level_list(self, mock_button, mock_preview):
         # pygame.font.init()
         self.scene.set_next_scene(SceneName.LEVEL_LIST, False)
 
@@ -280,7 +277,6 @@ class TestGameLoop(unittest.TestCase):
         self.assertIsInstance(game_loop._renderer.scene, LevelList)
         self.assertIsNone(game_loop._scene.get_next_scene())
 
-        mock_sysfont.assert_called()
         mock_button.assert_called()
         mock_preview.assert_called()
 
@@ -390,8 +386,7 @@ class TestGameLoop(unittest.TestCase):
     @patch("scenes.end_screen.generate_level_preview")
     @patch("scenes.level.Level.draw")
     @patch("scenes.level.LevelUI")
-    @patch("pygame.font.SysFont")
-    def test_level_ends_and_changes_to_endscreen(self, mock_font, mock_ui, mock_draw, mock_preview, mock_button):
+    def test_level_ends_and_changes_to_endscreen(self, mock_ui, mock_draw, mock_preview, mock_button):
         self.scene.set_next_scene(SceneName.LEVEL, LevelData(
             1, "potato", TEST_LEVEL_END_DATA))
 
@@ -414,7 +409,6 @@ class TestGameLoop(unittest.TestCase):
         self.assertIsInstance(game_loop._renderer.scene, EndScreen)
         self.assertIsNone(game_loop._scene.get_next_scene())
 
-        mock_font.assert_called()
         mock_ui.assert_called()
         mock_draw.assert_called()
         mock_preview.assert_called()

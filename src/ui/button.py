@@ -1,8 +1,16 @@
 import pygame
+from typing import Callable
 
 
 class Button:
-    def __init__(self, text, font, rect: tuple[int, int, int, int], hover_color=(200, 200, 200), bg_color=(64, 64, 64), text_color=(255, 150, 25), preview=None):
+    def __init__(
+        self, text, font, rect: tuple[int, int, int, int],
+        hover_color=(200, 200, 200),
+        bg_color=(64, 64, 64), text_color=(255, 150, 25),
+        preview=None,
+        on_click: Callable | None = None
+    ):
+        """Create a button."""
         self._rect = pygame.Rect(rect)
         self._font = font
         self._bg_color = bg_color
@@ -14,6 +22,7 @@ class Button:
         self._above_text = None
 
         self._active = True
+        self._on_click = on_click
 
     def draw(self, display, offset_y=0):
         # check if button is on screen.
@@ -47,13 +56,32 @@ class Button:
             display.blit(self._above_text, above_text_rect)
 
     def update(self, mouse_pos, offset_y=0):
+        if not self._active:
+            self._color = self._bg_color
+            return
+
         if self._rect.collidepoint((mouse_pos[0], mouse_pos[1] - offset_y)):
             self._color = self._hover_color
         else:
             self._color = self._bg_color
 
     def is_clicked(self, mouse_pos, offset_y=0):
+        if not self._active:
+            return False
+
         return self._rect.collidepoint((mouse_pos[0], mouse_pos[1] - offset_y))
+
+    def click(self):
+        if self._on_click:
+            self._on_click()
+
+    def set_on_click(self, on_click: Callable):
+        """Set the function to call when the button is clicked.
+
+        Args:
+            on_click (Callable): The function to call when the button is clicked.
+        """
+        self._on_click = on_click
 
     def set_above_text(self, text, color):
         self._above_text = self._font.render(text, True, color)

@@ -1,17 +1,17 @@
 import pygame
 
 from ui.button import Button
-import constants
 from constants import TileType
+from tools.font_manager import FontManager
 
 
 class EditorUI:
     def __init__(self, name):
         self.name = name
-        self._font = pygame.font.Font(None, 24)
+        self._font = FontManager.get_font()
 
-        self._back_button = Button("Back", self._font, 1180, 20, 60, 30)
-        self._save_button = Button("Save", self._font, 1110, 20, 60, 30)
+        self._back_button = Button("Back", self._font, (1180, 20, 60, 30))
+        self._save_button = Button("Save", self._font, (1110, 20, 60, 30))
 
     def draw(self, display, item, required):
         text1 = (

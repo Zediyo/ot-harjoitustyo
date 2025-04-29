@@ -8,7 +8,7 @@ from scenes.scene import Scene
 from game.endscreen_data import EndScreenData
 
 from ui.button import Button
-from ui.button_info import ButtonInfo
+
 
 class EndScreen(Scene):
     """ Scene for the end screen, displayed when a level is completed.
@@ -38,12 +38,12 @@ class EndScreen(Scene):
             data (EndScreenData): The data for the end screen, including level and timer.
         """
         super().__init__()
-        self._font = FontManager.get_font(24, "Arial")
+        self._font = FontManager.get_font()
         self._data = data
 
-        self._preview = (None, None) #(pygame.Surface, pygame.Rect)
-        self._buttons = [] #[ButtonInfo]
-        self._texts = [] #[(pygame.Surface, pygame.Rect)]
+        self._preview = (None, None)  # (pygame.Surface, pygame.Rect)
+        self._buttons = []  # [ButtonInfo]
+        self._texts = []  # [(pygame.Surface, pygame.Rect)]
 
         self._init_preview()
         self._init_buttons()
@@ -51,8 +51,9 @@ class EndScreen(Scene):
 
     def _init_preview(self):
         """Setup the level preview image for the end screen."""
-        preview = generate_level_preview(self._data.level.data, self._PREVIEW_SIZE)
-        
+        preview = generate_level_preview(
+            self._data.level.data, self._PREVIEW_SIZE)
+
         preview_rect = preview.get_rect()
         preview_rect.midtop = self._PREVIEW_POS
 
@@ -60,13 +61,17 @@ class EndScreen(Scene):
 
     def _init_buttons(self):
         """Setup the menu buttons for the end screen."""
-        retry_button = Button("Retry", self._font, self._RETRY_RECT)
-        back_button = Button("Menu", self._font, self._BACK_RECT)
+        retry_button = Button(
+            "Retry", self._font, self._RETRY_RECT,
+            on_click=lambda: self.set_next_scene(
+                SceneName.LEVEL, self._data.level),
+        )
+        back_button = Button(
+            "Menu", self._font, self._BACK_RECT,
+            on_click=lambda: self.set_next_scene(SceneName.LEVEL_LIST, False),
+        )
 
-        self._buttons = [
-            ButtonInfo(retry_button, SceneName.LEVEL, self._data.level),
-            ButtonInfo(back_button, SceneName.LEVEL_LIST, False),
-        ]
+        self._buttons = [retry_button, back_button]
 
     def _init_texts(self):
         """Setup the result texts for level completion and best time."""
@@ -100,8 +105,8 @@ class EndScreen(Scene):
         """
         display.fill(self._BACKGROUND_COLOR)
 
-        for button_info in self._buttons:
-            button_info.button.draw(display)
+        for button in self._buttons:
+            button.draw(display)
 
         display.blit(self._preview[0], self._preview[1])
 
@@ -118,17 +123,17 @@ class EndScreen(Scene):
         if click != InputAction.MOUSE_LEFT:
             return
 
-        for button_info in self._buttons:
-            if button_info.button.is_clicked(pos):
-                self.set_next_scene(button_info.next_scene, button_info.next_scene_data)
+        for button in self._buttons:
+            if button.is_clicked(pos):
+                button.click()
                 break
 
     def update(self, dt, mouse_pos):
         """ Update button hover states based on mouse position.
-        
+
         Args:
             dt (float): The delta time since the last frame.
             mouse_pos (tuple[int, int]): The current mouse position.
         """
-        for button_info in self._buttons:
-            button_info.button.update(mouse_pos)
+        for button in self._buttons:
+            button.update(mouse_pos)

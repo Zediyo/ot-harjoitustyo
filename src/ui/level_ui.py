@@ -1,14 +1,15 @@
 import pygame
 
 from ui.button import Button
+from tools.font_manager import FontManager
 
 
 class LevelUI:
     def __init__(self, name):
         self.name = name
-        self._font = pygame.font.Font(None, 24)
+        self._font = FontManager.get_font()
 
-        self.back_button = Button("Back", self._font, 1180, 20, 60, 30)
+        self.back_button = Button("Back", self._font, (1180, 20, 60, 30))
 
     def draw(self, display, item, timer):
         best_time = timer.get_best_time()

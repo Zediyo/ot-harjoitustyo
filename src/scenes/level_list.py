@@ -1,5 +1,3 @@
-import pygame
-
 from scenes.scene import Scene
 from ui.button import Button
 from ui.text_box import TextBox
@@ -8,6 +6,7 @@ from ui.confirm_box import ConfirmBox
 from tools.db import get_all_levels, get_all_best_times, \
     level_name_exists, delete_level, delete_times
 from tools.preview_generator import generate_level_preview
+from tools.font_manager import FontManager
 
 from constants import SceneName, InputAction, Settings
 from game.level_data import LevelData
@@ -18,8 +17,8 @@ class LevelList(Scene):
 
     def __init__(self, to_editor=True):
         super().__init__()
-        self._font = pygame.font.SysFont("Arial", 24)
-        self._buttons = []
+        self._font = FontManager.get_font()
+        self._buttons = []  # [(Button, scrollable)]
 
         self._to_editor = to_editor
 
@@ -29,75 +28,83 @@ class LevelList(Scene):
         self._text_box = None
         self._confirm_box = None
 
-        self._init_buttons()
+        self._init_static_elements()
         self._init_scrollable_buttons()
 
-    def _init_buttons(self):
-        back_button = Button("Back", self._font, 1000, 25, 200, 50)
-        self._buttons.append((back_button, "mainmenu", None, False))
+    def _init_static_elements(self):
+        """Setup the static elements for the scene."""
+        back_button = Button(
+            "Back", self._font, (1000, 25, 200, 50),
+            on_click=lambda: self.set_next_scene(SceneName.MAIN_MENU, None)
+        )
+        self._buttons.append((back_button, False))
 
         if self._to_editor:
-            new_button = Button("Create Level", self._font, 775, 25, 200, 50)
-            self._buttons.append((new_button, "create", None, False))
+            create_button = Button(
+                "Create Level", self._font, (775, 25, 200, 50),
+                on_click=lambda: self._validate_and_create_level(
+                    self._text_box.get_text())
+            )
+            self._buttons.append((create_button, False))
 
-            self._text_box = TextBox(self._font, 775, 100, 425, 50)
             self._confirm_box = ConfirmBox(self._font, 775, 300, 425, 100)
+            self._text_box = TextBox(
+                self._font, (775, 100, 425, 50),
+                on_submit=self._validate_and_create_level,
+            )
 
     def _init_scrollable_buttons(self):
+        """Setup the scrollable buttons for the level list."""
         levels = get_all_levels()
-        best_times = get_all_best_times()
+        times = get_all_best_times()
         scene = SceneName.EDITOR if self._to_editor else SceneName.LEVEL
 
         for i, level in enumerate(levels):
-            preview = generate_level_preview(level.data, (300, 150))
+            button = Button(
+                f"{level.name}", self._font,
+                (200, 100 + (i * 160), 150, 50),
+                preview=generate_level_preview(level.data, (300, 150)),
+                on_click=lambda level=level: self.set_next_scene(scene, level)
+            )
 
-            button = Button(f"{level.name}", self._font,
-                            200, 100 + (i * 160), 150, 50, preview=preview)
-
-            best_time = best_times.get(level.id, None)
+            time = times.get(level.id, None)
 
             if self._to_editor:
                 button.set_text("Edit")
-
                 self._add_delete_and_clear_button(
-                    i, level.id, level.name, best_time)
+                    i, level.id, level.name, time)
             else:
-                if best_time is not None:
+                if time is not None:
                     button.set_above_text(
-                        f"Best Time: {best_time:.2f}", (50, 200, 50))
+                        f"Best Time: {time:.2f}", (50, 200, 50))
                 else:
                     button.set_above_text("Best Time: --:--", (200, 50, 50))
 
-            self._buttons.append((button, scene, level, True))
-
+            self._buttons.append((button, True))
             self._scrollable_count += 1
 
-    def _add_delete_and_clear_button(self, index, level_id, level_name, best_time):
+    def _add_delete_and_clear_button(self, index, level_id, level_name, time):
+        """Add scrollable delete and clear buttons to a single level entry in the list."""
         delete_button = Button(
-            "Delete", self._font, 200, 65 + (index * 160), 150, 30, text_color=(255, 0, 0))
+            "Delete", self._font,
+            (200, 65 + (index * 160), 150, 30),
+            text_color=(255, 0, 0),
+            on_click=lambda level_id=level_id, level_name=level_name: self._confirm_delete_level(
+                level_id, level_name)
+        )
         delete_button.set_above_text(f"{level_name}", (50, 200, 50))
+        self._buttons.append((delete_button, True))
 
-        self._buttons.append((
-            delete_button,
-            "confirm",
-            {"action": "delete", "id": level_id,  "name": level_name,
-                "text": f"Delete map {level_id}: {level_name}?"},
-            True,
-        ))
-
-        if best_time is not None:
+        if time is not None:
             clear_button = Button(
                 "Clear Times", self._font,
-                200, 155 + (index * 160), 150, 30,
-                text_color=(200, 50, 50))
+                (200, 155 + (index * 160), 150, 30),
+                text_color=(200, 50, 50),
+                on_click=lambda level_id=level_id, level_name=level_name: self._confirm_clear_times(
+                    level_id, level_name)
+            )
 
-            self._buttons.append((
-                clear_button,
-                "confirm",
-                {"action": "clear", "id": level_id,  "name": level_name,
-                    "text": f"Clear times for map {level_id}: {level_name}?"},
-                True,
-            ))
+            self._buttons.append((clear_button, True))
 
     def draw(self, display):
         display.fill((128, 128, 128))
@@ -108,16 +115,16 @@ class LevelList(Scene):
         if self._confirm_box:
             self._confirm_box.draw(display)
 
-        for (button, _, _, scrollable) in self._buttons:
+        for (button, scrollable) in self._buttons:
             offset = 0 if not scrollable else self._scroll
             button.draw(display, offset)
 
     def input_mouse(self, click, pos):
         if click == InputAction.MOUSE_LEFT:
-            for (button, next_scene, next_scene_data, scrollable) in self._buttons:
+            for (button, scrollable) in self._buttons:
                 offset = 0 if not scrollable else self._scroll
                 if button.is_clicked(pos, offset):
-                    self._handle_button_click(next_scene, next_scene_data)
+                    button.click()
                     break
         # update scroll offsets
         elif click == InputAction.MOUSE_SCROLL_UP:
@@ -128,31 +135,19 @@ class LevelList(Scene):
             self._scroll = max(self._scroll, -self._scrollable_count
                                * 160 + Settings.SCREEN_HEIGHT - 100)
 
-    def _handle_button_click(self, next_scene, next_scene_data):
-        if next_scene == "create":
-            self._handle_new_level_text_input()
-        elif next_scene == "confirm":
-            self._activate_confirm_box(next_scene_data)
-        else:
-            self.set_next_scene(next_scene, next_scene_data)
-
     def update(self, dt, mouse_pos):
-        for (button, _, _, scrollable) in self._buttons:
+        for (button, scrollable) in self._buttons:
             offset = 0 if not scrollable else self._scroll
             button.update(mouse_pos, offset)
 
     def input_raw(self, events):
         if self._text_box:
-            res = self._text_box.handle_events(events)
-            if res is not None:
-                self._handle_new_level_text_input()
+            self._text_box.handle_events(events)
 
         if self._confirm_box:
-            res = self._confirm_box.handle_events(events)
-            if res is not None:
-                self._handle_confirm_box_action()
+            self._confirm_box.handle_events(events)
 
-    def _handle_new_level_text_input(self):
+    def _validate_and_create_level(self, text):
         text = self._text_box.get_text().strip()
         self._text_box.set_error_text(None)
 
@@ -176,26 +171,34 @@ class LevelList(Scene):
             return
 
         # go to level editor with new level name
-        self.set_next_scene(SceneName.EDITOR, LevelData(
-            id=-1, name=text, data=[[]]))
+        self.set_next_scene(
+            SceneName.EDITOR,
+            LevelData(id=-1, name=text, data=[[]])
+        )
 
-    def _handle_confirm_box_action(self):
+    def _clear_times(self, level_id):
         self._confirm_box.set_active(False)
-
-        action = self._confirm_box.get_data()
-        if action is None:
-            return
-
-        if action["action"] == "delete":
-            delete_level(action["id"])
-
-        elif action["action"] == "clear":
-            delete_times(action["id"])
-
+        delete_times(level_id)
         self.set_next_scene(SceneName.LEVEL_LIST, True)
 
-    def _activate_confirm_box(self, data):
+    def _delete_level(self, level_id):
+        self._confirm_box.set_active(False)
+        delete_level(level_id)
+        self.set_next_scene(SceneName.LEVEL_LIST, True)
+
+    def _confirm_clear_times(self, level_id, level_name):
         if self._confirm_box:
-            self._confirm_box.set_data(data)
-            self._confirm_box.set_text(data["text"])
+            self._confirm_box.set_text(
+                f"Clear times for map {level_id}: {level_name}?")
+            self._confirm_box.set_action(
+                lambda level_id=level_id: self._clear_times(level_id)
+            )
+            self._confirm_box.set_active(True)
+
+    def _confirm_delete_level(self, level_id, level_name):
+        if self._confirm_box:
+            self._confirm_box.set_text(f"Delete map {level_id}: {level_name}?")
+            self._confirm_box.set_action(
+                lambda level_id=level_id: self._delete_level(level_id)
+            )
             self._confirm_box.set_active(True)

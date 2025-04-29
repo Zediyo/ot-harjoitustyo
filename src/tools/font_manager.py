@@ -1,9 +1,12 @@
 import pygame
 
+
 class DummyFont:
     """Dummy font class used when pygame.font is not initialized."""
+
     def render(self, _text, _antialias, _color):
         return pygame.Surface((1, 1))
+
 
 class FontManager:
     _fonts = {}
