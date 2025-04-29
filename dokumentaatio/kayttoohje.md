@@ -53,7 +53,7 @@ Back napilla pääset takaisin aloitusruutuun.
 
 ![editor1](./kuvat/editori1.png)
 
-Delete ja Clear Times nappulat varmistavat että varmasti haluat suorittaa toiminnon.
+Delete ja Clear Times nappulat varmistavat että haluat suorittaa toiminnon.
 
 ![confirm1](./kuvat/confirm1.png)
 
