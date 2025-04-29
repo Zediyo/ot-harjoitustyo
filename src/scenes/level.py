@@ -1,8 +1,6 @@
 """ Contains the Level scene class, which manages the game level."""
 
-import constants
-
-from constants import SceneName, TileType, Input
+from constants import SceneName, TileType, InputAction, Settings
 from scenes.scene import Scene
 
 from sprites.block import Block
@@ -67,7 +65,7 @@ class Level(Scene):
                 self._sprites.add(End(world_x, world_y))
 
         self._sprites.add(TileCursor(
-            constants.CURSOR_TILE_RANGE * self._map.tile_size))
+            Settings.CURSOR_TILE_RANGE * self._map.tile_size))
 
     def draw(self, display):
         """ Draw the level and all sprites to the display. 
@@ -82,30 +80,30 @@ class Level(Scene):
         """ Handle keyboard input for player movement and actions.
 
         Args:
-            key (Input): The key pressed.
+            key (InputAction): The key pressed.
         """
         self._timer.activate()
 
-        if key == Input.LEFT:
+        if key == InputAction.LEFT:
             self._sprites.player.add_input(-1, 0)
-        elif key == Input.RIGHT:
+        elif key == InputAction.RIGHT:
             self._sprites.player.add_input(1, 0)
-        elif key == Input.JUMP:
+        elif key == InputAction.JUMP:
             self._sprites.player.add_input(0, -1)
-        elif key == Input.DOWN:
+        elif key == InputAction.DOWN:
             self._sprites.player.add_input(0, 1)
 
     def input_mouse(self, click, pos):
         """ Handle mouse input for placing and removing objects and UI interactions.
 
         Args:
-            click (Input): The mouse button clicked.
+            click (InputAction): The mouse button clicked.
             pos (tuple[int,int]): The position of the mouse click.
         """
 
         self._update_cursor(pos)
 
-        if click == Input.MOUSE_LEFT and self._level_ui.is_back_clicked(pos):
+        if click == InputAction.MOUSE_LEFT and self._level_ui.is_back_clicked(pos):
             self.set_next_scene(SceneName.LEVEL_LIST, False)
 
         cell_x, cell_y = self._map.screen_to_cell_index(pos)
@@ -116,9 +114,9 @@ class Level(Scene):
         if not self._sprites.cursor.in_range:
             return
 
-        if click == Input.MOUSE_LEFT:
+        if click == InputAction.MOUSE_LEFT:
             self._add_placeable_to_world(cell_x, cell_y)
-        elif click == Input.MOUSE_RIGHT:
+        elif click == InputAction.MOUSE_RIGHT:
             self._remove_placeable_from_world(cell_x, cell_y)
 
     def update(self, dt, mouse_pos):
@@ -237,12 +235,12 @@ class Level(Scene):
         right = self._sprites.player.rect.right
         top = self._sprites.player.rect.top
         if right < 0 or \
-            left > constants.SCREEN_WIDTH or \
-                top > constants.SCREEN_HEIGHT:
+            left > Settings.SCREEN_WIDTH or \
+                top > Settings.SCREEN_HEIGHT:
             self.set_next_scene(SceneName.LEVEL, self._level)
 
         for sprite in self._sprites.enemies:
             if sprite.rect.right < 0 or \
-                sprite.rect.left > constants.SCREEN_WIDTH or \
-                    sprite.rect.top > constants.SCREEN_HEIGHT:
+                sprite.rect.left > Settings.SCREEN_WIDTH or \
+                    sprite.rect.top > Settings.SCREEN_HEIGHT:
                 sprite.kill()

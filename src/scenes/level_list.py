@@ -1,7 +1,5 @@
 import pygame
 
-import constants
-
 from scenes.scene import Scene
 from ui.button import Button
 from ui.text_box import TextBox
@@ -11,7 +9,7 @@ from tools.db import get_all_levels, get_all_best_times, \
     level_name_exists, delete_level, delete_times
 from tools.preview_generator import generate_level_preview
 
-from constants import SceneName, Input
+from constants import SceneName, InputAction, Settings
 from game.level_data import LevelData
 
 
@@ -115,20 +113,20 @@ class LevelList(Scene):
             button.draw(display, offset)
 
     def input_mouse(self, click, pos):
-        if click == Input.MOUSE_LEFT:
+        if click == InputAction.MOUSE_LEFT:
             for (button, next_scene, next_scene_data, scrollable) in self._buttons:
                 offset = 0 if not scrollable else self._scroll
                 if button.is_clicked(pos, offset):
                     self._handle_button_click(next_scene, next_scene_data)
                     break
         # update scroll offsets
-        elif click == Input.MOUSE_SCROLL_UP:
+        elif click == InputAction.MOUSE_SCROLL_UP:
             self._scroll += self._SCROLL_SPEED
             self._scroll = min(self._scroll, 0)
-        elif click == Input.MOUSE_SCROLL_DOWN and self._scrollable_count > 4:
+        elif click == InputAction.MOUSE_SCROLL_DOWN and self._scrollable_count > 4:
             self._scroll -= self._SCROLL_SPEED
             self._scroll = max(self._scroll, -self._scrollable_count
-                               * 160 + constants.SCREEN_HEIGHT - 100)
+                               * 160 + Settings.SCREEN_HEIGHT - 100)
 
     def _handle_button_click(self, next_scene, next_scene_data):
         if next_scene == "create":

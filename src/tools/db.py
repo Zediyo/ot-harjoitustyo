@@ -99,25 +99,26 @@ def get_best_time(level_id):
     return result[0] if result[0] is not None else -1
 
 
-def save_level(name, level_data):
-    if not isinstance(level_data, list) or len(level_data) == 0:
-        return
+def save_level(level_data: LevelData):
+    if not LevelData.is_valid(level_data):
+        return False
 
-    if not isinstance(level_data[0], list) or len(level_data[0]) == 0:
-        return
+    if all(len(row) == 0 for row in level_data.data):
+        return False
 
     conn = get_connection()
-    data = json.dumps(level_data)
+    data = json.dumps(level_data.data)
 
     cursor = conn.cursor()
     cursor.execute("""
         INSERT OR REPLACE INTO levels (name, data) VALUES (?, ?)
             ON CONFLICT(name) DO UPDATE SET data = excluded.data
         """,
-                   (name, data)
+                   (level_data.name, data)
                    )
 
     conn.commit()
+    return True
 
 
 def load_level(level_id) -> LevelData | None:

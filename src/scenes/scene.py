@@ -17,14 +17,14 @@ class Scene():
         """Handle keyboard input.
 
         Args:
-            key (Input): The input action (e.g., Input.LEFT, Input.RIGHT, Input.JUMP).
+            key (InputAction): The input action (e.g., InputAction.LEFT, InputAction.JUMP).
         """
 
     def input_mouse(self, click, pos):
         """Handle mouse button input.
 
         Args:
-            click (Input): The mouse input action (e.g., Input.MOUSE_LEFT, Input.MOUSE_RIGHT).
+            click (InputAction): The mouse input action (e.g., InputAction.MOUSE_LEFT).
             pos (tuple[int, int]): The mouse position (x, y) on screen.
         """
 
@@ -32,7 +32,7 @@ class Scene():
         """Handle mouse button hold input.
 
         Args:
-            click (Input): The mouse input action held down.
+            click (InputAction): The mouse input action held down.
             pos (tuple[int, int]): The mouse position (x, y) on screen.
         """
 

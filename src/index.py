@@ -1,6 +1,6 @@
 import pygame
-import constants
 
+from constants import Settings
 from scenes.main_menu import MainMenu
 from wrappers.user_input import UserInput
 from wrappers.renderer import Renderer
@@ -16,7 +16,7 @@ def main():
     pygame.key.set_repeat(500, 50)
 
     display = pygame.display.set_mode(
-        (constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
+        (Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT))
     pygame.display.set_caption("Game")
 
     scene = MainMenu()

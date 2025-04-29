@@ -1,6 +1,8 @@
 import unittest
 import tools.db as db
-import constants
+
+from constants import TEST_LEVEL_END_DATA
+from game.level_data import LevelData
 
 
 class TestDB(unittest.TestCase):
@@ -52,41 +54,56 @@ class TestDB(unittest.TestCase):
         self.assertEqual(best_time, -1)
 
     def test_save_and_load_level(self):
-        test_level = constants.TEST_LEVEL_END_DATA
+        to_save = LevelData(-1, "potato", TEST_LEVEL_END_DATA)
+        self.assertTrue(LevelData.is_valid(to_save))
 
-        db.save_level("potato", test_level)
+        self.assertTrue(db.save_level(to_save))
         level_id = db.get_level_id("potato")
-        level_data = db.load_level_data(level_id)
+        level_data = db.load_level(level_id)
 
-        self.assertEqual(level_data, test_level)
+        self.assertTrue(LevelData.is_valid(level_data))
+        self.assertEqual(level_data.data, TEST_LEVEL_END_DATA)
 
-    def test_save_and_load_level_invalid_input(self):
-        level_data = db.load_level_data(9999)
-
+    def test_save_and_load_level_invalid_level_data(self):
+        # test random id
+        level_data = db.load_level(9999)
         self.assertEqual(level_data, None)
 
-        db.save_level("potato", [])
-        level_id = db.get_level_id("potato")
+        # try save invalid
+        to_save = LevelData(-1, "potato", [])
+        self.assertFalse(LevelData.is_valid(to_save))
+        self.assertFalse(db.save_level(to_save))
 
+        # test nothing was added
+        level_id = db.get_level_id("potato")
         self.assertEqual(level_id, None)
 
-        level_data = db.load_level_data(level_id)
+        level_data = db.load_level(level_id)
         self.assertEqual(level_data, None)
 
-        db.save_level("potato", [[]])
-        level_id = db.get_level_id("potato")
+    def test_save_and_load_level_valid_but_empty(self):
+        # try save valid but empty
+        to_save = LevelData(-1, "potato", [[]])
+        self.assertTrue(LevelData.is_valid(to_save))
+        self.assertFalse(db.save_level(to_save))
 
+        # test nothing was added
+        level_id = db.get_level_id("potato")
         self.assertEqual(level_id, None)
 
-        level_data = db.load_level_data(level_id)
+        level_data = db.load_level(level_id)
         self.assertEqual(level_data, None)
 
     def test_get_all_levels(self):
-        db.save_level("potato", constants.TEST_LEVEL_END_DATA)
-        db.save_level("peruna", constants.TEST_LEVEL_END_DATA)
+        db.save_level(LevelData(-1, "potato", TEST_LEVEL_END_DATA))
+        db.save_level(LevelData(-1, "peruna", TEST_LEVEL_END_DATA))
 
         levels = db.get_all_levels()
-        level_names = [level[1] for level in levels]
+
+        for level in levels:
+            self.assertTrue(LevelData.is_valid(level))
+
+        level_names = [level.name for level in levels]
 
         self.assertIn("potato", level_names)
         self.assertIn("peruna", level_names)
@@ -119,16 +136,16 @@ class TestDB(unittest.TestCase):
         self.assertFalse(db.level_name_exists("peruna"))
         self.assertFalse(db.level_name_exists("makkaraperunat"))
 
-        db.save_level("potato", constants.TEST_LEVEL_END_DATA)
-        db.save_level("peruna", constants.TEST_LEVEL_END_DATA)
+        db.save_level(LevelData(-1, "potato", TEST_LEVEL_END_DATA))
+        db.save_level(LevelData(-1, "peruna", TEST_LEVEL_END_DATA))
 
         self.assertTrue(db.level_name_exists("potato"))
         self.assertTrue(db.level_name_exists("peruna"))
         self.assertFalse(db.level_name_exists("makkaraperunat"))
 
     def test_delete_level(self):
-        db.save_level("potato", constants.TEST_LEVEL_END_DATA)
-        db.save_level("peruna", constants.TEST_LEVEL_END_DATA)
+        db.save_level(LevelData(-1, "potato", TEST_LEVEL_END_DATA))
+        db.save_level(LevelData(-1, "peruna", TEST_LEVEL_END_DATA))
 
         self.assertTrue(db.level_name_exists("potato"))
         self.assertTrue(db.level_name_exists("peruna"))
@@ -151,8 +168,8 @@ class TestDB(unittest.TestCase):
         self.assertFalse(db.level_name_exists("peruna"))
 
     def test_delete_times(self):
-        db.save_level("potato", constants.TEST_LEVEL_END_DATA)
-        db.save_level("peruna", constants.TEST_LEVEL_END_DATA)
+        db.save_level(LevelData(-1, "potato", TEST_LEVEL_END_DATA))
+        db.save_level(LevelData(-1, "peruna", TEST_LEVEL_END_DATA))
 
         db.save_level_time(1, 123)
         db.save_level_time(1, 321)

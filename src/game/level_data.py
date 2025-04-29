@@ -31,3 +31,26 @@ class LevelData:
         level_id, name, data_json = row
         data = json.loads(data_json)
         return cls(id=level_id, name=name, data=data)
+
+    @classmethod
+    def is_valid(cls, obj) -> bool:
+        """Check if the given data is a valid LevelData object.
+
+        Args:
+            data (any): The data to check.
+
+        Returns:
+            bool: True if the data is a valid LevelData object, False otherwise.
+        """
+        return (
+            isinstance(obj, LevelData) and
+            isinstance(obj.id, int) and
+            isinstance(obj.name, str) and obj.name.strip() != "" and
+            isinstance(obj.data, list) and
+            len(obj.data) > 0 and
+            all(
+                isinstance(row, list) and all(isinstance(cell, int)
+                                              for cell in row)
+                for row in obj.data
+            )
+        )

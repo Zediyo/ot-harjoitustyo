@@ -21,4 +21,5 @@
 | 25.4.2025  | 4        | animations, sprite images                                       |
 | 25.4.2025  | 4        | level editor, level and db tests + db conn class, cleanup       |
 | 27.4.2025  | 8        | clean + add docstrings to body and map files. fix tests.        |
-| Total      | 66       |                                                                 |
+| 28.4.2025  | 6        | docs for sprite, spriteanim, level, timer. large refactoring.   |
+| Total      | 72       |                                                                 |

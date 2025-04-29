@@ -5,7 +5,7 @@ from ui.button import Button
 
 from tools.preview_generator import generate_level_preview
 
-from constants import SceneName, Input
+from constants import SceneName, InputAction
 from game.endscreen_data import EndScreenData
 
 
@@ -73,7 +73,7 @@ class EndScreen(Scene):
             display.blit(text, pos)
 
     def input_mouse(self, click, pos):
-        if click != Input.MOUSE_LEFT:
+        if click != InputAction.MOUSE_LEFT:
             return
 
         for button, next_scene, next_scene_data in self._buttons.values():

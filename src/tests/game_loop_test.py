@@ -1,7 +1,9 @@
 import unittest
 from unittest.mock import patch, MagicMock
+from collections import defaultdict
 
 import pygame
+from constants import Settings, SceneName, TEST_LEVEL_DATA, TEST_LEVEL_END_DATA, InputAction
 from scenes.scene import Scene
 from scenes.main_menu import MainMenu
 from scenes.level_list import LevelList
@@ -9,10 +11,8 @@ from scenes.level import Level
 from scenes.level_editor import LevelEditor
 from scenes.end_screen import EndScreen
 from game_loop import GameLoop
-
-from collections import defaultdict
-
-import constants
+from game.level_data import LevelData
+from game.endscreen_data import EndScreenData
 
 
 class StubUserInput:
@@ -95,7 +95,7 @@ class SimpleScene(Scene):
         self.events.append(("draw", display))
 
         if self.one_loop:
-            self.set_next_scene("test")
+            self.set_next_scene("invalid")
 
         self.one_loop = True
 
@@ -155,14 +155,14 @@ class TestGameLoop(unittest.TestCase):
         game_loop.start()
 
         self.assertEqual(self.scene.events, [
-            ("input_mouse", "left", (100, 200)),
-            ("input_mouse", "right", (300, 100)),
-            ("input_mouse", "scroll_up", (52, 25)),
-            ("input_mouse", "scroll_down", (25, 52)),
-            ("input_key", "left"),
-            ("input_key", "right"),
-            ("input_key", "jump"),
-            ("input_key", "down"),
+            ("input_mouse", InputAction.MOUSE_LEFT, (100, 200)),
+            ("input_mouse", InputAction.MOUSE_RIGHT, (300, 100)),
+            ("input_mouse", InputAction.MOUSE_SCROLL_UP, (52, 25)),
+            ("input_mouse", InputAction.MOUSE_SCROLL_DOWN, (25, 52)),
+            ("input_key", InputAction.LEFT),
+            ("input_key", InputAction.RIGHT),
+            ("input_key", InputAction.JUMP),
+            ("input_key", InputAction.DOWN),
             ("update", 0.1, (25, 25)),
             ("draw", self.renderer.display),
             ("is_done"),
@@ -231,7 +231,7 @@ class TestGameLoop(unittest.TestCase):
     @patch("pygame.font.SysFont")
     def test_scene_switch_to_main_menu(self, mock_sysfont, mock_button):
         # pygame.font.init()
-        self.scene.set_next_scene("mainmenu")
+        self.scene.set_next_scene(SceneName.MAIN_MENU)
 
         self.scene.one_loop = False
         user_input = StubUserInput(break_after=5)
@@ -259,7 +259,7 @@ class TestGameLoop(unittest.TestCase):
     @patch("pygame.font.SysFont")
     def test_scene_switch_to_level_list(self, mock_sysfont, mock_button, mock_preview):
         # pygame.font.init()
-        self.scene.set_next_scene("level_list", "level")
+        self.scene.set_next_scene(SceneName.LEVEL_LIST, False)
 
         self.scene.one_loop = False
         user_input = StubUserInput(break_after=5)
@@ -288,7 +288,7 @@ class TestGameLoop(unittest.TestCase):
     @patch("scenes.level.Level.draw")
     def test_scene_switch_to_level(self, mock_ui, mock_draw):
         self.scene.set_next_scene(
-            "level", {"data": constants.TEST_LEVEL_DATA, "id": 1, "name": "Level 1"})
+            SceneName.LEVEL, LevelData(1, "potato", TEST_LEVEL_DATA))
 
         self.scene.one_loop = False
         user_input = StubUserInput(break_after=5)
@@ -313,7 +313,8 @@ class TestGameLoop(unittest.TestCase):
         mock_draw.assert_called()
 
     def test_scene_switch_to_level_invalid(self):
-        self.scene.set_next_scene("level", {"id": 1, "name": "Level 1"})
+        self.scene.set_next_scene(
+            SceneName.LEVEL, LevelData(1, "potato", None))
 
         self.scene.one_loop = False
         user_input = StubUserInput(break_after=5)
@@ -338,7 +339,7 @@ class TestGameLoop(unittest.TestCase):
     @patch("scenes.level_editor.EditorUI")
     def test_scene_switch_to_editor(self, mock_ui, mock_preview):
         self.scene.set_next_scene(
-            "editor", {"data": constants.TEST_LEVEL_DATA, "id": 1, "name": "Level 1"})
+            SceneName.EDITOR, LevelData(1, "potato", TEST_LEVEL_DATA))
 
         self.scene.one_loop = False
         user_input = StubUserInput(break_after=5)
@@ -363,7 +364,8 @@ class TestGameLoop(unittest.TestCase):
         mock_preview.assert_called()
 
     def test_scene_switch_to_editor_invalid(self):
-        self.scene.set_next_scene("editor", {"id": 1, "name": "Level 1"})
+        self.scene.set_next_scene(
+            SceneName.EDITOR, LevelData(1, "potato", None))
 
         self.scene.one_loop = False
         user_input = StubUserInput(break_after=5)
@@ -390,8 +392,8 @@ class TestGameLoop(unittest.TestCase):
     @patch("scenes.level.LevelUI")
     @patch("pygame.font.SysFont")
     def test_level_ends_and_changes_to_endscreen(self, mock_font, mock_ui, mock_draw, mock_preview, mock_button):
-        self.scene.set_next_scene(
-            "level", {"data": constants.TEST_LEVEL_END_DATA, "id": 1, "name": "Level 1"})
+        self.scene.set_next_scene(SceneName.LEVEL, LevelData(
+            1, "potato", TEST_LEVEL_END_DATA))
 
         self.scene.one_loop = False
         user_input = StubUserInput(break_after=10)
@@ -420,7 +422,7 @@ class TestGameLoop(unittest.TestCase):
 
     def test_change_to_endscreen_invalid(self):
         self.scene.set_next_scene(
-            "endscreen", {"level:": "123", "timer": "123"})
+            SceneName.END_SCREEN, EndScreenData("invalid", "invalid"))
 
         self.scene.one_loop = False
         user_input = StubUserInput(break_after=5)

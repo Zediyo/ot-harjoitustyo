@@ -1,28 +1,26 @@
 import pygame
 
-import constants
-from constants import TileType
-
-from scenes.scene import Scene
-from ui.editor_ui import EditorUI
-from game.map import Map
-
+from constants import TileType, SceneName, InputAction, Settings
 from tools.preview_generator import generate_level_preview
 from tools.db import save_level
 
+from scenes.scene import Scene
+from ui.editor_ui import EditorUI
 from sprites.tile_cursor import TileCursor
+from game.map import Map
+from game.level_data import LevelData
 
 
 class LevelEditor(Scene):
 
-    def __init__(self, level):
+    def __init__(self, level: LevelData):
         super().__init__()
 
         self._level = level
-        self._ui = EditorUI(level["name"])
-        self._map = Map(self._level["data"])
+        self._ui = EditorUI(level.name)
+        self._map = Map(level.data)
         self._map.expand_map()
-        self._hand = 0
+        self._hand = TileType.EMPTY
 
         self._has_required = {"spawn": False, "end": False}
         self.image = None
@@ -38,22 +36,22 @@ class LevelEditor(Scene):
         self._ui.draw(display, self._hand, self._has_required)
 
     def input_mouse(self, click, pos):
-        if click == "left" and self._ui.is_back_clicked(pos):
-            self.set_next_scene("level_list", "editor")
+        if click == InputAction.MOUSE_LEFT and self._ui.is_back_clicked(pos):
+            self.set_next_scene(SceneName.LEVEL_LIST, True)
 
-        if click == "left" and self._ui.is_save_clicked(pos):
+        if click == InputAction.MOUSE_LEFT and self._ui.is_save_clicked(pos):
             self._map.shrink_map()
             if self._map.is_map_viable():
-                save_level(self._level["name"], self._map.data)
-            self.set_next_scene("level_list", "editor")
+                save_level(LevelData(-1, self._level.name, self._map.data))
+            self.set_next_scene(SceneName.LEVEL_LIST, True)
 
     def input_mouse_hold(self, click, pos):
-        if self._hand == 0:
+        if self._hand == TileType.EMPTY:
             return
 
-        if click == "left":
+        if click == InputAction.MOUSE_LEFT:
             self._add_to_map(pos)
-        elif click == "right":
+        elif click == InputAction.MOUSE_RIGHT:
             self._remove_from_map(pos)
         return
 
@@ -146,7 +144,7 @@ class LevelEditor(Scene):
 
     def _update_image(self):
         self.image = generate_level_preview(
-            self._map.data, (constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
+            self._map.data, (Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT))
 
     def _update_required(self):
         self._has_required["spawn"] = self._map.contains_tile(TileType.SPAWN)

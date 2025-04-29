@@ -1,7 +1,7 @@
 from game.map import Map
 import unittest
 
-import constants
+from constants import TileType
 
 
 class TestMap(unittest.TestCase):
@@ -154,14 +154,14 @@ class TestMap(unittest.TestCase):
 
     def test_map_validity_checks(self):
         self.assertFalse(self.map.is_map_viable())
-        self.assertFalse(self.map.contains_tile(constants.TILE_SPAWN))
-        self.map.set_tile_at_cell(5, 5, constants.TILE_SPAWN)
-        self.assertTrue(self.map.contains_tile(constants.TILE_SPAWN))
+        self.assertFalse(self.map.contains_tile(TileType.SPAWN))
+        self.map.set_tile_at_cell(5, 5, TileType.SPAWN)
+        self.assertTrue(self.map.contains_tile(TileType.SPAWN))
 
         self.assertFalse(self.map.is_map_viable())
-        self.assertFalse(self.map.contains_tile(constants.TILE_END))
-        self.map.set_tile_at_cell(10, 5, constants.TILE_END)
-        self.assertTrue(self.map.contains_tile(constants.TILE_END))
+        self.assertFalse(self.map.contains_tile(TileType.END))
+        self.map.set_tile_at_cell(10, 5, TileType.END)
+        self.assertTrue(self.map.contains_tile(TileType.END))
 
         self.assertTrue(self.map.is_map_viable())
         self.map.set_tile_at_cell(10, 5, 0)

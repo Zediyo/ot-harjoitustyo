@@ -2,6 +2,7 @@ import pygame
 
 from ui.button import Button
 import constants
+from constants import TileType
 
 
 class EditorUI:
@@ -71,14 +72,14 @@ class EditorUI:
         self._save_button.update(mouse_pos)
 
     def _get_item_name(self, item):
-        if item == constants.TILE_BLOCK:
+        if item == TileType.BLOCK:
             return "Block"
-        elif item == constants.TILE_PLACEABLE:
+        elif item == TileType.PLACEABLE:
             return "Placeable"
-        elif item == constants.TILE_ENEMY:
+        elif item == TileType.ENEMY:
             return "Enemy"
-        elif item == constants.TILE_SPAWN:
+        elif item == TileType.SPAWN:
             return "Spawn"
-        elif item == constants.TILE_END:
+        elif item == TileType.END:
             return "End"
         return "None"

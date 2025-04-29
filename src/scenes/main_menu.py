@@ -1,6 +1,6 @@
 import pygame
 
-from constants import SceneName, Input
+from constants import SceneName, InputAction
 from scenes.scene import Scene
 from ui.button import Button
 from game.sprite_animation import SpriteAnimation
@@ -39,7 +39,7 @@ class MainMenu(Scene):
         display.blit(self._player_sprite.get_frame("idle"), (620, 100))
 
     def input_mouse(self, click, pos):
-        if click != Input.MOUSE_LEFT:
+        if click != InputAction.MOUSE_LEFT:
             return
 
         for (button, next_scene, next_scene_data) in self._buttons.values():

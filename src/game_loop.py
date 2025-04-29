@@ -1,6 +1,6 @@
 import pygame
 
-from constants import SceneName, Input
+from constants import SceneName, InputAction
 from scenes.main_menu import MainMenu
 from scenes.level import Level
 from scenes.level_editor import LevelEditor
@@ -44,13 +44,15 @@ class GameLoop:
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    self._scene.input_mouse(Input.MOUSE_LEFT, event.pos)
+                    self._scene.input_mouse(InputAction.MOUSE_LEFT, event.pos)
                 if event.button == 3:
-                    self._scene.input_mouse(Input.MOUSE_RIGHT, event.pos)
+                    self._scene.input_mouse(InputAction.MOUSE_RIGHT, event.pos)
                 if event.button == 4:
-                    self._scene.input_mouse(Input.MOUSE_SCROLL_UP, event.pos)
+                    self._scene.input_mouse(
+                        InputAction.MOUSE_SCROLL_UP, event.pos)
                 if event.button == 5:
-                    self._scene.input_mouse(Input.MOUSE_SCROLL_DOWN, event.pos)
+                    self._scene.input_mouse(
+                        InputAction.MOUSE_SCROLL_DOWN, event.pos)
             elif event.type == pygame.QUIT:
                 return False
 
@@ -62,21 +64,21 @@ class GameLoop:
     def _handle_input(self):
         keys = self._user_input.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            self._scene.input_key(Input.LEFT)
+            self._scene.input_key(InputAction.LEFT)
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            self._scene.input_key(Input.RIGHT)
+            self._scene.input_key(InputAction.RIGHT)
         if keys[pygame.K_UP] or keys[pygame.K_w] or keys[pygame.K_SPACE]:
-            self._scene.input_key(Input.JUMP)
+            self._scene.input_key(InputAction.JUMP)
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            self._scene.input_key(Input.DOWN)
+            self._scene.input_key(InputAction.DOWN)
 
         mouse = self._user_input.get_mouse_pressed()
         if mouse[0]:
             self._scene.input_mouse_hold(
-                "left", self._user_input.get_mouse_pos())
+                InputAction.MOUSE_LEFT, self._user_input.get_mouse_pos())
         if mouse[2]:
             self._scene.input_mouse_hold(
-                "right", self._user_input.get_mouse_pos())
+                InputAction.MOUSE_RIGHT, self._user_input.get_mouse_pos())
 
     def _render(self):
         self._renderer.render()
@@ -101,8 +103,8 @@ class GameLoop:
         scene_map = {
             SceneName.MAIN_MENU: (MainMenu, None),
             SceneName.LEVEL_LIST: (LevelList, lambda data: isinstance(data, bool) or data is None),
-            SceneName.LEVEL: (Level, lambda data: isinstance(data, LevelData)),
-            SceneName.EDITOR: (LevelEditor, lambda data: isinstance(data, LevelData)),
+            SceneName.LEVEL: (Level, LevelData.is_valid),
+            SceneName.EDITOR: (LevelEditor, LevelData.is_valid),
             SceneName.END_SCREEN: (EndScreen, EndScreenData.is_valid),
         }
 

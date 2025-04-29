@@ -1,16 +1,18 @@
 from enum import Enum, IntEnum
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-FPS = 60
 
-TILE_SIZE = 16
-ENEMY_SIZE = 32
-PLAYER_SIZE = 32
-CURSOR_TILE_RANGE = 3
+class Settings:
+    SCREEN_WIDTH = 1280
+    SCREEN_HEIGHT = 720
+    FPS = 60
 
-MAX_LEVEL_WIDTH = SCREEN_WIDTH // TILE_SIZE
-MAX_LEVEL_HEIGHT = SCREEN_HEIGHT // TILE_SIZE - (TILE_SIZE * 2)
+    TILE_SIZE = 16
+    ENEMY_SIZE = 32
+    PLAYER_SIZE = 32
+    CURSOR_TILE_RANGE = 3
+
+    MAX_LEVEL_WIDTH = SCREEN_WIDTH // TILE_SIZE
+    MAX_LEVEL_HEIGHT = SCREEN_HEIGHT // TILE_SIZE - (TILE_SIZE * 2)
 
 
 class TileType(IntEnum):
@@ -32,7 +34,7 @@ TILE_COLORS = {
 }
 
 
-class Input(str, Enum):
+class InputAction(str, Enum):
     LEFT = "left"
     RIGHT = "right"
     DOWN = "down"

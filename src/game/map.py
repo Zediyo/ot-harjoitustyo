@@ -1,7 +1,6 @@
 """ Contains the Map class, which represents a 2D grid of tiles for game levels. """
 
-import constants
-from constants import TileType
+from constants import TileType, Settings
 
 
 class Map:
@@ -19,7 +18,7 @@ class Map:
         tile_size (int): Size of each tile in pixels.
     """
 
-    def __init__(self, map_data, tile_size=constants.TILE_SIZE):
+    def __init__(self, map_data, tile_size=Settings.TILE_SIZE):
         """ Initializes the Map object.
 
         Args:
@@ -107,12 +106,12 @@ class Map:
         ret_y = y // self._tile_size
         return ret_x, ret_y
 
-    def expand_map(self, screen_w=constants.SCREEN_WIDTH, screen_h=constants.SCREEN_HEIGHT):
+    def expand_map(self, screen_w=Settings.SCREEN_WIDTH, screen_h=Settings.SCREEN_HEIGHT):
         """ Expand the map to the given screen size, centering the current map data.
 
         Args:
-            screen_w (int, optional): Width in pixels. Defaults to constants.SCREEN_WIDTH.
-            screen_h (int, optional): Height in pixels. Defaults to constants.SCREEN_HEIGHT.
+            screen_w (int, optional): Width in pixels. Defaults to Settings.SCREEN_WIDTH.
+            screen_h (int, optional): Height in pixels. Defaults to Settings.SCREEN_HEIGHT.
         """
         new_width = screen_w // self._tile_size
         new_height = screen_h // self._tile_size
