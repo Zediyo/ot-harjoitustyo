@@ -50,7 +50,7 @@ class EndScreen(Scene):
         self._init_texts()
 
     def _init_preview(self):
-        """Setup the level preview image for the end screen."""
+        """Set up the level preview image for the end screen."""
         preview = generate_level_preview(
             self._data.level.data, self._PREVIEW_SIZE)
 
@@ -60,7 +60,7 @@ class EndScreen(Scene):
         self._preview = (preview, preview_rect)
 
     def _init_buttons(self):
-        """Setup the menu buttons for the end screen."""
+        """Set up the menu buttons for the end screen."""
         retry_button = Button(
             "Retry", self._font, self._RETRY_RECT,
             on_click=lambda: self.set_next_scene(
@@ -74,7 +74,7 @@ class EndScreen(Scene):
         self._buttons = [retry_button, back_button]
 
     def _init_texts(self):
-        """Setup the result texts for level completion and best time."""
+        """Set up the result texts for level completion and best time."""
         time = self._data.timer.get_time()
         alt_text = f"Time: {time:.2f}"
 

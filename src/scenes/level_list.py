@@ -1,4 +1,4 @@
-""" Contains the LevelList scene """
+""" Contains the LevelList scene. """
 
 from scenes.scene import Scene
 from ui.button import Button
@@ -57,7 +57,7 @@ class LevelList(Scene):
         """Initialize the LevelList scene.
 
         Args:
-            to_editor (bool): If True, the scene is in editor mode, allowing level creation and deletion.
+            to_editor (bool): If True, the scene is in editor mode.
         """
         super().__init__()
         self._font = FontManager.get_font()
@@ -75,7 +75,7 @@ class LevelList(Scene):
         self._init_scrollable_buttons()
 
     def _init_static_elements(self):
-        """Setup the static elements for the scene."""
+        """Set up the static elements for the scene."""
         back_button = Button(
             "Back", self._font, self._BACK_BUTTON_RECT,
             on_click=lambda: self.set_next_scene(SceneName.MAIN_MENU, None)
@@ -97,7 +97,7 @@ class LevelList(Scene):
             )
 
     def _init_scrollable_buttons(self):
-        """Setup the scrollable buttons for the level list."""
+        """Set up the scrollable buttons for the level list."""
         levels = get_all_levels()
         times = get_all_best_times()
         scene = SceneName.EDITOR if self._to_editor else SceneName.LEVEL
@@ -130,7 +130,7 @@ class LevelList(Scene):
 
     def _add_delete_and_clear_button(self, index, level_id, level_name, time):
         """Add scrolling delete and clear buttons to a single level entry in the list.
-        
+
         Args:
             index (int): The index of the level in the list.
             level_id (int): The ID of the level.
@@ -218,9 +218,7 @@ class LevelList(Scene):
                                )
 
     def update(self, dt, mouse_pos):
-        """Update the level list scene and its components.
-
-        Used to update button hover states based.
+        """Update button hover states and other dynamic elements in the scene.
 
         Args:
             dt (float): Time delta since the last frame.
@@ -300,7 +298,7 @@ class LevelList(Scene):
 
     def _confirm_clear_times(self, level_id, level_name):
         """ Prompt the user to confirm clearing times for a level. 
-        
+
         Args:
             level_id (int): The ID of the level to clear times for.
             level_name (str): The name of the level to clear times for.

@@ -37,7 +37,7 @@ class MainMenu(Scene):
         self._init_buttons()
 
     def _init_buttons(self):
-        """Setup the buttons for the main menu.
+        """Set up the buttons for the main menu.
 
         Each button has a label, position, and action to perform when clicked.
         """
