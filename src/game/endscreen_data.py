@@ -27,6 +27,8 @@ class EndScreenData:
         Returns:
             bool: True if the data is a valid EndScreenData object, False otherwise.
         """
-        return isinstance(data, cls) and \
-            isinstance(data.level, LevelData) and \
+        return (
+            isinstance(data, cls) and
+            LevelData.is_valid(data.level) and
             isinstance(data.timer, Timer)
+        )
