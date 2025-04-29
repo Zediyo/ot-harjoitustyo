@@ -57,6 +57,6 @@ Delete ja Clear Times nappulat varmistavat että haluat suorittaa toiminnon.
 
 ![confirm1](./kuvat/confirm1.png)
 
-Editorissa voit näppäimistön numerolla valita haluamasi palikan ja asettaa sen kentälle hiiren vasemmalla napilla tai poistaa hiiren oikealla napilla. Jokainen taso vaatii että siinä on aloitus ruutu ja lopetus ruutu, tämä näkyy joko vihreällä tai punaisella, näytön keskellä ylhäällä. "Save" nappia voit painaa vain jos vaaditut palikat on kentällä, painon jälkeen taso tallentuu. Back napista pääset takaisin tallentamatta muutoksia.
+Editorissa voit näppäimistön numerolla valita haluamasi palikan ja asettaa sen kentälle hiiren vasemmalla napilla tai poistaa hiiren oikealla napilla. Jokainen taso vaatii että siinä on aloitus ruutu ja lopetus ruutu, tämä näkyy keskellä ylhäällä joko vihreällä tai punaisella. "Save" nappia voit painaa vain jos vaaditut palikat on kentällä, painon jälkeen taso tallentuu. Back napista pääset takaisin tallentamatta muutoksia.
 
 ![editor2](./kuvat/editori2.png)
