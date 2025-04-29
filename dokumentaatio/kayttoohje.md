@@ -8,12 +8,15 @@ Varmista että koneellasi on python 3.10 tai uudempi ja poetry asennettuna.
 
 Ensimmäisellä kerralla suoritä seuraava komento juurikansiossa.
 
+```bash
 poetry install
+```
 
 Nyt voit käynnistää pelin suorittamalla komennon
 
+```bash
 poetry run invoke start
-
+```
 ## Pelin aloittaminen, pelitila ja lopetus
 
 Käynnistämisen jälkeen olet aloitusruudussa. Valitse "Play".
