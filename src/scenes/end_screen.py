@@ -5,10 +5,13 @@ from ui.button import Button
 
 from tools.preview_generator import generate_level_preview
 
+from constants import SceneName, Input
+from game.endscreen_data import EndScreenData
+
 
 class EndScreen(Scene):
 
-    def __init__(self, data):
+    def __init__(self, data: EndScreenData):
         super().__init__()
         self._font = pygame.font.SysFont("Arial", 24)
         self._buttons = {}
@@ -17,7 +20,7 @@ class EndScreen(Scene):
         self._data = data
 
         self._preview = generate_level_preview(
-            data["level"]["data"], size=(600, 300))
+            data.level.data, size=(600, 300))
 
         self._init_buttons()
         self._init_texts()
@@ -27,23 +30,23 @@ class EndScreen(Scene):
         back_button = Button("Menu", self._font, 660, 500, 200, 50)
 
         self._buttons = {
-            "retry": (retry_button, "level", self._data["level"]),
-            "back": (back_button, "level_list", "level"),
+            "retry": (retry_button, SceneName.LEVEL, self._data.level),
+            "back": (back_button, SceneName.LEVEL_LIST, False),
         }
 
     def _init_texts(self):
-        time = self._data["timer"].get_time()
+        time = self._data.timer.get_time()
         time_text = f"Time: {time:.2f}"
 
         time_surface = None
         best_time_surface = None
 
-        if self._data["timer"].is_best_time():
+        if self._data.timer.is_best_time():
             best_time_surface = self._font.render(time_text, True, (0, 255, 0))
             time_surface = self._font.render(
                 "New Best Time!", True, (0, 255, 0))
         else:
-            best_time = self._data["timer"].get_best_time()
+            best_time = self._data.timer.get_best_time()
             best_time_text = f"Best Time: {best_time:.2f}"
 
             best_time_surface = self._font.render(
@@ -70,7 +73,7 @@ class EndScreen(Scene):
             display.blit(text, pos)
 
     def input_mouse(self, click, pos):
-        if click != "left":
+        if click != Input.MOUSE_LEFT:
             return
 
         for button, next_scene, next_scene_data in self._buttons.values():

@@ -1,6 +1,7 @@
 """ Contains the Map class, which represents a 2D grid of tiles for game levels. """
 
 import constants
+from constants import TileType
 
 
 class Map:
@@ -344,4 +345,4 @@ class Map:
         Returns:
             bool: True if the map has a valid start and end point, False otherwise.
         """
-        return self.contains_tile(constants.TILE_SPAWN) and self.contains_tile(constants.TILE_END)
+        return self.contains_tile(TileType.SPAWN) and self.contains_tile(TileType.END)

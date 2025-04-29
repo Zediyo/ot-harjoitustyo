@@ -33,7 +33,7 @@ class Sprites:
     @property
     def player(self) -> Sprite | None:
         """Get the player sprite.
-        
+
         Returns:
             Sprite | None: The player sprite or None if not set.
         """
@@ -42,7 +42,7 @@ class Sprites:
     @property
     def cursor(self) -> Sprite | None:
         """Get the tile selection cursor sprite.
-        
+
         Returns:
             Sprite | None: The tile selection cursor sprite or None if not set.
         """
@@ -51,7 +51,7 @@ class Sprites:
     @property
     def end(self) -> Sprite | None:
         """Get the level end/goal sprite.
-        
+
         Returns:
             Sprite | None: The level end/goal sprite or None if not set.
         """
@@ -60,7 +60,7 @@ class Sprites:
     @property
     def blocks(self) -> Group:
         """Get the group of block and placeable sprites.
-        
+
         Returns:
             Group: The group of block and placeable sprites.
         """
@@ -69,7 +69,7 @@ class Sprites:
     @property
     def enemies(self) -> Group:
         """Get the group of enemy sprites.
-        
+
         Returns:
             Group: The group of enemy sprites.
         """
@@ -78,7 +78,7 @@ class Sprites:
     @property
     def world(self) -> Group:
         """Get the group of all sprites in the game world.
-        
+
         Returns:
             Group: The group of all sprites in the game world (excluding cursor).
         """
@@ -149,7 +149,7 @@ class Sprites:
 
     def player_collides_with_enemy(self):
         """Check if the player collides with any enemies.
-        
+
         Returns:
             bool: True if the player collides with an enemy, False otherwise.
         """
@@ -159,7 +159,7 @@ class Sprites:
 
     def player_collides_with_end(self):
         """Check if the player collides with the end sprite.
-        
+
         Returns:
             bool: True if the player collides with the end, False otherwise.
         """
@@ -169,7 +169,7 @@ class Sprites:
 
     def cursor_collides_with_world(self):
         """Check if the cursor collides with any world sprites.
-        
+
         Returns:
             bool: True if the cursor collides with a world sprite, False otherwise.
         """

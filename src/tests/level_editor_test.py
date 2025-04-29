@@ -18,7 +18,7 @@ class TestLevelEditor(unittest.TestCase):
         ui_instance = self.ui.return_value
         ui_instance.is_save_clicked.return_value = False
 
-        self.data = constants.TEST_LEVEL
+        self.data = constants.TEST_LEVEL_DATA
         self.editor = LevelEditor(
             {"id": "1", "name": "potato", "data": self.data})
 

@@ -11,7 +11,7 @@ class TestLevel(unittest.TestCase):
         self.ui = patch_ui.start()
         self.addCleanup(patch_ui.stop)
 
-        self.data = constants.TEST_LEVEL
+        self.data = constants.TEST_LEVEL_DATA
         self.level = Level({"id": "1", "name": "potato", "data": self.data})
 
         self.enemies = sum(row.count(constants.TILE_ENEMY)
@@ -32,8 +32,8 @@ class TestLevel(unittest.TestCase):
         self.level.update(0.01, (0, 0))
 
     def test_init(self):
-        self.assertEqual(self.level.level["id"], "1")
-        self.assertEqual(self.level.level["name"], "potato")
+        self.assertEqual(self.level._level["id"], "1")
+        self.assertEqual(self.level._level["name"], "potato")
         self.assertEqual(self.level._map._data, self.data)
         self.assertEqual(self.level._map._width, len(self.data[0]))
         self.assertEqual(self.level._map._height, len(self.data))

@@ -288,7 +288,7 @@ class TestGameLoop(unittest.TestCase):
     @patch("scenes.level.Level.draw")
     def test_scene_switch_to_level(self, mock_ui, mock_draw):
         self.scene.set_next_scene(
-            "level", {"data": constants.TEST_LEVEL, "id": 1, "name": "Level 1"})
+            "level", {"data": constants.TEST_LEVEL_DATA, "id": 1, "name": "Level 1"})
 
         self.scene.one_loop = False
         user_input = StubUserInput(break_after=5)
@@ -338,7 +338,7 @@ class TestGameLoop(unittest.TestCase):
     @patch("scenes.level_editor.EditorUI")
     def test_scene_switch_to_editor(self, mock_ui, mock_preview):
         self.scene.set_next_scene(
-            "editor", {"data": constants.TEST_LEVEL, "id": 1, "name": "Level 1"})
+            "editor", {"data": constants.TEST_LEVEL_DATA, "id": 1, "name": "Level 1"})
 
         self.scene.one_loop = False
         user_input = StubUserInput(break_after=5)
@@ -391,7 +391,7 @@ class TestGameLoop(unittest.TestCase):
     @patch("pygame.font.SysFont")
     def test_level_ends_and_changes_to_endscreen(self, mock_font, mock_ui, mock_draw, mock_preview, mock_button):
         self.scene.set_next_scene(
-            "level", {"data": constants.TEST_LEVEL_END, "id": 1, "name": "Level 1"})
+            "level", {"data": constants.TEST_LEVEL_END_DATA, "id": 1, "name": "Level 1"})
 
         self.scene.one_loop = False
         user_input = StubUserInput(break_after=10)

@@ -52,7 +52,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(best_time, -1)
 
     def test_save_and_load_level(self):
-        test_level = constants.TEST_LEVEL_END
+        test_level = constants.TEST_LEVEL_END_DATA
 
         db.save_level("potato", test_level)
         level_id = db.get_level_id("potato")
@@ -82,8 +82,8 @@ class TestDB(unittest.TestCase):
         self.assertEqual(level_data, None)
 
     def test_get_all_levels(self):
-        db.save_level("potato", constants.TEST_LEVEL_END)
-        db.save_level("peruna", constants.TEST_LEVEL_END)
+        db.save_level("potato", constants.TEST_LEVEL_END_DATA)
+        db.save_level("peruna", constants.TEST_LEVEL_END_DATA)
 
         levels = db.get_all_levels()
         level_names = [level[1] for level in levels]
@@ -119,16 +119,16 @@ class TestDB(unittest.TestCase):
         self.assertFalse(db.level_name_exists("peruna"))
         self.assertFalse(db.level_name_exists("makkaraperunat"))
 
-        db.save_level("potato", constants.TEST_LEVEL_END)
-        db.save_level("peruna", constants.TEST_LEVEL_END)
+        db.save_level("potato", constants.TEST_LEVEL_END_DATA)
+        db.save_level("peruna", constants.TEST_LEVEL_END_DATA)
 
         self.assertTrue(db.level_name_exists("potato"))
         self.assertTrue(db.level_name_exists("peruna"))
         self.assertFalse(db.level_name_exists("makkaraperunat"))
 
     def test_delete_level(self):
-        db.save_level("potato", constants.TEST_LEVEL_END)
-        db.save_level("peruna", constants.TEST_LEVEL_END)
+        db.save_level("potato", constants.TEST_LEVEL_END_DATA)
+        db.save_level("peruna", constants.TEST_LEVEL_END_DATA)
 
         self.assertTrue(db.level_name_exists("potato"))
         self.assertTrue(db.level_name_exists("peruna"))
@@ -151,8 +151,8 @@ class TestDB(unittest.TestCase):
         self.assertFalse(db.level_name_exists("peruna"))
 
     def test_delete_times(self):
-        db.save_level("potato", constants.TEST_LEVEL_END)
-        db.save_level("peruna", constants.TEST_LEVEL_END)
+        db.save_level("potato", constants.TEST_LEVEL_END_DATA)
+        db.save_level("peruna", constants.TEST_LEVEL_END_DATA)
 
         db.save_level_time(1, 123)
         db.save_level_time(1, 321)

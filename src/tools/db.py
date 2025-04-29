@@ -1,6 +1,7 @@
 import sqlite3
 import json
 import constants
+from game.level_data import LevelData
 
 
 class _DBConnection:
@@ -55,7 +56,7 @@ class _DBConnection:
         if cursor.fetchone() is None:
             cursor.execute("""
                 INSERT INTO levels (name, data) VALUES (?, ?)
-            """, ("test_level", json.dumps(constants.TEST_LEVEL)))
+            """, ("test_level", json.dumps(constants.TEST_LEVEL_DATA)))
 
         conn.commit()
 
@@ -119,25 +120,26 @@ def save_level(name, level_data):
     conn.commit()
 
 
-def load_level_data(level_id):
+def load_level(level_id) -> LevelData | None:
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT data FROM levels WHERE id = ?",
+        "SELECT id, name, data FROM levels WHERE id = ?",
         (level_id,)
     )
 
     result = cursor.fetchone()
 
-    return json.loads(result[0]) if result is not None else None
+    return LevelData.from_db_row(result) if result else None
 
 
-def get_all_levels():
+def get_all_levels() -> list[LevelData]:
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT id, name, data FROM levels ORDER BY id ASC")
-    levels = cursor.fetchall()
-    return [(level_id, name, json.loads(data)) for (level_id, name, data) in levels]
+    rows = cursor.fetchall()
+
+    return [LevelData.from_db_row(row) for row in rows]
 
 
 def get_all_best_times():

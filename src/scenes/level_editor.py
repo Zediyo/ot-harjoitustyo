@@ -1,6 +1,7 @@
 import pygame
 
 import constants
+from constants import TileType
 
 from scenes.scene import Scene
 from ui.editor_ui import EditorUI
@@ -60,15 +61,15 @@ class LevelEditor(Scene):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:
-                    self._hand = constants.TILE_BLOCK
+                    self._hand = TileType.BLOCK
                 elif event.key == pygame.K_2:
-                    self._hand = constants.TILE_PLACEABLE
+                    self._hand = TileType.PLACEABLE
                 elif event.key == pygame.K_3:
-                    self._hand = constants.TILE_ENEMY
+                    self._hand = TileType.ENEMY
                 elif event.key == pygame.K_4:
-                    self._hand = constants.TILE_SPAWN
+                    self._hand = TileType.SPAWN
                 elif event.key == pygame.K_5:
-                    self._hand = constants.TILE_END
+                    self._hand = TileType.END
 
     def update(self, dt, mouse_pos):
         self._ui.update(mouse_pos)
@@ -88,24 +89,24 @@ class LevelEditor(Scene):
 
     def _add_tile_to_map(self, x, y, tile):
         # normal, placeable - 1x1 no limit
-        if tile in (constants.TILE_BLOCK, constants.TILE_PLACEABLE):
+        if tile in (TileType.BLOCK, TileType.PLACEABLE):
             if self._map.get_tile_at_cell(x, y) == 0:
                 return self._map.set_tile_at_cell(x, y, tile)
 
         # player spawn - 2x2 max 1
-        if tile == constants.TILE_SPAWN:
-            if not self._map.contains_tile(constants.TILE_SPAWN) \
+        if tile == TileType.SPAWN:
+            if not self._map.contains_tile(TileType.SPAWN) \
                     and self._map.is_empty_area(x, y, (2, 2)):
                 return self._map.add_multi_tile(x, y, tile, (2, 2))
 
         # enemy spawn - 2x2 no limit
-        if tile == constants.TILE_ENEMY:
+        if tile == TileType.ENEMY:
             if self._map.is_empty_area(x, y, (2, 2)):
                 return self._map.add_multi_tile(x, y, tile, (2, 2))
 
         # end - 1x1 max 1
-        if tile == constants.TILE_END:
-            if not self._map.contains_tile(constants.TILE_END) \
+        if tile == TileType.END:
+            if not self._map.contains_tile(TileType.END) \
                     and self._map.get_tile_at_cell(x, y) == 0:
                 return self._map.set_tile_at_cell(x, y, tile)
 
@@ -126,15 +127,15 @@ class LevelEditor(Scene):
             return False
 
         # 1x1 tiles
-        if tile in (constants.TILE_BLOCK, constants.TILE_PLACEABLE, constants.TILE_END):
+        if tile in (TileType.BLOCK, TileType.PLACEABLE, TileType.END):
             return self._map.set_tile_at_cell(x, y, 0)
 
         # 2x2 tiles
-        if tile in (constants.TILE_SPAWN, constants.TILE_ENEMY):
+        if tile in (TileType.SPAWN, TileType.ENEMY):
             return self._map.remove_multi_tile(x, y, (2, 2))
 
         if tile < 0:
-            if abs(tile) in (constants.TILE_SPAWN, constants.TILE_ENEMY):
+            if abs(tile) in (TileType.SPAWN, TileType.ENEMY):
                 res = self._map.find_nearest_tile_corner(x, y, tile, (2, 2))
                 if res is None:
                     return False
@@ -148,6 +149,5 @@ class LevelEditor(Scene):
             self._map.data, (constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
 
     def _update_required(self):
-        self._has_required["spawn"] = self._map.contains_tile(
-            constants.TILE_SPAWN)
-        self._has_required["end"] = self._map.contains_tile(constants.TILE_END)
+        self._has_required["spawn"] = self._map.contains_tile(TileType.SPAWN)
+        self._has_required["end"] = self._map.contains_tile(TileType.END)

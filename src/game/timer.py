@@ -2,6 +2,7 @@
 
 from tools.db import get_best_time, save_level_time
 
+
 class Timer:
     """ Timer to track the level time and best time.
 
@@ -27,7 +28,7 @@ class Timer:
 
     def update(self, dt):
         """ Increment the elapsed time by the delta time if the timer is active.
-        
+
         Args:
             dt (float): The delta time since the last frame.
         """

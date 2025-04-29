@@ -1,5 +1,6 @@
 import pygame
 
+from constants import SceneName, Input
 from scenes.scene import Scene
 from ui.button import Button
 from game.sprite_animation import SpriteAnimation
@@ -24,8 +25,8 @@ class MainMenu(Scene):
         exit_button = Button("Exit", self._font, 540, 400, 200, 50)
 
         self._buttons = {
-            "play": (play_button, "level_list", "level"),
-            "editor": (editor_button, "level_list", "editor"),
+            "play": (play_button, SceneName.LEVEL_LIST, False),
+            "editor": (editor_button, SceneName.LEVEL_LIST, True),
             "exit": (exit_button, None, None)
         }
 
@@ -38,7 +39,7 @@ class MainMenu(Scene):
         display.blit(self._player_sprite.get_frame("idle"), (620, 100))
 
     def input_mouse(self, click, pos):
-        if click != "left":
+        if click != Input.MOUSE_LEFT:
             return
 
         for (button, next_scene, next_scene_data) in self._buttons.values():
