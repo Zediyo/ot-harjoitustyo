@@ -47,7 +47,7 @@ Pelissä näkyvät oliot (kuten pelaaja, vihollinen ja palikat) ovat kaikki spri
 
 Alla oleva luokkakaavio kuvaa sovelluksen keskeisten luokkien suhteet toisiinsa.
 Scene-luokat perivät yhteisen Scene-pohjaluokan ja hallitsevat oman tilansa logiikkaa ja näkymää.
-Lisäksi näkyvät tärkeimmät peliobjektit ja niiden suhteet, kuten esim: Player ja Enemy, joilla molemmilla on fyysinen Body.
+Lisäksi näkyvät tärkeimmät pelioliot ja niiden suhteet, kuten esim: Player ja Enemy, joilla molemmilla on Body liikkumista varten.
 
 ```mermaid
 classDiagram
