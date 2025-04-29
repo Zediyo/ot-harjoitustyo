@@ -51,7 +51,7 @@ Uuden tason luonti tapahtuu oikealla ylhäällä olevasta tekstikentästä ja "C
 
 Back napilla pääset takaisin aloitusruutuun.
 
-![editor1](./kuvat/editor1.png)
+![editor1](./kuvat/editori1.png)
 
 Delete ja Clear Times nappulat varmistavat että varmasti haluat suorittaa toiminnon.
 
@@ -59,4 +59,4 @@ Delete ja Clear Times nappulat varmistavat että varmasti haluat suorittaa toimi
 
 Editorissa voit näppäimistön numerolla valita haluamasi palikan ja asettaa sen kentälle hiiren vasemmalla napilla tai poistaa hiiren oikealla napilla. Jokainen taso vaatii että siinä on aloitus ruutu ja lopetus ruutu, tämä näkyy joko vihreällä tai punaisella, näytön keskellä ylhäällä. "Save" nappia voit painaa vain jos vaaditut palikat on kentällä, painon jälkeen taso tallentuu. Back napista pääset takaisin tallentamatta muutoksia.
 
-![editor2](./kuvat/editor2.png)
+![editor2](./kuvat/editori2.png)
