@@ -24,11 +24,11 @@ Käynnistämisen jälkeen olet aloitusruudussa. Valitse "Play".
 ![peli1](./kuvat/peli1.png)
 
 Nyt olet pelitilan tasovalikossa. Valitse taso jota haluat pelata tai "Back" jos haluat siirtyä takaisin edelliseen näkymään.
-Tasojen nimi näkyy napissa josta siirryt pelitilaan. Nimen yläpuolella näkyy joko vihreällä nopein suoritusaika tasossa tai punaisella "--:--" jos tasossa ei ole suoritusta vielä.
+Tasojen nimi näkyy napissa josta siirryt pelitilaan. Nimen yläpuolella näkyy joko vihreällä nopein suoritusaika tasossa tai punaisella "--:--" jos tasossa ei ole suoritusta vielä. Jos tasoja on enemmän kuin mahtuu kerralla ruudulle voit vierittää listaa käyttämällä hiiren rullaa.
 
 ![peli2](./kuvat/peli2.png)
 
-Pelissä on punaisia palikoita joiden läpi ei voi kulkea, sinisiä palkoita joita voit kerätä ja asettaa kentälle.
+Pelissä on punaisia palikoita joiden läpi ei voi kulkea, sinisiä palkoita joita voit kerätä ja asettaa kentälle hiiren vasemmalla ja oikealla näppäimellä.
 Viholliseen osuessa taso alkaa alusta ja maaliin päästyä peli päättyy.
 Ylhäällä näet myös tason nimen, kuinka monta palikkaa sinulla on käytettävissä ja suorituksen ajan.
 Back nappulasta pääset takaisin tasolistaan.
@@ -39,3 +39,24 @@ Maaliin päästyä olet lopetusruudussa jossa voit palata takaisin tasolistaan t
 Keskellä näet myös tason suorituksen ajan ja parhaan ajan.
 
 ![peli4](./kuvat/peli4.png)
+
+
+## Editorin tasolista ja editorin käyttö
+
+Valitse aloitusruudusta "Editor".
+
+Tasolista on hyvin samanlainen kuin pelitilassa. Jokaisen tason kohdalla näkyy vihreällä nimi, sen alapuolella on "Delete" nappula joka poistaa tason. "Clear Times" nappi näkyy jos tasossa on suorituksia ja sitä painamalla poistat kaikki suoritukset tasosta. Edit nappula siirtyy editori tilaan.
+
+Uuden tason luonti tapahtuu oikealla ylhäällä olevasta tekstikentästä ja "Create Level" napista. Kirjoita uuden tason nimi ja jos se on uniikki, painamalla enter näppäimistöstä tai hiirellä "Create Level" nappia siirryt editori tilaan.
+
+Back napilla pääset takaisin aloitusruutuun.
+
+![editor1](./kuvat/editor1.png)
+
+Delete ja Clear Times nappulat varmistavat että varmasti haluat suorittaa toiminnon.
+
+![confirm1](./kuvat/confirm1.png)
+
+Editorissa voit näppäimistön numerolla valita haluamasi palikan ja asettaa sen kentälle hiiren vasemmalla napilla tai poistaa hiiren oikealla napilla. Jokainen taso vaatii että siinä on aloitus ruutu ja lopetus ruutu, tämä näkyy joko vihreällä tai punaisella, näytön keskellä ylhäällä. "Save" nappia voit painaa vain jos vaaditut palikat on kentällä, painon jälkeen taso tallentuu. Back napista pääset takaisin tallentamatta muutoksia.
+
+![editor2](./kuvat/editor2.png)
