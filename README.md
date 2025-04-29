@@ -7,6 +7,8 @@
 [Viikko 6](https://github.com/Zediyo/ot-harjoitustyo/releases/tag/viikko6)
 
 ## Dokumentaatio
+[käyttöohje](dokumentaatio/kayttoohje.md)
+
 [vaatimusmäärittely](dokumentaatio/vaatimusmaarittely.md)
 
 [työaikakirjanpito](dokumentaatio/tuntikirjanpito.md)
