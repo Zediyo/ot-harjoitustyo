@@ -67,18 +67,18 @@ class TestLevel(unittest.TestCase):
         self.level.input_key(InputAction.LEFT)
 
         self.assertEqual(self.level._timer._active, True)
-        self.assertEqual(self.level._sprites.player.body._input, [-1, 0])
+        self.assertEqual(self.level._sprites.player._body._input, [-1, 0])
 
         self.level.input_key(InputAction.RIGHT)
         self.level.input_key(InputAction.RIGHT)
-        self.assertEqual(self.level._sprites.player.body._input, [1, 0])
+        self.assertEqual(self.level._sprites.player._body._input, [1, 0])
 
         self.level.input_key(InputAction.JUMP)
-        self.assertEqual(self.level._sprites.player.body._input, [1, -1])
+        self.assertEqual(self.level._sprites.player._body._input, [1, -1])
 
         self.level.input_key(InputAction.DOWN)
         self.level.input_key(InputAction.DOWN)
-        self.assertEqual(self.level._sprites.player.body._input, [1, 1])
+        self.assertEqual(self.level._sprites.player._body._input, [1, 1])
 
     def test_input_mouse_add_placeable_valid(self):
         self.level.input_mouse(InputAction.MOUSE_LEFT, (80, 80))
