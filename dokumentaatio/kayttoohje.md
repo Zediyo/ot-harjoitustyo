@@ -1,6 +1,6 @@
 # Käyttöohje
 
-Lataa uusin release tästä linkistä
+Lataa uusin release [tästä linkistä](https://github.com/Zediyo/ot-harjoitustyo/releases).
 
 ## Ohjelman käynnistys
 
