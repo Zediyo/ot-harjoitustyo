@@ -85,7 +85,7 @@ classDiagram
 ## Käyttöliittymä
 
 Tämä kuvaa sovelluksen tilojen eli Scenejen välistä siirtymistä käyttäjän toiminnan perusteella.
-Käyttäjä voi liikkua päävalikosta editoriin, tasolistaan, yksittäiseen tasoon ja tason suoritettua lopetustilaan.
+Käyttäjä voi liikkua päävalikosta editorin tai pelitilan tasolistaan, sieltä esim. pelitilassa yksittäiseen tasoon ja tason suoritettua lopetustilaan.
 Tilojen välillä liikkuminen tapahtuu aina aktiivisen Scene-olion kautta.
 
 ```mermaid
