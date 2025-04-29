@@ -13,7 +13,7 @@ class FontManager:
     _dummy_font = DummyFont()
 
     @classmethod
-    def get_font(cls, size=24, name="Arial"):
+    def get_font(cls, size=24, name=None):
 
         key = (name, size)
 

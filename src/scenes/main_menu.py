@@ -38,7 +38,7 @@ class MainMenu(Scene):
 
     def _init_buttons(self):
         """Setup the buttons for the main menu.
-        
+
         Each button has a label, position, and action to perform when clicked.
         """
         play_button = Button(
