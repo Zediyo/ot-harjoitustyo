@@ -1,18 +1,36 @@
+"""TextBox UI component for user text input."""
+
 import pygame
 from typing import Callable
 
 
 class TextBox:
+    """A text input box for user input."""
 
-    def __init__(
-        self, font, rect: tuple[int, int, int, int],
-        hover_color=(200, 200, 200),
-        bg_color=(64, 64, 64),
-        text_color=(255, 150, 25),
-        border_color=(0, 0, 0),
-        max_length=32,
-        on_submit: Callable | None = None,
-    ):
+    _COLOR_INACTIVE = (100, 100, 100)
+
+    def __init__(self,
+                 font: pygame.font.Font,
+                 rect: tuple[int, int, int, int],
+                 hover_color: tuple[int, int, int] = (200, 200, 200),
+                 bg_color: tuple[int, int, int] = (64, 64, 64),
+                 text_color: tuple[int, int, int] = (255, 150, 25),
+                 border_color: tuple[int, int, int] = (0, 0, 0),
+                 max_length: int = 32,
+                 on_submit: Callable | None = None,
+                 ):
+        """Initialize the text box.
+
+        Args:
+            font (pygame.font.Font): Font used for rendering text.
+            rect (tuple[int, int, int, int]): Position and size of the text box.
+            hover_color (tuple[int, int, int]): Background color on mouse hover. Defaults to (200, 200, 200).
+            bg_color (tuple[int, int, int]): Normal background color. Defaults to (64, 64, 64).
+            text_color (tuple[int, int, int]): Text color. Defaults to (255, 150, 25).
+            border_color (tuple[int, int, int]): Border color when active. Defaults to (0, 0, 0).
+            max_length (int): Maximum number of characters allowed.
+            on_submit (Callable | None): Function to call when Enter is pressed.
+        """
         self._rect = pygame.Rect(rect)
         self._font = font
         self._bg_color = bg_color
@@ -28,8 +46,13 @@ class TextBox:
         self._on_submit = on_submit
 
     def draw(self, display):
+        """Render the text box and any error message.
+
+        Args:
+            display (pygame.Surface): The surface to draw on.
+        """
         text = "Enter text..."if not self._text and not self._active else self._text
-        color = self._text_color if self._active else (100, 100, 100)
+        color = self._text_color if self._active else self._COLOR_INACTIVE
 
         pygame.draw.rect(display, self._color, self._rect, border_radius=5)
 
@@ -48,9 +71,25 @@ class TextBox:
                          self._rect.y + self._rect.height + 5))
 
     def is_clicked(self, mouse_pos):
+        """Check if a clicked point is within the textbox.
+
+        Args:
+            mouse_pos (tuple[int, int]): The position of the mouse.
+
+        Returns:
+            bool: True if the box was clicked.
+        """
         return self._rect.collidepoint(mouse_pos)
 
     def handle_events(self, events):
+        """Handle keyboard and mouse events for the textbox.
+
+        Args:
+            events (list[pygame.event.Event]): Events to process.
+
+        Returns:
+            str | None: The text if submitted, otherwise None.
+        """
         for event in events:
             if event.type == pygame.KEYDOWN and self._active:
                 if event.key == pygame.K_BACKSPACE:
@@ -77,6 +116,7 @@ class TextBox:
         return None
 
     def _update_overflow_offset(self):
+        """Adjusts overflow to keep the end of text visible if too long."""
         if self._overflow_offset >= len(self._text):
             self._overflow_offset = 0
 
@@ -100,10 +140,21 @@ class TextBox:
                     break
 
     def get_text(self):
+        """Get the current text in the box.
+
+        Returns:
+            str: The current text.
+        """
         return self._text
 
     def set_error_text(self, error_text):
+        """Display error text below the textbox.
+
+        Args:
+            error_text (str): Error message to show.
+        """
         self._error_text = error_text
 
     def clear_error_text(self):
+        """Clear the error text."""
         self._error_text = None

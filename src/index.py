@@ -1,3 +1,8 @@
+""" Main entry point for the game. 
+
+Initializes the game and the database, sets up the display, and starts the game loop.
+"""
+
 import pygame
 
 from constants import Settings
@@ -10,6 +15,7 @@ from tools.db import init_db
 
 
 def main():
+    """ Main function to initialize and run the game. """
     init_db()
 
     pygame.init()

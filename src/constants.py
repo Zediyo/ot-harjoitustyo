@@ -1,10 +1,16 @@
+""" This module contains global constants and enums used throughout the game.
+
+It includes game settings, tile types, input actions and scene names.
+It also provides a test level data for testing purposes.
+"""
 from enum import Enum, IntEnum
 
 
 class Settings:
+    """ Game settings and constants. """
     SCREEN_WIDTH = 1280
     SCREEN_HEIGHT = 720
-    FPS = 60
+    FPS = 240
 
     TILE_SIZE = 16
     ENEMY_SIZE = 32
@@ -16,6 +22,7 @@ class Settings:
 
 
 class TileType(IntEnum):
+    """ Enum representing different tile types in the game. """
     EMPTY = 0
     BLOCK = 1
     PLACEABLE = 2
@@ -24,6 +31,7 @@ class TileType(IntEnum):
     END = 5
 
 
+# tile colors for preview
 TILE_COLORS = {
     TileType.EMPTY: (0, 0, 0),
     TileType.BLOCK: (200, 100, 100),
@@ -35,6 +43,7 @@ TILE_COLORS = {
 
 
 class InputAction(str, Enum):
+    """ Enum representing different input actions in the game. """
     LEFT = "left"
     RIGHT = "right"
     DOWN = "down"
@@ -47,6 +56,7 @@ class InputAction(str, Enum):
 
 
 class SceneName(str, Enum):
+    """ Enum representing different scene names in the game. """
     MAIN_MENU = "mainmenu"
     LEVEL_LIST = "level_list"
     LEVEL = "level"
@@ -54,6 +64,7 @@ class SceneName(str, Enum):
     END_SCREEN = "endscreen"
 
 
+# basic test level
 TEST_LEVEL_DATA = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                    [1, 4, -4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
                    [1, -4, -4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -77,6 +88,7 @@ TEST_LEVEL_DATA = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 1],
                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 
+# test level with end below spawn
 TEST_LEVEL_END_DATA = [[0, 0, 4, -4, 0, 0],
                        [0, 0, -4, -4, 0, 0],
                        [0, 0, 0, 0, 0, 0],

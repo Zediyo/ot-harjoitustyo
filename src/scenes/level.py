@@ -216,7 +216,7 @@ class Level(Scene):
     def _check_end_collisions(self):
         """ Check for collisions between the player and the level end.
 
-            If a collision is detected, the level is completed scene is changed to the end screen.
+            If a collision is detected, the level is completed and scene changed to the end screen.
             The timer is finished and passed along with the level data to the end screen.
         """
         if self._sprites.player_collides_with_end():

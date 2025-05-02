@@ -1,16 +1,24 @@
-import pygame
+"""Function for generating a level preview surface from raw tile data."""
 
+import pygame
 import constants
 
 
 def generate_level_preview(level_data, size=(300, 150)):
+    """Generate a scaled preview image from level tile data.
+
+    Args:
+        level_data (list[list[int]]): 2D grid of tile values representing the level layout.
+        size (tuple[int, int]): Maximum size (width, height) of the output preview image.
+
+    Returns:
+        pygame.Surface: The scaled surface visualizing the level layout.
+    """
 
     width = len(level_data[0])
     height = len(level_data)
 
-    preview_surface = pygame.Surface((width, height))
-    # preview_surface.fill((255, 255, 255))
-    preview_surface = preview_surface.convert_alpha()
+    preview_surface = pygame.Surface((width, height)).convert_alpha()
 
     for y in range(height):
         for x in range(width):

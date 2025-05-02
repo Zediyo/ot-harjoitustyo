@@ -1,4 +1,4 @@
-""" Contains the LevelList scene. """
+""" Contains the LevelList scene, a menu for selecting levels to play or edit. """
 
 from scenes.scene import Scene
 from ui.button import Button
