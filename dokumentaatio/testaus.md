@@ -100,6 +100,7 @@ Sovellus on testattu manuaalisesti kokonaan. (Windows ja Linux koneilla.)
 Lista testatuista asioista:
 
 - Asset kansiosta puuttuvat tiedostot eivät kaada ohjelmaa ja käyttävät generoitua kuvaa.
+- preview_generator luo oikean kuvan tasolistoissa ja editorissa.
 
 ### Aloitusruutu
 - 3 nappin toiminto, sijainta + idle animaatio
