@@ -11,6 +11,7 @@
 - [työaikakirjanpito](dokumentaatio/tuntikirjanpito.md)
 - [changelog](dokumentaatio/changelog.md)
 - [arkkitehtuurikuvaus](dokumentaatio/arkkitehtuuri.md)
+- [Testausdokumentti](dokumentaatio/testaus.md)
 - [lähdeviite](dokumentaatio/lahdeviite.md)
 
 ## Käyttö
