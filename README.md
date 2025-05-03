@@ -2,22 +2,16 @@
 **pygame** 2d platformer game + *level editor*
 
 ## Release
-[Viikko 5](https://github.com/Zediyo/ot-harjoitustyo/releases/tag/viikko5)
-
-[Viikko 6](https://github.com/Zediyo/ot-harjoitustyo/releases/tag/viikko6)
+- [Viikko 5](https://github.com/Zediyo/ot-harjoitustyo/releases/tag/viikko5)
+- [Viikko 6](https://github.com/Zediyo/ot-harjoitustyo/releases/tag/viikko6)
 
 ## Dokumentaatio
-[käyttöohje](dokumentaatio/kayttoohje.md)
-
-[vaatimusmäärittely](dokumentaatio/vaatimusmaarittely.md)
-
-[työaikakirjanpito](dokumentaatio/tuntikirjanpito.md)
-
-[changelog](dokumentaatio/changelog.md)
-
-[arkkitehtuurikuvaus](dokumentaatio/arkkitehtuuri.md)
-
-[lähdeviite](dokumentaatio/lahdeviite.md)
+- [käyttöohje](dokumentaatio/kayttoohje.md)
+- [vaatimusmäärittely](dokumentaatio/vaatimusmaarittely.md)
+- [työaikakirjanpito](dokumentaatio/tuntikirjanpito.md)
+- [changelog](dokumentaatio/changelog.md)
+- [arkkitehtuurikuvaus](dokumentaatio/arkkitehtuuri.md)
+- [lähdeviite](dokumentaatio/lahdeviite.md)
 
 ## Käyttö
 Komennot ajetaan ohjelman juuri kansiossa.
