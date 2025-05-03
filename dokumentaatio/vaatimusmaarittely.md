@@ -25,3 +25,4 @@
 ## Jatkokehitysideoita
 
 - Ruudun koon vaihtaminen.
+- Asetuksien vaihto. (esim. max fps, liikkumisen ohjaimet)
