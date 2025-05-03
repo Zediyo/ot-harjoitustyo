@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 from constants import TileType, InputAction, TEST_LEVEL_DATA, Settings
 from scenes.level import Level

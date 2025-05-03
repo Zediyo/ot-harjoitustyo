@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 import pygame
 from constants import TEST_LEVEL_DATA, TileType, Settings, InputAction

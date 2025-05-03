@@ -1,9 +1,9 @@
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from collections import defaultdict
 
 import pygame
-from constants import Settings, SceneName, TEST_LEVEL_DATA, TEST_LEVEL_END_DATA, InputAction
+from constants import SceneName, TEST_LEVEL_DATA, TEST_LEVEL_END_DATA, InputAction
 from scenes.scene import Scene
 from scenes.main_menu import MainMenu
 from scenes.level_list import LevelList
