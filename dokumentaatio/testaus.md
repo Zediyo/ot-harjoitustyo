@@ -144,3 +144,4 @@ Lista testatuista asioista:
 - Peliruudun koon vaihtaminen.
 - Tuhansien tasojen lisäys saattaa aiheuttaa ongelmia.
 - Ei lokitiedostoa mahdollisille tietokanta virheille tai muille.
+- Ei testattu wrappers kansion tiedostoja tai index.

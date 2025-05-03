@@ -24,4 +24,4 @@
 
 ## Jatkokehitysideoita
 
-- -
+- Ruudun koon vaihtaminen.
