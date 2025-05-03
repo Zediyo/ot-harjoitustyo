@@ -34,3 +34,8 @@
 - Testattu Level, LevelEditor ja db.
 - Refactoroitu ja putsattu kaikki /game, /scenes ja /sprites luokat.
 - Lisätty täydet docstring dokumentaatiot kaikille /game, /scenes ja /sprites tiedostoille.
+
+## Loppupalautus
+
+- Vaihdettu tietokanta käyttämään ulkoista kirjastoa SQLAlchemy.
+- Lisätty docstring dokumentaatiot kaikille tiedostoille.

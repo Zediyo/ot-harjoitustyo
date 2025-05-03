@@ -17,6 +17,20 @@ Nyt voit käynnistää pelin suorittamalla komennon
 ```bash
 poetry run invoke start
 ```
+
+## Ohjaimet
+
+### Pelissä
+- **W / Space** - Hyppää
+- **A / D** - Liiku vasemmalle tai oikealle
+- **Hiiren vasen painike** - Lisää palikka kentälle (jos palikoita jäljellä)
+- **Hiiren oikea painike** - Poista palikka kentältä (jos tarpeeksi lähellä)
+
+## Editorissa
+- **Numerot 1-6** - Valitse lisättävä laatta
+- **Hiiren vasen painike** - Lisää valittu laatta (jos salittu määrä ei ylity ja laatalle on tilaa)
+- **Hiiren oikea painike** - Poista laatta osoittimen alta
+
 ## Pelin aloittaminen, pelitila ja lopetus
 
 Käynnistämisen jälkeen olet aloitusruudussa. Valitse "Play".

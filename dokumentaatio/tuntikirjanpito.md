@@ -24,4 +24,7 @@
 | 28.4.2025  | 6        | docs for sprite, spriteanim, level, timer. large refactoring.   |
 | 29.4.2025  | 9        | large refactoring and full docstrings for game, scenes, sprites |
 | 29.4.2025  | 3        | docs: architecture, user guide                                  |
-| Total      | 84       |                                                                 |
+| 2.5.2025   | 3        | docstrings for rest of files                                    |
+| 2.5.2025   | 3        | SQLAlchemy lib for database stuff                               |
+| 3.5.2025   | 4        | SQLAlchemy lib for database stuff + db docstrings               |
+| Total      | 94       |                                                                 |

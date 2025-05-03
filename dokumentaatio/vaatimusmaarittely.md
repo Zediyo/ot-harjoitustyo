@@ -20,6 +20,8 @@
 	
 - Pelissä voi tehdä/muokata omia tasoja ja tallentaa niitä pysyvästi. **(tehty)**
 
+- Animoitu pelihahmo ja viholliset. **(tehty)**
+
 ## Jatkokehitysideoita
 
-- Animoitu pelihahmo ja viholliset. **(tehty)**
+- -
