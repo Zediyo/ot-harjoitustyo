@@ -4,6 +4,7 @@
 ## Release
 - [Viikko 5](https://github.com/Zediyo/ot-harjoitustyo/releases/tag/viikko5)
 - [Viikko 6](https://github.com/Zediyo/ot-harjoitustyo/releases/tag/viikko6)
+- [Loppupalautus](https://github.com/Zediyo/ot-harjoitustyo/releases/tag/loppupalautus)
 
 ## Dokumentaatio
 - [käyttöohje](dokumentaatio/kayttoohje.md)
