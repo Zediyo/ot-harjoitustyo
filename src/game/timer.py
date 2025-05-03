@@ -49,7 +49,7 @@ class Timer:
         Returns:
             bool: True if the current time is better than the best time, False otherwise.
         """
-        return self._best_time == -1 or self._time < self._best_time
+        return self._best_time is None or self._time < self._best_time
 
     def get_best_time(self):
         """ Get the best time for the level.
@@ -57,7 +57,7 @@ class Timer:
         Returns:
             float or None: The best time in seconds, or None if no best time is set.
         """
-        return self._best_time if self._best_time != -1 else None
+        return self._best_time
 
     def activate(self):
         """ Start or resume the timer."""

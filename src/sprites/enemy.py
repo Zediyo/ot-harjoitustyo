@@ -29,6 +29,8 @@ class Enemy(pygame.sprite.Sprite):
     _DIR_LEFT = -1
     _DIR_RIGHT = 1
 
+    _HITBOX_ALPHA = 0
+
     def __init__(self, x=0, y=0, start_dir=1):
         """ Initialize the Enemy sprite.
 
@@ -40,12 +42,12 @@ class Enemy(pygame.sprite.Sprite):
         super().__init__()
 
         self._base = load_image("pl_enemy.png")
-        self._base.set_alpha(100)
+        self._base.set_alpha(self._HITBOX_ALPHA)
 
         self._animation = SpriteAnimation(fps=15, scale=self._SIZE)
         self._animation.add_image_set("move", *self._MOVE_ANIMATION)
 
-        self.image = pygame.Surface(self._SIZE)
+        self.image = pygame.Surface(self._SIZE, pygame.SRCALPHA)
         self.rect = self.image.get_rect()
 
         self.rect.x = x

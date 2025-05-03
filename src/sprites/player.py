@@ -35,6 +35,8 @@ class Player(pygame.sprite.Sprite):
     # (frame 0 = ground, 1-2 = ascending, 3-4 = peak, 5-6 = descending, 7 = ground)
     _AIR_FRAME_CUT_OFFS = [0.15, 0.30, 0.50, 0.70, 0.85, 1.10]
 
+    _HITBOX_ALPHA = 0
+
     def __init__(self, x=0, y=0):
         """ Initialize the Player sprite.
 
@@ -46,13 +48,13 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
 
         self._base = load_image("pl_player.png")
-        self._base.set_alpha(100)
+        self._base.set_alpha(self._HITBOX_ALPHA)
 
         self._animation = SpriteAnimation(fps=15, scale=self._SIZE)
         self._animation.add_image_set("move", *self._MOVE_ANIMATION)
         self._animation.add_image_set("idle", *self._IDLE_ANIMATION)
 
-        self.image = pygame.Surface(self._SIZE)
+        self.image = pygame.Surface(self._SIZE, pygame.SRCALPHA)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y

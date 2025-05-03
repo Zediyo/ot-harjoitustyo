@@ -1,5 +1,6 @@
 import unittest
 import tools.db as db
+from sqlalchemy import inspect
 
 from constants import TEST_LEVEL_END_DATA
 from game.level_data import LevelData
@@ -10,28 +11,27 @@ class TestDB(unittest.TestCase):
         db.close_connection()
 
     def test_initial_state(self):
-        conn = db.get_connection()
-        cursor = conn.cursor()
+        engine = db.get_engine()
+        inspector = inspect(engine)
 
         # check required tables exist
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-        tables = [table[0] for table in cursor.fetchall()]
+        tables = inspector.get_table_names()
 
         self.assertIn("levels", tables)
         self.assertIn("level_times", tables)
 
         # check tables have correct columns
-        cursor.execute("PRAGMA table_info(levels)")
-        columns = [column[1] for column in cursor.fetchall()]
+        level_columns = [col["name"]
+                         for col in inspector.get_columns("levels")]
 
         for col in ["id", "name", "data"]:
-            self.assertIn(col, columns)
+            self.assertIn(col, level_columns)
 
-        cursor.execute("PRAGMA table_info(level_times)")
-        columns = [column[1] for column in cursor.fetchall()]
+        time_columns = [col["name"]
+                        for col in inspector.get_columns("level_times")]
 
-        for col in ["id", "level_id", "time", "timestamp"]:
-            self.assertIn(col, columns)
+        for col in ["id", "level_id", "time"]:
+            self.assertIn(col, time_columns)
 
     def test_save_and_load_level_time(self):
         db.save_level_time(12, 123)
@@ -47,11 +47,11 @@ class TestDB(unittest.TestCase):
         db.save_level_time(12, -2)
 
         best_time = db.get_best_time(12)
-        self.assertEqual(best_time, -1)
+        self.assertEqual(best_time, None)
         best_time = db.get_best_time(-1)
-        self.assertEqual(best_time, -1)
+        self.assertEqual(best_time, None)
         best_time = db.get_best_time(567)
-        self.assertEqual(best_time, -1)
+        self.assertEqual(best_time, None)
 
     def test_save_and_load_level(self):
         to_save = LevelData(-1, "potato", TEST_LEVEL_END_DATA)
@@ -146,6 +146,10 @@ class TestDB(unittest.TestCase):
     def test_delete_level(self):
         db.save_level(LevelData(-1, "potato", TEST_LEVEL_END_DATA))
         db.save_level(LevelData(-1, "peruna", TEST_LEVEL_END_DATA))
+        db.save_level_time(2, 654)
+        db.save_level_time(2, 456)
+        db.save_level_time(3, 45)
+        db.save_level_time(3, 54)
 
         self.assertTrue(db.level_name_exists("potato"))
         self.assertTrue(db.level_name_exists("peruna"))
@@ -166,6 +170,9 @@ class TestDB(unittest.TestCase):
 
         self.assertFalse(db.level_name_exists("potato"))
         self.assertFalse(db.level_name_exists("peruna"))
+
+        times = db.get_all_best_times()
+        self.assertEqual(len(times), 0)
 
     def test_delete_times(self):
         db.save_level(LevelData(-1, "potato", TEST_LEVEL_END_DATA))
